@@ -1,16 +1,26 @@
 knock Subdomain Scan
 ====================
 
-<pre>
-Usage: knock.py domain.com
-Usage: knock.py domain.com --worlist wordlist.txt
+Knock is a python script designed to enumerate subdomains on a target domain through a wordlist.
 
+**Usage**
+
+<pre>
+$ knock.py domain.com
+$ knock.py domain.com --worlist wordlist.txt
+</pre>
+
+**Options**
+
+<pre>
 	-h, --help	This help
 	-v, --version	Show version
 	    --wordlist	Use personal wordlist
+</pre>
 
-Options for single domain
--------------------------
+**Options for single domain**
+
+<pre>
 	-i, --info	Short information
 	-r, --resolve	Resolve domain name
 	-w, --wilcard	Check if wildcard is enabled
@@ -20,6 +30,10 @@ Options for single domain
 	    --head	Request HTTP for HEAD method
 	    --trace	Request HTTP for TRACE method
 	    --options	Request HTTP for OPTIONS method
+</pre>
 
-Note: The ALIAS name is marked in yellow.
+**Note**
+
+<pre>
+The ALIAS name is marked in yellow.
 </pre>
