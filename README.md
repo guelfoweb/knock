@@ -34,6 +34,16 @@ Knock is a python tool designed to enumerate subdomains on a target domain throu
 The ALIAS name is marked in yellow.
 </pre>
 
+Install
+=======
+**Prerequisites**
+
+<code>Python 2.6.5 or 2.7</code>
+
+**Download**
+
+<code>git clone https://github.com/guelfoweb/knock.git</code>
+
 **Other**
 
 This script is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com. Suggestions and criticism are welcome.
