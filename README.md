@@ -44,6 +44,7 @@ Install
 
 <code>git clone https://github.com/guelfoweb/knock.git</code>
 
-**Other**
+Other
+=====
 
 This script is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com. Suggestions and criticism are welcome.
