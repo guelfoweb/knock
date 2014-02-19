@@ -24,12 +24,9 @@ Knock is a python script designed to enumerate subdomains on a target domain thr
 	-r, --resolve   Resolve domain name
 	-w, --wilcard   Check if wildcard is enabled
 	-z, --zone      Check if Zonte Transfer is enabled
-	    --get       Request HTTP for GET method
-	    --post      Request HTTP for POST method
-	    --head      Request HTTP for HEAD method
-	    --trace     Request HTTP for TRACE method
-	    --options   Request HTTP for OPTIONS method
 </pre>
+
+<code>$ knock.py **[-opt, --option]** domain.com</code>
 
 **Note**
 
