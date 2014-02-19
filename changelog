@@ -1,1 +1,8 @@
-Old version 1.x on Google Code -> http://code.google.com/p/knock/
+2.0 
+- Rewrite code and options
+- Detect ALIAS name
+- Automatic wildcard bypass
+- Resolve single domain
+
+1.x
+- old version on Google Code -> http://code.google.com/p/knock/
