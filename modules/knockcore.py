@@ -31,34 +31,41 @@ def domaininfo(domain):
 	try:
 		# translate a host name to IPv4 address format
 		host = socket.gethostbyname(domain)
-		if host:
-			# return a triple (hostname, aliaslist, ipaddrlist) by HOST
-			soc      = socket.gethostbyname_ex(domain)
-#			print soc # enable for debug
-			elem     = []
-			hostname = soc[0]
-			ip       = soc[2][0]
-
-			elem.append([hostname])
-
-			# verbose
-			len_alias_array = len(soc[1])
-			if len_alias_array > 0:
-				for i in range(0, len_alias_array):
-					alias = soc[1][i]
-					# Return a triple (hostname, aliaslist, ipaddrlist) by IP
-					name  = socket.gethostbyaddr(soc[1][i])[0]
-					ip    = socket.gethostbyname(name)
-					
-					elem.append([alias, name, ip]) 
-			else:
-				elem.append([ip])
-			
-			return (elem)
-			soc.close()
 	except:
 		pass
 		return False
+		
+	if host:
+		# return a triple (hostname, aliaslist, ipaddrlist) by HOST
+		soc      = socket.gethostbyname_ex(domain)
+#		print soc # enable for debug
+		elem     = []
+		hostname = soc[0]
+		ip       = soc[2][0]
+
+		elem.append([hostname])
+
+		# verbose
+		len_alias_array = len(soc[1])
+		if len_alias_array > 0:
+			for i in range(0, len_alias_array):
+				alias = soc[1][i]
+				try:
+					# Return a triple (hostname, aliaslist, ipaddrlist) by IP
+					name  = socket.gethostbyaddr(soc[1][i])[0]
+					ip    = socket.gethostbyname(name)
+				except:
+					name  = alias
+					ip    = socket.gethostbyname(alias)
+					pass
+					
+				elem.append([alias, name, ip]) 
+		else:
+			elem.append([ip])
+		
+		return (elem)
+		soc.close()
+
 
 def zonetransfer(URL): # Zone Transfer
 	try:
