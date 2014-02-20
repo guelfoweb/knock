@@ -149,7 +149,7 @@ def subscan(url, wordlist):
 def bypasswildcard(url, wordlist):
 	wlist = loadwordlist(wordlist)
 
-	print COLOR_BOLD + "Getting subdomain for", url + COLOR_END
+	print COLOR_BOLD + "\nGetting subdomain for", url + COLOR_END
 	print "\nIp Address\tDomain Name"
 	print "----------\t-----------"
 
