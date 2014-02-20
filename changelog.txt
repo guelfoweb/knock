@@ -1,8 +1,8 @@
-2.0 
+2.0 - 2014-02-20
 - Rewrite code and options
 - Detect ALIAS name
 - Automatic wildcard bypass
 - Resolve single domain
 
-1.x
+1.x - 2011
 - old version on Google Code -> http://code.google.com/p/knock/
