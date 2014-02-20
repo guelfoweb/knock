@@ -110,7 +110,14 @@ Ip Addr Summary
 Found 415 subdomain(s) in 88 host(s).
 </pre>
 
+Credit
+======
+
+Thanks to Bob Halley for <code>dnspython</code> toolkit
+
 Other
 =====
 
-This script is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com. Suggestions and criticism are welcome.
+This tool is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com. Suggestions and criticism are welcome.
+
+Sponsored by **<a href="http://www.securityside.it/">Security Side</a>**.
