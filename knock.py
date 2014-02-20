@@ -157,7 +157,7 @@ def bypasswildcard(url, wordlist):
 		subdomain = sub+"."+url
 		header = knockcore.getheader(subdomain, "/", "GET")
 		# bypass status code -> header[0] = 301
-		if header and not header[0] == str(header[0]):
+		if header and not header[0] == 301:
 			resolvedomain(subdomain)
 
 	print
@@ -169,11 +169,12 @@ def checkzone(domain):
 	print "----------\t-----------"
 	zt_found = knockcore.zonetransfer(url)
 	if (zt_found):
-		print COLOR_BOLD + "\nGetting Zone Transfer\n" + COLOR_END
+		print COLOR_BOLD + "Getting Zone Transfer\n" + COLOR_END
 		print "Ip Address\tDomain Name"
 		print "----------\t-----------"
 		for sub in zt_found:
 			resolvedomain(sub)
+		print
 	else:
 		return False
 
