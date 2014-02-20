@@ -44,7 +44,7 @@ Install
 
 <code>$ git clone https://github.com/guelfoweb/knock.git</code>
 
-or <b><a href="https://github.com/guelfoweb/knock/archive/master.zip" alt="master.zip" title="master.zip">Download Zip</a></b> and extract <code>knock</code> folder
+or <b><a href="https://github.com/guelfoweb/knock/archive/master.zip" alt="knock-master.zip" title="knock-master.zip">Download Zip</a></b> and extract <code>knock</code> folder
 
 Example
 =======
