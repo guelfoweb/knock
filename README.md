@@ -7,7 +7,7 @@ Knock is a python tool designed to enumerate subdomains on a target domain throu
 
 <code>$ knock.py domain.com</code>
 
-<code>$ knock.py domain.com **--worlist** wordlist.txt</code>
+<code>$ knock.py domain.com **--wordlist** wordlist.txt</code>
 
 **Options**
 
