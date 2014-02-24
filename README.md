@@ -122,6 +122,6 @@ Thanks to Bob Halley for <code>dnspython</code> toolkit
 Other
 =====
 
-This tool is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com. Suggestions and criticism are welcome.
+This tool is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com or twitter <a href="http://twitter.com/guelfoweb">@guelfoweb</a>. Suggestions and criticism are welcome.
 
 Sponsored by **<a href="http://www.securityside.it/">Security Side</a>**.
