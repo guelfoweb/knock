@@ -232,7 +232,7 @@ def help():
 	print "\t-i, --info\tShort information"
 	print "\t-r, --resolve\tResolve domain name"
 	print "\t-w, --wildcard\tCheck if wildcard is enabled"
-	print "\t-z, --zone\tCheck if Zonte Transfer is enabled"
+	print "\t-z, --zone\tCheck if Zone Transfer is enabled"
 #	print "\t    --get\tRequest HTTP for GET method"
 #	print "\t    --post\tRequest HTTP for POST method"
 #	print "\t    --head\tRequest HTTP for HEAD method"
