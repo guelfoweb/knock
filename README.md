@@ -119,6 +119,11 @@ Credit
 
 Thanks to Bob Halley for <code>dnspython</code> toolkit
 
+**Talk about...**
+<ul>
+<li><a href="http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611">Ethical Hacking and Penetration Testing Guide</a> <i>Book by Rafay Baloch</i></li>
+</ul>
+
 Other
 =====
 
