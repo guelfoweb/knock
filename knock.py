@@ -22,7 +22,7 @@ sys.path.insert(0, 'modules')
 try:
 		import knockcore
 except ImportError:
-		print '[!] knockcore not found.'
+		print('[!] knockcore not found.')
 		sys.exit(0)
 
 # INFORMATION
@@ -50,14 +50,14 @@ def uniq_by_array(array):
 		if b not in uniq_name:
 			uniq_name.append(b)
 
-	print COLOR_BOLD + "Ip Addr Summary" + COLOR_END
-	print "-"*15
+	print(COLOR_BOLD + "Ip Addr Summary" + COLOR_END)
+	print("-"*15)
 	for i in range(0,len(uniq_ip)):
-		print uniq_ip[i]
+		print(uniq_ip[i])
 
 	host_found = len(uniq_ip)
 	name_found = len(uniq_name)
-	print "\nFound "+str(name_found)+" subdomain(s) in "+str(host_found)+" host(s)."
+	print("\nFound "+str(name_found)+" subdomain(s) in "+str(host_found)+" host(s).")
 	
 
 def resolvedomain(subdomain):
@@ -81,8 +81,8 @@ def resolvedomain(subdomain):
 		hostname = result[0][0]
 		alias    = result[1][0]
 		ip       = result[1][1]
-		print COLOR_ALIAS + ip+"\t"+alias + COLOR_END
-		print ip+"\t"+hostname
+		print(COLOR_ALIAS + ip+"\t"+alias + COLOR_END)
+		print(ip+"\t"+hostname)
 		found.append([ip, alias])
 		found.append([ip, hostname])
 	# subdomain is alias
@@ -91,8 +91,8 @@ def resolvedomain(subdomain):
 		alias    = result[1][0]
 		name     = result[1][1]
 		ip       = result[1][2]
-		print COLOR_ALIAS + ip+"\t"+alias + COLOR_END
-		print ip+"\t"+hostname
+		print(COLOR_ALIAS + ip+"\t"+alias + COLOR_END)
+		print(ip+"\t"+hostname)
 		found.append([ip, alias])
 		found.append([ip, hostname])
 	# subdomain is alias
@@ -104,54 +104,54 @@ def resolvedomain(subdomain):
 			
 			if ip_alias not in uniq:
 				uniq.append(ip_alias)
-				print COLOR_ALIAS + ip_alias + COLOR_END
+				print(COLOR_ALIAS + ip_alias + COLOR_END)
 				found.append([result[i][2], result[i][0]])
 			if ip_name not in uniq:
 				uniq.append(ip_name)
-				print ip_name
+				print(ip_name)
 				found.append([result[i][2], result[i][1]])
 		for i in range(1,len(result)):
 			ip_hostname  = result[i][2]+"\t"+result[0][0]
 			if ip_hostname not in uniq:
 				uniq.append(ip_hostname)
-				print ip_hostname
+				print(ip_hostname)
 				found.append([result[i][2], result[0][0]])
 	# subdomain is hostname
 	elif result:
 		hostname = result[0][0]
 		ip       = result[1][0]
-		print ip+"\t"+hostname
+		print(ip+"\t"+hostname)
 		found.append([ip, hostname])
 
 def loadwordlist(wordlist):
 	wlist = knockcore.loadfile(wordlist)
 	if wlist == False:
-		print COLOR_RED + "\nFile not found ["+wordlist+"]" + COLOR_END
-		print "Download a wordlist file from here:"
-		print "https://raw.github.com/guelfoweb/knock/master/wordlist.txt"
+		print(COLOR_RED + "\nFile not found ["+wordlist+"]" + COLOR_END)
+		print("Download a wordlist file from here:")
+		print("https://raw.github.com/guelfoweb/knock/master/wordlist.txt")
 		sys.exit(0)
 	return wlist
 
 def subscan(url, wordlist):
 	wlist = loadwordlist(wordlist)
 
-	print COLOR_BOLD + "Getting subdomain for", url + COLOR_END
-	print "\nIp Address\tDomain Name"
-	print "----------\t-----------"
+	print(COLOR_BOLD + "Getting subdomain for", url + COLOR_END)
+	print("\nIp Address\tDomain Name")
+	print("----------\t-----------")
 
 	for sub in wlist:
 		subdomain = sub+"."+url
 		resolvedomain(subdomain)
 
-	print
+	print()
 	uniq_by_array(found)
 
 def bypasswildcard(url, wordlist):
 	wlist = loadwordlist(wordlist)
 
-	print COLOR_BOLD + "\nGetting subdomain for", url + COLOR_END
-	print "\nIp Address\tDomain Name"
-	print "----------\t-----------"
+	print(COLOR_BOLD + "\nGetting subdomain for", url + COLOR_END)
+	print("\nIp Address\tDomain Name")
+	print("----------\t-----------")
 
 	for sub in wlist:
 		subdomain = sub+"."+url
@@ -160,21 +160,21 @@ def bypasswildcard(url, wordlist):
 		if header and not header[0] == 301:
 			resolvedomain(subdomain)
 
-	print
+	print()
 	uniq_by_array(found)
 
 def checkzone(domain):
-	print  COLOR_BOLD + "Getting NS records for", domain + COLOR_END
-	print "\nIp Address\tServer Name"
-	print "----------\t-----------"
+	print( COLOR_BOLD + "Getting NS records for", domain + COLOR_END)
+	print("\nIp Address\tServer Name")
+	print("----------\t-----------")
 	zt_found = knockcore.zonetransfer(url)
 	if (zt_found):
-		print COLOR_BOLD + "Getting Zone Transfer\n" + COLOR_END
-		print "Ip Address\tDomain Name"
-		print "----------\t-----------"
+		print(COLOR_BOLD + "Getting Zone Transfer\n" + COLOR_END)
+		print("Ip Address\tDomain Name")
+		print("----------\t-----------")
 		for sub in zt_found:
 			resolvedomain(sub)
-		print
+		print()
 	else:
 		return False
 
@@ -185,14 +185,14 @@ def getheaders(url, path, method):
 	header = knockcore.getheader(url, path, method)
 	status = str(header[0])
 	reason = str(header[1])
-	print COLOR_BOLD + "Staus\tReason" +  COLOR_END
-	print "-----\t------"
-	print status + "\t" + reason
-	print
-	print COLOR_BOLD + "Response Headers" +  COLOR_END
-	print "-"*16
+	print(COLOR_BOLD + "Staus\tReason" +  COLOR_END)
+	print("-----\t------")
+	print(status + "\t" + reason)
+	print()
+	print(COLOR_BOLD + "Response Headers" +  COLOR_END)
+	print("-"*16)
 	for i in range(1,len(header[2])):
-		print str(header[2][i][0]) + ": " + str(header[2][i][1])
+		print(str(header[2][i][0]) + ": " + str(header[2][i][1]))
 	return status, reason
 
 def CheckForWildcard(url):
@@ -202,7 +202,7 @@ def CheckForWildcard(url):
 	if wildcard == False:
 		return False
 	else:
-		print COLOR_RED+COLOR_BOLD+"Wildcard enabled\n"+COLOR_END
+		print(COLOR_RED+COLOR_BOLD+"Wildcard enabled\n"+COLOR_END)
 
 def check_status(url, path, method):
 	try:
@@ -220,26 +220,26 @@ def purgeurl(url):
 	return url
 
 def help():
-	print COLOR_BOLD+INFO+COLOR_END
-	print
-	print COLOR_BOLD+"Usage:"+COLOR_END+" knock.py domain.com"
-	print COLOR_BOLD+"Usage:"+COLOR_END+" knock.py domain.com "+COLOR_BOLD+"--worlist "+COLOR_END+"wordlist.txt"
-	print "\n\t-h, --help\tThis help"
-	print "\t-v, --version\tShow version"
-	print "\t    --wordlist\tUse personal wordlist"
-	print COLOR_BOLD+"\nOptions for single domain"+COLOR_END
-	print "-"*25
-	print "\t-i, --info\tShort information"
-	print "\t-r, --resolve\tResolve domain name"
-	print "\t-w, --wildcard\tCheck if wildcard is enabled"
-	print "\t-z, --zone\tCheck if Zone Transfer is enabled"
-#	print "\t    --get\tRequest HTTP for GET method"
-#	print "\t    --post\tRequest HTTP for POST method"
-#	print "\t    --head\tRequest HTTP for HEAD method"
-#	print "\t    --trace\tRequest HTTP for TRACE method"
-#	print "\t    --options\tRequest HTTP for OPTIONS method"
-	print "\n"+" "*9+COLOR_BOLD+"Usage:"+COLOR_END+" knock.py"+COLOR_BOLD+" [-opt, --option]"+COLOR_END+" domain.com"
-	print "\nNote: The ALIAS name is marked in yellow."
+	print(COLOR_BOLD+INFO+COLOR_END)
+	print()
+	print(COLOR_BOLD+"Usage:"+COLOR_END+" knock.py domain.com")
+	print(COLOR_BOLD+"Usage:"+COLOR_END+" knock.py domain.com "+COLOR_BOLD+"--worlist "+COLOR_END+"wordlist.txt")
+	print("\n\t-h, --help\tThis help")
+	print("\t-v, --version\tShow version")
+	print("\t    --wordlist\tUse personal wordlist")
+	print(COLOR_BOLD+"\nOptions for single domain"+COLOR_END)
+	print("-"*25)
+	print("\t-i, --info\tShort information")
+	print("\t-r, --resolve\tResolve domain name")
+	print("\t-w, --wildcard\tCheck if wildcard is enabled")
+	print("\t-z, --zone\tCheck if Zone Transfer is enabled")
+#	print("\t    --get\tRequest HTTP for GET method")
+#	print("\t    --post\tRequest HTTP for POST method")
+#	print("\t    --head\tRequest HTTP for HEAD method")
+#	print("\t    --trace\tRequest HTTP for TRACE method")
+#	print("\t    --options\tRequest HTTP for OPTIONS method")
+	print("\n"+" "*9+COLOR_BOLD+"Usage:"+COLOR_END+" knock.py"+COLOR_BOLD+" [-opt, --option]"+COLOR_END+" domain.com")
+	print("\nNote: The ALIAS name is marked in yellow.")
 	sys.exit(0)
 
 #___________________Main_____________________
@@ -257,7 +257,7 @@ if len(sys.argv) == 2:
 	if url == "-h" or url == "--help":
 		help()
 	if url == "-v" or url == "--version":
-		print VERSION
+		print(VERSION)
 		sys.exit(0)
 	if CheckForWildcard(url) == False:
 		checkzone(url)
@@ -273,22 +273,22 @@ if len(sys.argv) == 3:
 	url = sys.argv[2]
 	url = purgeurl(url)
 	if opt == "-i" or opt == "--info":
-		print COLOR_BOLD + "Resolving domain", url + "\n" + COLOR_END
+		print(COLOR_BOLD + "Resolving domain", url + "\n" + COLOR_END)
 		resolvedomain(url)
-		print
+		print()
 		if checkzone(url) == False:
-			print "Zone Transfer not enabled\n"
+			print("Zone Transfer not enabled\n")
 		CheckForWildcard(url)
 		getheaders(url, "/", "GET")
 
 	if opt == "-r" or opt == "--resolve":
-		print COLOR_BOLD + "Resolving domain", url + "\n" + COLOR_END
+		print(COLOR_BOLD + "Resolving domain", url + "\n" + COLOR_END)
 		resolvedomain(url)
 	if opt == "-w" or opt == "--wildcard":
 		CheckForWildcard(url)
 	if opt == "-z" or opt == "--zone":
 		if checkzone(url) == False:
-			print "Zone Transfer not enabled"
+			print("Zone Transfer not enabled")
 
 	# ------- hidden for debug -------
 	if opt == "--trace":

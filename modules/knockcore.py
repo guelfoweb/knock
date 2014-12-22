@@ -19,9 +19,14 @@
 
 import sys
 import socket
-import httplib
 import string
 import random
+# backward compatibility with python2
+if sys.version[0] == "2":
+    import httplib
+else:
+    import http.client
+
 
 # set the default timeout on sockets to 5 seconds
 if hasattr(socket, 'setdefaulttimeout'):
@@ -38,7 +43,7 @@ def domaininfo(domain):
 	if host:
 		# return a triple (hostname, aliaslist, ipaddrlist) by HOST
 		soc      = socket.gethostbyname_ex(domain)
-#		print soc # enable for debug
+#		print(soc) # enable for debug
 		elem     = []
 		hostname = soc[0]
 		ip       = soc[2][0]
@@ -75,10 +80,10 @@ def zonetransfer(URL): # Zone Transfer
 		for rdata in answers:
 			n        = str(rdata)
 			ns_array = domaininfo(n)
-			print str(ns_array[1][0]) + "\t" + str(ns_array[0][0])
+			print(str(ns_array[1][0]) + "\t" + str(ns_array[0][0]))
 			ns.append(n)
 
-		print
+		print()
 
 		for n in ns:
 			zt = []
@@ -92,7 +97,7 @@ def zonetransfer(URL): # Zone Transfer
 			  return zt
 #			          print, "\n%s\t%s" % (name, record)
 			  #break
-			  print
+			  print()
 			except:
 				return False
 				pass
@@ -145,6 +150,6 @@ def getheader(url, path, method):
 		return False
 
 # for debug
-#print zonetransfer("zonetransfer.me")
-#print getheader("egfrgfwr.reddit.com")
+#print(zonetransfer("zonetransfer.me"))
+#print(getheader("egfrgfwr.reddit.com"))
 #subscan("google.com", "wordlist.txt")
