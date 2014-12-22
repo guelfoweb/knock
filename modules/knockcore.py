@@ -123,7 +123,7 @@ def rnd():  # random string
     max = 15
     total = 2
     rndstring = ''
-    for count in xrange(1, total):
+    for count in range(1, total):
         for x in random.sample(alphabet, random.randint(min, max)):
             rndstring += x
     return rndstring
