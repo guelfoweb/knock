@@ -38,7 +38,7 @@ Install
 =======
 **Prerequisites**
 
-<code>Python 2.6.5 -> 2.7.x</code>
+<code>Python 2.6.5 -> 3.2.x</code>
 
 **Download**
 
