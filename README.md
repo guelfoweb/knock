@@ -51,9 +51,17 @@ Install
 
 <code>Python 2.6.5 -> 2.7.x</code>
 
-**Download**
+**Install**
 
-<code><a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-master.zip">Download Zip</a></code> and extract <code>knock-knock3</code> folder.
+from pypi
+
+<code>sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip</code>
+
+manually download and install
+
+<code><a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-knock3.zip">Download Zip</a></code> and extract <code>knock-knock3</code> folder
+
+<code>cd knock-knock3/</code>
 
 <code>sudo python setup.py install</code>
 
