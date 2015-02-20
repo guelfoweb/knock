@@ -13,13 +13,9 @@ Usage
 
 positional arguments:
 
-.. code-block:: bash
-
   domain         specific target domain, like domain.com
 
 optional arguments:
-
-.. code-block:: bash
 
   -h, --help     show this help message and exit
   -v, --version  show program's version number and exit
@@ -38,19 +34,13 @@ subdomain scan with internal wordlist
 
 subdomain scan with external wordlist
 
-.. code-block:: bash
-
   knockpy domain.com -w wordlist.txt
 
 resolve domain name and get response headers
 
-.. code-block:: bash
-
   knockpy domain.com -r domain.com
 
 check zone transfer for domain name
-
-.. code-block:: bash
 
   knockpy domain.com -z domain.com
 
@@ -81,15 +71,9 @@ sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip
 
 manually download and install
 
-.. code-block:: bash
-
 <a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-knock3.zip">Download Zip</a> and extract knock-knock3 folder
 
-.. code-block:: bash
-
 cd knock-knock3/
-
-.. code-block:: bash
 
 sudo python setup.py install
 
@@ -102,13 +86,12 @@ Is recommended to use <a href="https://developers.google.com/speed/public-dns/do
 Talk about
 ==========
 
-<ul>
-<li><a href="http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611">Ethical Hacking and Penetration Testing Guide</a> <i>Book by Rafay Baloch</i></li>
-</ul>
+<a href="http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611">Ethical Hacking and Penetration Testing Guide</a> <i>Book by Rafay Baloch</i></li>
 
+=====
 Other
 =====
 
 This tool is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com or twitter <a href="http://twitter.com/guelfoweb">@guelfoweb</a>. Suggestions and criticism are welcome.
 
-Sponsored by **<a href="http://www.securityside.it/">Security Side</a>**.
+Sponsored by <a href="http://www.securityside.it/">Security Side</a>.
