@@ -74,7 +74,7 @@ from pypi (as root)
 
   pip install https://github.com/guelfoweb/knock/archive/knock3.zip
 
-or manually `Download Zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract knock-knock3 folder
+or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract knock-knock3 folder
 
 .. code-block:: bash
 
