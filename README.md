@@ -22,19 +22,19 @@ Knock is a python tool designed to enumerate subdomains on a target domain throu
 </pre>
 
 **Example**
-- subdomain scan with internal wordlist
+subdomain scan with internal wordlist
 
 <code>knockpy domain.com</code>
 
-- subdomain scan with external wordlist
+subdomain scan with external wordlist
 
 <code>knockpy domain.com **-w** wordlist.txt</code>
 
-- resolve domain name and get response headers
+resolve domain name and get response headers
 
 <code>knockpy domain.com **-r** domain.com</code>
 
-- check zone transfer for domain name
+check zone transfer for domain name
 
 <code>knockpy domain.com **-z** domain.com</code>
 
@@ -60,12 +60,9 @@ or <b><a href="https://github.com/guelfoweb/knock/archive/master.zip" alt="knock
 
 Is recommended to use <a href="https://developers.google.com/speed/public-dns/docs/using">Google DNS</a> <code>8.8.8.8</code> | <code>8.8.4.4</code>
 
-Credit
-======
+Talk about
+==========
 
-Thanks to Bob Halley for <code>dnspython</code> toolkit
-
-**Talk about...**
 <ul>
 <li><a href="http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611">Ethical Hacking and Penetration Testing Guide</a> <i>Book by Rafay Baloch</i></li>
 </ul>
