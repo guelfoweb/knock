@@ -7,19 +7,19 @@ Knock is a python tool designed to enumerate subdomains on a target domain throu
 
 <code>knockpy [-h] [-v] [-w WORDLIST] [-r] [-z] domain</code>
 
-subdomain scan with internal wordlist
+- subdomain scan with internal wordlist
 
 <code>knockpy domain.com</code>
 
-subdomain scan with external wordlist
+- subdomain scan with external wordlist
 
 <code>knockpy domain.com **-w** wordlist.txt</code>
 
-resolve domain name and get response headers
+- resolve domain name and get response headers
 
 <code>knockpy domain.com **-r** domain.com</code>
 
-check zone transfer for domain name
+- check zone transfer for domain name
 
 <code>knockpy domain.com **-z** domain.com</code>
 
