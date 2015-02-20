@@ -78,7 +78,7 @@ or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock3.zi
 
   python setup.py install
 
-note: tested with python 2.7.6. Is recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ 8.8.8.8 | 8.8.4.4
+note: tested with python 2.7.6 | is recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ (8.8.8.8 | 8.8.4.4)
 
 ==========
 Talk about
