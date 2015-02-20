@@ -53,9 +53,9 @@ Install
 
 **Download**
 
-<code>$ git clone https://github.com/guelfoweb/knock.git</code>
+<code><a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-master.zip">Download Zip</a></code> and extract <code>knock-knock3</code> folder.
 
-or <b><a href="https://github.com/guelfoweb/knock/archive/master.zip" alt="knock-master.zip" title="knock-master.zip">Download Zip</a></b> and extract <code>knock</code> folder.
+<code>sudo python setup.py install</code>
 
 **Note**
 
