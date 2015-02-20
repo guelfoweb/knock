@@ -13,9 +13,13 @@ Usage
 
 positional arguments:
 
+.. code-block:: bash
+
   domain         specific target domain, like domain.com
 
 optional arguments:
+
+.. code-block:: bash
 
   -h, --help     show this help message and exit
   -v, --version  show program's version number and exit
@@ -34,20 +38,23 @@ subdomain scan with internal wordlist
 
 subdomain scan with external wordlist
 
+.. code-block:: bash
+
   knockpy domain.com -w wordlist.txt
 
 resolve domain name and get response headers
 
-  knockpy domain.com -r domain.com
+.. code-block:: bash
+
+  knockpy -r domain.com
 
 check zone transfer for domain name
 
-  knockpy domain.com -z domain.com
+.. code-block:: bash
 
-Note
-----
+  knockpy -z domain.com
 
-The ALIAS name is marked in yellow.
+note: the ALIAS name is marked in yellow.
 
 =======
 Install
@@ -67,31 +74,34 @@ from pypi
 
 .. code-block:: bash
 
-sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip
+  sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip
 
 manually download and install
 
-<a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-knock3.zip">Download Zip</a> and extract knock-knock3 folder
+.. code-block:: bash
 
-cd knock-knock3/
+  <a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-knock3.zip">Download Zip</a> and extract knock-knock3 folder
 
-sudo python setup.py install
+.. code-block:: bash
 
-Note
-----
+  cd knock-knock3/
 
-Is recommended to use <a href="https://developers.google.com/speed/public-dns/docs/using">Google DNS</a> <code>8.8.8.8</code> | <code>8.8.4.4</code>
+.. code-block:: bash
+
+  sudo python setup.py install
+
+note: is recommended to use `Google DNS <https://developers.google.com/speed/public-dns/docs/using>`_ 8.8.8.8 | 8.8.4.4
 
 ==========
 Talk about
 ==========
 
-<a href="http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611">Ethical Hacking and Penetration Testing Guide</a> <i>Book by Rafay Baloch</i></li>
+`Ethical Hacking and Penetration Testing Guide <http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611>`_ Book by Rafay Baloch
 
 =====
 Other
 =====
 
-This tool is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com or twitter <a href="http://twitter.com/guelfoweb">@guelfoweb</a>. Suggestions and criticism are welcome.
+This tool is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com or twitter `@guelfoweb <http://twitter.com/guelfoweb>`_. Suggestions and criticism are welcome.
 
-Sponsored by <a href="http://www.securityside.it/">Security Side</a>.
+Sponsored by `Security Side<http://www.securityside.it/>`_.
