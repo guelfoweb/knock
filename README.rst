@@ -76,11 +76,11 @@ from pypi
 
   sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip
 
-manually download and install
+manually
 
 .. code-block:: bash
 
-  `Download Zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract knock-knock3 folder
+`Download Zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract knock-knock3 folder
 
 .. code-block:: bash
 
@@ -104,4 +104,4 @@ Other
 
 This tool is currently maintained by Gianni 'guelfoweb' Amato, who can be contacted at guelfoweb@gmail.com or twitter `@guelfoweb <http://twitter.com/guelfoweb>`_. Suggestions and criticism are welcome.
 
-Sponsored by `Security Side<http://www.securityside.it/>`_
+Sponsored by `Security Side <http://www.securityside.it/>`_
