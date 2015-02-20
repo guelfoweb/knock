@@ -60,18 +60,13 @@ note: the ALIAS name is marked in yellow.
 Install
 =======
 
-Prerequisites
--------------
-
-  Python 2.6.5 -> 2.7.x
-
 from pypi (as root)
 
 .. code-block:: bash
 
   pip install https://github.com/guelfoweb/knock/archive/knock3.zip
 
-or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract knock-knock3 folder
+or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract folder
 
 .. code-block:: bash
 
@@ -83,7 +78,7 @@ or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock3.zi
 
   python setup.py install
 
-note: is recommended to use `Google DNS <https://developers.google.com/speed/public-dns/docs/using>`_ 8.8.8.8 | 8.8.4.4
+note: tested with python 2.7.6. Is recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ 8.8.8.8 | 8.8.4.4
 
 ==========
 Talk about
