@@ -65,9 +65,6 @@ Prerequisites
 
   Python 2.6.5 -> 2.7.x
 
-Install
--------
-
 from pypi (as root)
 
 .. code-block:: bash
