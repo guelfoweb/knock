@@ -1,74 +1,104 @@
+==========================
 knock Subdomain Scan v.3.0
-====================
+==========================
 
 Knock is a python tool designed to enumerate subdomains on a target domain through a wordlist.
 
-**Usage**
+Usage
+-----
 
-<code>knockpy [-h] [-v] [-w WORDLIST] [-r] [-z] domain</code>
+.. code-block:: bash
 
-**positional arguments:**
-<pre>
+  knockpy [-h] [-v] [-w WORDLIST] [-r] [-z] domain
+
+positional arguments:
+
+.. code-block:: bash
+
   domain         specific target domain, like domain.com
-</pre>
 
-**optional arguments:**
-<pre>
+optional arguments:
+
+.. code-block:: bash
+
   -h, --help     show this help message and exit
   -v, --version  show program's version number and exit
   -w WORDLIST    specific path to wordlist file
   -r, --resolve  resolve ip or domain name
   -z, --zone     check for zone transfer
-</pre>
 
-**Example**
+Example
+-------
 
 subdomain scan with internal wordlist
 
-<code>knockpy domain.com</code>
+.. code-block:: bash
+
+  knockpy domain.com
 
 subdomain scan with external wordlist
 
-<code>knockpy domain.com **-w** wordlist.txt</code>
+.. code-block:: bash
+
+  knockpy domain.com -w wordlist.txt
 
 resolve domain name and get response headers
 
-<code>knockpy domain.com **-r** domain.com</code>
+.. code-block:: bash
+
+  knockpy domain.com -r domain.com
 
 check zone transfer for domain name
 
-<code>knockpy domain.com **-z** domain.com</code>
+.. code-block:: bash
 
-**Note**
+  knockpy domain.com -z domain.com
 
-<pre>
+Note
+----
+
 The ALIAS name is marked in yellow.
-</pre>
 
+=======
 Install
 =======
-**Prerequisites**
 
-<code>Python 2.6.5 -> 2.7.x</code>
+Prerequisites
+-------------
 
-**Install**
+.. code-block:: bash
+
+Python 2.6.5 -> 2.7.x
+
+Install
+-------
 
 from pypi
 
-<code>sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip</code>
+.. code-block:: bash
+
+sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip
 
 manually download and install
 
-<code><a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-knock3.zip">Download Zip</a></code> and extract <code>knock-knock3</code> folder
+.. code-block:: bash
 
-<code>cd knock-knock3/</code>
+<a href="https://github.com/guelfoweb/knock/archive/knock3.zip" alt="knock-knock3.zip" title="knock-knock3.zip">Download Zip</a> and extract knock-knock3 folder
 
-<code>sudo python setup.py install</code>
+.. code-block:: bash
 
-**Note**
+cd knock-knock3/
+
+.. code-block:: bash
+
+sudo python setup.py install
+
+Note
+----
 
 Is recommended to use <a href="https://developers.google.com/speed/public-dns/docs/using">Google DNS</a> <code>8.8.8.8</code> | <code>8.8.4.4</code>
 
+==========
 Talk about
 ==========
 
