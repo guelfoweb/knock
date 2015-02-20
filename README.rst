@@ -63,32 +63,28 @@ Install
 Prerequisites
 -------------
 
-.. code-block:: bash
-
-Python 2.6.5 -> 2.7.x
+  Python 2.6.5 -> 2.7.x
 
 Install
 -------
 
-from pypi
+from pypi (as root)
 
 .. code-block:: bash
 
-  sudo pip install https://github.com/guelfoweb/knock/archive/knock3.zip
+  pip install https://github.com/guelfoweb/knock/archive/knock3.zip
 
-manually
-
-.. code-block:: bash
-
-`Download Zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract knock-knock3 folder
+or manually `Download Zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract knock-knock3 folder
 
 .. code-block:: bash
 
   cd knock-knock3/
 
+(as root)
+
 .. code-block:: bash
 
-  sudo python setup.py install
+  python setup.py install
 
 note: is recommended to use `Google DNS <https://developers.google.com/speed/public-dns/docs/using>`_ 8.8.8.8 | 8.8.4.4
 
