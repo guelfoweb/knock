@@ -29,16 +29,6 @@ import subscan
 import zonetransfer
 import font
 
-def start_scan(wildcard_detected, code):
-	# Subdomains target
-	for target in targetlist:
-		if wildcard_detected:
-			result = core.bypass_wildcard(target, code)
-		else:
-			result = core.get_target(target, False, False)
-		if result:
-			return result
-
 def get_header(url, path, method):
 	return getheader.req(url, path, method)
 
@@ -54,17 +44,16 @@ def prepare_targetlist(domain, wordlist):
 		targets.append(sub+'.'+domain)
 	return targets
 
-def logic_wildcard_detect(status, reason, header):
-	return wildcard.logic(status, reason, header)
-
 def get_target(_target, verbose, test):
+	# call from bypass_wildcard(target, wcode)
 	return target.get(_target, verbose, test)
 		
 def stats_general_summary(targetlist):
 	return stats.start(found, targetlist)
 
-def bypass_wildcard(target, code):
-	if wildcard.bypass(target, code):
+def bypass_wildcard(target, wcode):
+	# call from subdomain_scan()
+	if wildcard.bypass(target, wcode):
 		return get_target(target, True, False)
 
 def test_wildcard(target):
@@ -78,18 +67,22 @@ def header_target(domain):
 	print headers.target(domain)
 
 def show_resolved(domain, resolve):
-	# return alias and host
-	getinfo_host = subscan.start(domain)
-
-	test_domain = True
+	# if [knockpy domain.com] -> resolve is False
+	# resolve is True only if use -r option
 	
-	# domain not found, exit
-	if not getinfo_host and test_domain:
+	# return alias and host
+	test_host = subscan.start(domain)
+	
+	# HOST NOT FOUND for:
+	# [knockpy domain.com] or [knockpy -r domain.com]
+	if not test_host:
 		print font.color('red')+'\n: unknown '+domain+font.color('end')
 		
-		# if option [-r, --resolve] is true -> is testing
+		# if [knockpy -r domain.com]
+		# bye bye
 		if resolve: exit()
 		
+		# if [knockpy domain.com]
 		# prepare query [c] -> continue, [enter] -> exit
 		query = 'press '+font.color('bold')+'[c]'\
 		+font.color('end')+' to continue to scan or '\
@@ -100,18 +93,18 @@ def show_resolved(domain, resolve):
 		res = raw_input(query)
 		if res != 'c': exit()
 
-		# set global and return
-		#global test_domain
-		#global host_not_found
-		#global wildcard_detected
-		test_domain = False
+		# set values
 		host_not_found = True
+		# I don't test wildcard, so:
 		wildcard_detected = False
 
 		return
-		
+
+	# HOST NOT FOUND for:
+	# [knockpy domain.com] or [knockpy -r domain.com]
+	
 	# get alias and host list
-	(alias, host) = getinfo_host[0], getinfo_host[1]
+	(alias, host) = test_host[0], test_host[1]
 
 	output = ''
 
@@ -135,12 +128,16 @@ def show_resolved(domain, resolve):
 
 # Code and headers
 def get_banner(domain):
+	# host_not_found is False by default
+	# or set to True by show_resolved(domain, resolve)
 	if host_not_found: return
+	
 	# return [headers]
 	# status, reason, headers
 	# len = 3
 	getinfo_header = getheader.req(domain,'/','HEAD')
-	# set to global
+	
+	# set to global for show_banner(domain)
 	global code, reason, header
 	if not getinfo_header: 
 		(code, header) = False, False
@@ -148,19 +145,28 @@ def get_banner(domain):
 	(code, reason, header) = str(getinfo_header[0]), str(getinfo_header[1]), getinfo_header[2]
 	
 def header_response_code():
+	# host_not_found is False by default
+	# or set to True by show_resolved(domain, resolve)
 	if host_not_found: return
 	print headers.response_code()
 
 def header_response_head():
+	# host_not_found is False by default
+	# or set to True by show_resolved(domain, resolve)
 	if host_not_found: return
 	print headers.response_head()
 
 def show_banner(typo):
+	# host_not_found is False by default
+	# or set to True by show_resolved(domain, resolve)
 	if host_not_found: return
-	# print code and reason
+	
+	# code is global variable from get_banner(domain)
+	# return code, reason, header	
+	# print code, reason 
 	if typo == 'code' and code:	print code.ljust(18)+reason+'\n'
 	
-	# print headers field
+	# print headers
 	if typo == 'head' and header:
 		for head in header:
 			# output first chars: 17 fields | 61 values
@@ -168,13 +174,24 @@ def show_banner(typo):
 
 # Wildcard, wordlist, targetlist
 def show_wildcard(domain):
+	# host_not_found is False by default
+	# or set to True by show_resolved(domain, resolve)
 	if host_not_found: return
+	
 	# test wildcard
 	global wildcard_detected
 	wildcard_detected = False
-	if wildcard.test(domain):
+	
+	wildcard_test = wildcard.test(domain)
+	if wildcard_test[0]:
 		wildcard_detected = True
-		print font.color('red')+'\n: wildcard detected'+font.color('end')
+		
+		# set a new value for code
+		# from random subdomain response headers
+		global wcode
+		wcode = str(wildcard_test[0][0])
+		print font.color('red')+'\n: wildcard detected: '+wcode+font.color('end')
+		
 
 def get_wordlist(domain, path_to_worlist=False):
 	# import wordlist
@@ -195,7 +212,7 @@ def header_start_scan(domain):
 def subdomain_scan():
 	for target in targetlist:
 		if wildcard_detected:
-			result = bypass_wildcard(target, code)
+			result = bypass_wildcard(target, wcode)
 		else:
 			result = get_target(target, False, False)
 
