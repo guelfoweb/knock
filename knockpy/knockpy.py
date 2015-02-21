@@ -32,6 +32,8 @@ __description__='''\
 def getinfo(domain, resolve):
 	# Resolve domain
 	core.header_target(domain)
+	# if [knockpy domain.com] -> resolve is False
+	# if [knockpy -r domain.com] -> resolve is True
 	core.show_resolved(domain,resolve)
 
 	# Status code
@@ -110,19 +112,27 @@ The ALIAS name is marked in yellow''')
 	resolve = args.resolve
 	zone = args.zone
 
-	# knockpy -r domain.com
-	if domain and resolve and not zone: getinfo(domain, resolve)
-
-	# knockpy -z domain.com
-	elif domain and zone and not resolve: getzone(domain)
-
-	# knockpy domain.com
-	elif domain and not resolve and not zone:
+	# [knockpy -r domain.com]
+	if domain and resolve and not zone:
+		# resolve = True
 		getinfo(domain, resolve)
+
+	# [knockpy -z domain.com]
+	elif domain and zone and not resolve:
+		getzone(domain)
+
+	# [knockpy domain.com]
+	elif domain and not resolve and not zone:
+		# resolve = False
+		getinfo(domain, resolve)
+		
 		if wlist:
 			get_wordlist_targetlist(domain, wlist)
 		else:
+			# get_wordlist_targetlist(domain,path_to_worlist=False)
+			# no wlist
 			get_wordlist_targetlist(domain)
+			
 		start(domain)
 		statistics()
 		savescan(domain)
