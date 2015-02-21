@@ -22,30 +22,28 @@ import getheader
 import random
 import socket
 
-def bypass(target, code):
+def bypass(target, wcode):
 	# beta feature
 	text = ''
 	header = getheader.req(target,'/','HEAD')
 	# bypass status code -> header[0] = 301 or 302
-	if header and header[0] != code: return True
+	if header and str(header[0]) != wcode: return True
 	else: return False
 
-def test_random(target):
+def test(target):
+	# call from show_wildcard(domain)
 	rndString = rnd('abcdefghijklmnopqrstuvwxyz')
 	rndSubdomain = str(rndString)+'.'+target
 	try:
 		host  = socket.gethostbyname(rndSubdomain)
 		if host:
-			return True
+			httpreq = getheader.req(rndSubdomain,'/','HEAD')
+			return httpreq, True
 	except:
-		return False
-
-def test(target):
-	if test_random(target) and getheader.req(target,'/','HEAD'): return True
-	return False
+		return False, False
 
 def rnd(alphabet): # random string
-	alphabet  = 'abcdefghijklmnopqrstuvwxyz'
+	# alphabet  = 'abcdefghijklmnopqrstuvwxyz'
 	min       = 5
 	max       = 15
 	total     = 2
