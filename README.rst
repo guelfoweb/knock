@@ -1,8 +1,8 @@
 =============================
-knock Subdomain Scan v.3.0rc1
+Knock Subdomain Scan v.3.0rc1
 =============================
 
-Knock is a python tool designed to enumerate subdomains on a target domain through a wordlist.
+Knockpy is a python tool designed to enumerate subdomains on a target domain through a wordlist.
 
 .. figure:: https://lh3.googleusercontent.com/fF1e6w8AZJ6g4rziowHAoPj9IX4FdS6ZSJ3y19P8PRTBdc2JYv9V8m_GTGQmdNtc4QO3=w1570-h624
    :align: center
