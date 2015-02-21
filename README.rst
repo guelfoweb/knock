@@ -32,6 +32,8 @@ optional arguments:
   -r, --resolve  resolve ip or domain name
   -z, --zone     check for zone transfer
 
+note: the ALIAS name is marked in yellow.
+
 Example
 -------
 
@@ -58,8 +60,6 @@ check zone transfer for domain name
 .. code-block:: bash
 
   knockpy -z domain.com
-
-note: the ALIAS name is marked in yellow.
 
 =======
 Install
