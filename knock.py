@@ -16,8 +16,9 @@
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-
-sys.path.insert(0, 'modules')
+import os
+PROJECT_ROOT = os.path.dirname(__file__)
+sys.path.insert(0, os.path.join(PROJECT_ROOT, "modules"))
 
 try:
 		import knockcore
