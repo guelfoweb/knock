@@ -1,7 +1,9 @@
-knock Subdomain Scan
-====================
+knock Subdomain Scan 2
+======================
 
 Knock is a python tool designed to enumerate subdomains on a target domain through a wordlist.
+
+!!! <a href="https://github.com/guelfoweb/knock/tree/knock3">Try Knock subdomain scan v.3.rc1</a> !!!
 
 **Usage**
 
