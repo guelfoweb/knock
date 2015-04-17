@@ -34,7 +34,7 @@ def check_status(path_to_wordlist=False):
 		wlist = utilipy.loadfile_wordlist(local_wlist)
 		location = 'local'
 	else: # remote wordlist
-		print font.color('red')+'\nwarning: wordlist not found '+local_wlist+font.color('end')
+		print (font.color('red')+'\nwarning: wordlist not found '+local_wlist+font.color('end'))
 		res = raw_input('\npress [c] to download remote wordlist or [enter] to exit: ')
 		if res != 'c': exit()
 		wlist = utilipy.downloadfile(remote_wlist)

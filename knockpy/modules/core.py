@@ -64,7 +64,7 @@ wildcard_detected = False
 
 # Resolve domain
 def header_target(domain):
-	print headers.target(domain)
+	print (headers.target(domain))
 
 def show_resolved(domain, resolve):
 	# if [knockpy domain.com] -> resolve is False
@@ -76,7 +76,7 @@ def show_resolved(domain, resolve):
 	# HOST NOT FOUND for:
 	# [knockpy domain.com] or [knockpy -r domain.com]
 	if not test_host:
-		print font.color('red')+'\n: unknown '+domain+font.color('end')
+		print (font.color('red')+'\n: unknown '+domain+font.color('end'))
 		
 		# if [knockpy -r domain.com]
 		# bye bye
@@ -124,7 +124,7 @@ def show_resolved(domain, resolve):
 
 		output += ipaddr.ljust(18)+hostname+'\n'
 
-	print output
+	print (output)
 
 # Code and headers
 def get_banner(domain):
@@ -148,13 +148,13 @@ def header_response_code():
 	# host_not_found is False by default
 	# or set to True by show_resolved(domain, resolve)
 	if host_not_found: return
-	print headers.response_code()
+	print (headers.response_code())
 
 def header_response_head():
 	# host_not_found is False by default
 	# or set to True by show_resolved(domain, resolve)
 	if host_not_found: return
-	print headers.response_head()
+	print (headers.response_head())
 
 def show_banner(typo):
 	# host_not_found is False by default
@@ -164,13 +164,13 @@ def show_banner(typo):
 	# code is global variable from get_banner(domain)
 	# return code, reason, header	
 	# print code, reason 
-	if typo == 'code' and code:	print code.ljust(18)+reason+'\n'
+	if typo == 'code' and code:	print (code.ljust(18)+reason+'\n')
 	
 	# print headers
 	if typo == 'head' and header:
 		for head in header:
 			# output first chars: 17 fields | 61 values
-			print str(head[0])[0:17].ljust(18)+str(head[1])[0:61]
+			print (str(head[0])[0:17].ljust(18)+str(head[1])[0:61])
 
 # Wildcard, wordlist, targetlist
 def show_wildcard(domain):
@@ -190,7 +190,7 @@ def show_wildcard(domain):
 		# from random subdomain response headers
 		global wcode
 		wcode = str(wildcard_test[0][0])
-		print font.color('red')+'\n: wildcard detected: '+wcode+font.color('end')
+		print (font.color('red')+'\n: wildcard detected: '+wcode+font.color('end'))
 		
 
 def get_wordlist(domain, path_to_worlist=False):
@@ -198,7 +198,7 @@ def get_wordlist(domain, path_to_worlist=False):
 	getinfo_wordlist = get_info_wordlist(path_to_worlist)
 	global wordlist
 	(location, wordlist) = getinfo_wordlist[0], getinfo_wordlist[1]
-	print headers.status_wordlist(location, wordlist)
+	print (headers.status_wordlist(location, wordlist))
 	
 def get_targetlist(domain):
 	# prepare subdomain.domain.com
@@ -207,7 +207,7 @@ def get_targetlist(domain):
 
 # Start
 def header_start_scan(domain):
-	print headers.start_scan(domain)
+	print (headers.start_scan(domain))
 
 def subdomain_scan():
 	for target in targetlist:
@@ -217,25 +217,25 @@ def subdomain_scan():
 			result = get_target(target, False, False)
 
 		if result:
-			print result
+			print (result)
 
 # Statistics
 def header_stats_summary():
 	return headers.stats_summary()
 
 def report():
-	print target.get_report(targetlist)
+	print (target.get_report(targetlist))
 
 # Save result in csv
 def save_in_csv(domain):
-	print target.save_csv(domain)
+	print (target.save_csv(domain))
 
 # Zone transfer
 def getzone(domain):
 	detected = zonetransfer.check(domain)
 	if not detected: exit('zone transfer not found')
-	print headers.start_scan_zt(domain)
+	print (headers.start_scan_zt(domain))
 	for item in detected:
 		(ip, subdomain) = str(item[0]), str(item[1])
-		print ip.ljust(18)+subdomain
+		print (ip.ljust(18)+subdomain)
 
