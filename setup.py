@@ -30,7 +30,7 @@ with open(path.join(here, 'CHANGELOG.rst'), encoding='utf-8') as f:
 
 setup(
     name='knockpy',
-    version='3.0rc1',
+    version='3.0',
 
     description='Knock is a python tool designed to enumerate subdomains on a target domain through a wordlist.',
     long_description=long_description,
