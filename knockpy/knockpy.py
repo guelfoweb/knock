@@ -19,7 +19,7 @@
 from modules import core
 import argparse
 
-__version__='3.0 rc1'
+__version__='3.0'
 __description__='''\
   ___________________________________________
   
