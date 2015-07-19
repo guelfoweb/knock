@@ -55,10 +55,14 @@ def get(target, verbose, test):
 
 	return text.rstrip()
 
-def save_csv(domain):
+def save_csv(domain, output_file):
 	if not found: exit()
 	timestamp = utilipy.timestamp()
-	filename = domain.replace('.', '_')+'_'+str(timestamp)+'.csv'
+	if output_file:
+		filename = output_file
+	else:
+		filename = domain.replace('.', '_')+'_'+str(timestamp)+'.csv'
+
 	try:
 		utilipy.touch(filename)
 		with open(filename, 'a') as f:

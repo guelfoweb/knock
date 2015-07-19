@@ -227,8 +227,8 @@ def report():
 	print target.get_report(targetlist)
 
 # Save result in csv
-def save_in_csv(domain):
-	print target.save_csv(domain)
+def save_in_csv(domain, output_file):
+	print target.save_csv(domain, output_file)
 
 # Zone transfer
 def getzone(domain):
