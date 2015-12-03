@@ -20,6 +20,9 @@
 
 import utilipy
 import font
+import sys
+
+sys.path.insert(0, '../')
 from knockpy import get_data
 
 internal_wlist = get_data('wordlist.txt')
