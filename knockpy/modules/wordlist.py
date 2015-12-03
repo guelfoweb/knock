@@ -20,10 +20,11 @@
 
 import utilipy
 import font
-import sys
+import os
 
-sys.path.insert(0, '../')
-from knockpy import get_data
+_ROOT = os.path.abspath(os.path.dirname(__file__))
+def get_data(path):
+	return os.path.join(_ROOT, 'wordlist', path)
 
 internal_wlist = get_data('wordlist.txt')
 remote_wlist = 'https://raw.github.com/guelfoweb/knock/master/wordlist.txt'
