@@ -26,7 +26,7 @@ _ROOT = os.path.abspath(os.path.dirname(__file__))
 def get_data(path):
 	return os.path.join(_ROOT, 'wordlist', path)
 
-internal_wlist = get_data('wordlist.txt')
+internal_wlist = get_data('wordlist.txt').replace('modules/', '')
 remote_wlist = 'https://raw.github.com/guelfoweb/knock/master/wordlist.txt'
 
 def check_status(path_to_wordlist=False):
