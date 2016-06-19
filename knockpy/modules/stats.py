@@ -18,36 +18,35 @@
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
-import socket
-import font
+from knockpy.modules import font
+
 
 def cogito(found, targetlist):
-	# print found # enable for debug
-	ipaddr = []
-	subdomain = []
-	subdomain_in_wlist = []
-	subdomain_for_ip = []
+    # print found # enable for debug
+    ipaddr = []
+    subdomain = []
+    subdomain_in_wlist = []
 
-	len_found = len(found)
+    len_found = len(found)
 
-	# ip address discovered
-	for i in xrange(0, len_found):
-		ipaddr.append(found[i][1])
-	uniq_ipaddr = set(ipaddr)
+    # ip address discovered
+    for i in xrange(0, len_found):
+        ipaddr.append(found[i][1])
+    uniq_ipaddr = set(ipaddr)
 
-	# subdomain discovered
-	for i in xrange(0, len_found):
-		subdomain.append(found[i][2])
-	uniq_subdomain = set(subdomain)
-	
-	# subdomain in wordlist
-	for subdomain in uniq_subdomain:
-		if subdomain in targetlist:
-			subdomain_in_wlist.append(subdomain)
-	uniq_wlist = set(subdomain_in_wlist)
+    # subdomain discovered
+    for i in xrange(0, len_found):
+        subdomain.append(found[i][2])
+    uniq_subdomain = set(subdomain)
 
-	report = '\nFound '+font.color('bold')+str(len(uniq_subdomain))\
-	+font.color('end')+' subdomain(s) in '+font.color('bold')+str(len(uniq_ipaddr))+font.color('end')+' host(s).\n'\
-	+font.color('bold')+str(len(uniq_wlist))+font.color('end')+'/'+font.color('bold')+str(len(uniq_subdomain))+font.color('end')\
-	+' subdomain(s) are in wordlist.'
-	return report
+    # subdomain in wordlist
+    for subdomain in uniq_subdomain:
+        if subdomain in targetlist:
+            subdomain_in_wlist.append(subdomain)
+    uniq_wlist = set(subdomain_in_wlist)
+
+    report = '\nFound ' + font.color('bold') + str(len(uniq_subdomain))\
+    +font.color('end') + ' subdomain(s) in ' + font.color('bold') + str(len(uniq_ipaddr)) + font.color('end') + ' host(s).\n'\
+    +font.color('bold') + str(len(uniq_wlist)) + font.color('end') + '/' + font.color('bold') + str(len(uniq_subdomain)) + font.color('end')\
+    +' subdomain(s) are in wordlist.'
+    return report

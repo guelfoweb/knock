@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 
-from modules import core
+from knockpy.modules import core
 import argparse
 
 __version__='3.0'
 __description__='''\
   ___________________________________________
-  
+
   knock subdomain scan (aka knockpy) | v.'''+__version__+'''
   Author: Gianni 'guelfoweb' Amato
   Github: https://github.com/guelfoweb/knock
@@ -69,7 +69,7 @@ def savescan(domain):
 
 def getzone(domain):
 	core.getzone(domain)
-	
+
 def main():
 	parser = argparse.ArgumentParser(
 		version=__version__,
@@ -125,14 +125,14 @@ The ALIAS name is marked in yellow''')
 	elif domain and not resolve and not zone:
 		# resolve = False
 		getinfo(domain, resolve)
-		
+
 		if wlist:
 			get_wordlist_targetlist(domain, wlist)
 		else:
 			# get_wordlist_targetlist(domain,path_to_worlist=False)
 			# no wlist
 			get_wordlist_targetlist(domain)
-			
+
 		start(domain)
 		statistics()
 		savescan(domain)

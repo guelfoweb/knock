@@ -18,56 +18,64 @@
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
-import font
-import subscan
-import utilipy
-import stats
+from knockpy.modules import font
+from knockpy.modules import subscan
+from knockpy.modules import utilipy
+from knockpy.modules import stats
 
 global found
 found = []
+
+
 def get(target, verbose, test):
-	text = ''
-	result = subscan.start(target)
-	if result: (alias, host) = result[0], result[1]
-	else: return
-		
-	# Detect alias
-	for item in alias:
-		found.append([target, item[1], item[0], 'alias'])
-		text += font.color('yellow') + str(item[1]).ljust(18) + str(item[0]) + font.color('end') + '\n'
-		# Test wildcard to detect host
-		if verbose and not test:
-			for item in host:
-				found.append([target, item[1], item[0], 'host'])
-				text += str(item[1]).ljust(18) + str(item[0]) + '\n'
+    text = ''
+    result = subscan.start(target)
+    if result:
+        (alias, host) = result[0], result[1]
+    else:
+        return
 
-	# Test subdomain to detect host
-	if not verbose and not test:
-		for item in host:
-			found.append([target, item[1], item[0], 'host'])
-			text += str(item[1]).ljust(18) + str(item[0]) + '\n'
+    # Detect alias
+    for item in alias:
+        found.append([target, item[1], item[0], 'alias'])
+        text += font.color('yellow') + str(item[1]).ljust(18) + str(item[0]) + font.color('end') + '\n'
+        # Test wildcard to detect host
+        if verbose and not test:
+            for item in host:
+                found.append([target, item[1], item[0], 'host'])
+                text += str(item[1]).ljust(18) + str(item[0]) + '\n'
 
-	# Test root domain to detect host
-	if test:
-		for item in host:
-			found.append([target, item[1], item[0], 'host'])
-			text += str(item[1]).ljust(18) + str(item[0]) + '\n'
+    # Test subdomain to detect host
+    if not verbose and not test:
+        for item in host:
+            found.append([target, item[1], item[0], 'host'])
+            text += str(item[1]).ljust(18) + str(item[0]) + '\n'
 
-	return text.rstrip()
+    # Test root domain to detect host
+    if test:
+        for item in host:
+            found.append([target, item[1], item[0], 'host'])
+            text += str(item[1]).ljust(18) + str(item[0]) + '\n'
+
+    return text.rstrip()
+
 
 def save_csv(domain):
-	if not found: exit()
-	timestamp = utilipy.timestamp()
-	filename = domain.replace('.', '_')+'_'+str(timestamp)+'.csv'
-	try:
-		utilipy.touch(filename)
-		with open(filename, 'a') as f:
-			f.write('target,ip address,domain name,type\n')
-			for row in found:
-				f.write(row[0]+','+row[1]+','+row[2]+','+row[3]+'\n')
-		f.close()
-		return '\nOutput saved in CSV format: '+filename
-	except: return '\nCannot write csv file: '+filename
-	
+    if not found:
+        exit()
+    timestamp = utilipy.timestamp()
+    filename = domain.replace('.', '_') + '_' + str(timestamp) + '.csv'
+    try:
+        utilipy.touch(filename)
+        with open(filename, 'a') as f:
+            f.write('target,ip address,domain name,type\n')
+            for row in found:
+                f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
+        f.close()
+        return '\nOutput saved in CSV format: ' + filename
+    except:
+        return '\nCannot write csv file: ' + filename
+
+
 def get_report(targetlist):
-	return stats.cogito(found, targetlist)
+    return stats.cogito(found, targetlist)
