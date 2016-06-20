@@ -101,7 +101,11 @@ def show_resolved(domain, resolve):
         + ' to exit: '
 
         # prompt
-        res = raw_input(query)
+        try:
+            res = raw_input(query)
+        except NameError:
+            # Python 3 compat
+            res = input(query)
         if res != 'c':
             exit()
 
