@@ -17,30 +17,27 @@
 # You should have received a copy of the GNU General Public License
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
-try:
-    import httplib
-except ImportError:
-    import http.client as httplib
+
+import httplib
 
 agent = "Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:35.0) Gecko/20100101 Firefox/35.0"
 
-
 def req(url, path, method):
-    try:
-        conn = httplib.HTTPConnection(url)
-        conn.putrequest(method, path)
-        conn.putheader("User-Agent", agent)
-        '''
-        #conn.putheader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-        #conn.putheader("Connection", "keep-alive")
+	try:
+		conn = httplib.HTTPConnection(url)
+		conn.putrequest(method, path)
+		conn.putheader("User-Agent", agent)
+		'''
+		#conn.putheader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+		#conn.putheader("Connection", "keep-alive")
 
-        # Test for XST
-        conn.putheader('Via', '<script>alert(0)</script>')
-        conn.request(method, path)
-        '''
-        conn.endheaders()
-        res = conn.getresponse()
-        conn.close()
-        return res.status, res.reason, res.getheaders()
-    except:
-        return False
+		# Test for XST
+		conn.putheader('Via', '<script>alert(0)</script>')
+		conn.request(method, path)
+		'''
+		conn.endheaders()
+		res = conn.getresponse()
+		conn.close()
+		return res.status, res.reason, res.getheaders()
+	except:
+		return False

@@ -18,41 +18,37 @@
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
+import getheader
 import random
 import socket
-from knockpy.modules import getheader
-
 
 def bypass(target, wcode):
-    # beta feature
-    header = getheader.req(target, '/', 'HEAD')
-    # bypass status code -> header[0] = 301 or 302
-    if header and str(header[0]) != wcode:
-        return True
-    else:
-        return False
-
+	# beta feature
+	text = ''
+	header = getheader.req(target,'/','HEAD')
+	# bypass status code -> header[0] = 301 or 302
+	if header and str(header[0]) != wcode: return True
+	else: return False
 
 def test(target):
-    # call from show_wildcard(domain)
-    rndString = rnd('abcdefghijklmnopqrstuvwxyz')
-    rndSubdomain = str(rndString) + '.' + target
-    try:
-        host = socket.gethostbyname(rndSubdomain)
-        if host:
-            httpreq = getheader.req(rndSubdomain, '/', 'HEAD')
-            return httpreq, True
-    except:
-        return False, False
+	# call from show_wildcard(domain)
+	rndString = rnd('abcdefghijklmnopqrstuvwxyz')
+	rndSubdomain = str(rndString)+'.'+target
+	try:
+		host  = socket.gethostbyname(rndSubdomain)
+		if host:
+			httpreq = getheader.req(rndSubdomain,'/','HEAD')
+			return httpreq, True
+	except:
+		return False, False
 
-
-def rnd(alphabet):  # random string
-    # alphabet  = 'abcdefghijklmnopqrstuvwxyz'
-    min_value = 5
-    max_value = 15
-    total = 2
-    rndstring = ''
-    for count in xrange(1, total):
-        for x in random.sample(alphabet, random.randint(min_value, max_value)):
-            rndstring+=x
-    return rndstring
+def rnd(alphabet): # random string
+	# alphabet  = 'abcdefghijklmnopqrstuvwxyz'
+	min       = 5
+	max       = 15
+	total     = 2
+	rndstring = ''
+	for count in xrange(1,total):
+		for x in random.sample(alphabet,random.randint(min,max)):
+			rndstring+=x
+	return rndstring

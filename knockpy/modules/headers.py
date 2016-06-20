@@ -18,47 +18,40 @@
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
-from knockpy.modules import font
-
+import font
 
 def status_wordlist(location, wlist):
-    return font.color('ciano') + '\nLoaded ' + font.color('bold') + location + font.color('end')\
-     + font.color('ciano') + ' wordlist with ' + font.color('bold') + str(len(wlist)) + font.color('end')\
-     + font.color('ciano') + ' item(s)\n' + font.color('end')
-
-
+	return font.color('ciano')+'\nLoaded '+font.color('bold')+location+font.color('end')\
+	+font.color('ciano')+' wordlist with '+font.color('bold')+str(len(wlist))+font.color('end')\
+	+font.color('ciano')+' item(s)\n'+font.color('end')
+	
 def start_scan(domain):
-    text = font.color('bold') + 'Getting subdomain for ' + domain + font.color('end') + '\n\n'
-    text += 'Ip Address'.ljust(18) + 'Domain Name\n'
-    text += '----------'.ljust(18) + '-----------'
-    return text
-
+	text = font.color('bold') + 'Getting subdomain for ' + domain + font.color('end') + '\n\n'
+	text += 'Ip Address'.ljust(18) + 'Domain Name\n'
+	text += '----------'.ljust(18) + '-----------'
+	return text
 
 def target(domain):
-    text = font.color('bold') + 'Target information ' + domain + font.color('end') + '\n\n'
-    text += 'Ip Address'.ljust(18) + 'Target Name\n'
-    text += '----------'.ljust(18) + '-----------'
-    return text
-
+	text = font.color('bold')+'Target information '+domain+font.color('end')+'\n\n'
+	text += 'Ip Address'.ljust(18) + 'Target Name\n'
+	text += '----------'.ljust(18) + '-----------'
+	return text
 
 def response_code():
-    text = 'Code'.ljust(18) + 'Reason\n'
-    text+= '----------'.ljust(18) + '-----------'
-    return text
-
+	text = 'Code'.ljust(18) + 'Reason\n'
+	text += '----------'.ljust(18) + '-----------'
+	return text
 
 def response_head():
-    text = 'Field'.ljust(18) + 'Value\n'
-    text+= '----------'.ljust(18) + '-----------'
-    return text
-
+	text = 'Field'.ljust(18) + 'Value\n'
+	text += '----------'.ljust(18) + '-----------'
+	return text
 
 def stats_summary():
-    return font.color('bold') + '\nSummary\n' + font.color('end')
-
+	return font.color('bold')+'\nSummary\n'+font.color('end')
 
 def start_scan_zt(domain):
-    text = font.color('bold') + 'Getting zone transfer for ' + domain + font.color('end') + '\n\n'
-    text+= 'Ip Address'.ljust(18) + 'Domain Name\n'
-    text+= '----------'.ljust(18) + '-----------'
-    return text
+	text = font.color('bold') + 'Getting zone transfer for ' + domain + font.color('end') + '\n\n'
+	text += 'Ip Address'.ljust(18) + 'Domain Name\n'
+	text += '----------'.ljust(18) + '-----------'
+	return text
