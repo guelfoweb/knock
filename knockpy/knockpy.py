@@ -22,64 +22,71 @@ except ImportError:
     from knockpy.modules import core
 import argparse
 
+
 __version__='3.0'
 __description__='''\
   ___________________________________________
 
-  knock subdomain scan (aka knockpy) | v.'''+__version__+'''
+  knock subdomain scan (aka knockpy) | v.''' + __version__ + '''
   Author: Gianni 'guelfoweb' Amato
   Github: https://github.com/guelfoweb/knock
   ___________________________________________
 '''
 
+
 def getinfo(domain, resolve):
-	# Resolve domain
-	core.header_target(domain)
-	# if [knockpy domain.com] -> resolve is False
-	# if [knockpy -r domain.com] -> resolve is True
-	core.show_resolved(domain,resolve)
+    # Resolve domain
+    core.header_target(domain)
+    # if [knockpy domain.com] -> resolve is False
+    # if [knockpy -r domain.com] -> resolve is True
+    core.show_resolved(domain, resolve)
 
-	# Status code
-	core.header_response_code()
-	core.get_banner(domain)
-	core.show_banner('code')
+    # Status code
+    core.header_response_code()
+    core.get_banner(domain)
+    core.show_banner('code')
 
-	# Headers
-	core.header_response_head()
-	core.show_banner('head')
+    # Headers
+    core.header_response_head()
+    core.show_banner('head')
 
-	# Wildcard
-	core.show_wildcard(domain)
+    # Wildcard
+    core.show_wildcard(domain)
+
 
 def get_wordlist_targetlist(domain, path_to_worlist=False):
-	# Wordlist, targetlist
-	core.get_wordlist(domain, path_to_worlist)
-	core.get_targetlist(domain)
+    # Wordlist, targetlist
+    core.get_wordlist(domain, path_to_worlist)
+    core.get_targetlist(domain)
+
 
 def start(domain):
-	# Start
-	core.header_start_scan(domain)
-	core.subdomain_scan()
+    # Start
+    core.header_start_scan(domain)
+    core.subdomain_scan()
+
 
 def statistics():
-	# Statistics
-	core.header_stats_summary()
-	core.report()
+    # Statistics
+    core.header_stats_summary()
+    core.report()
+
 
 def savescan(domain):
-	# Save result
-	core.save_in_csv(domain)
+    # Save result
+    core.save_in_csv(domain)
+
 
 def getzone(domain):
-	core.getzone(domain)
+    core.getzone(domain)
+
 
 def main():
-	parser = argparse.ArgumentParser(
-		version=__version__,
-		formatter_class=argparse.RawTextHelpFormatter,
-		prog='knockpy',
-		description=__description__,
-		epilog = '''\
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawTextHelpFormatter,
+        prog='knockpy',
+        description=__description__,
+        epilog='''\
 EXAMPLE:
 
 subdomain scan with internal wordlist
@@ -93,55 +100,56 @@ check zone transfer for domain name
 
 The ALIAS name is marked in yellow''')
 
-	parser.add_argument('domain', help='specific target domain, like domain.com')
+    parser.add_argument('domain', help='specific target domain, like domain.com')
 
-	parser.add_argument('-w', help='specific path to wordlist file',
-						nargs=1, dest='wordlist', required=False)
+    parser.add_argument('-w', help='specific path to wordlist file',
+                        nargs=1, dest='wordlist', required=False)
 
-	parser.add_argument('-r', '--resolve', help='resolve ip or domain name',
-						action='store_true', required=False)
+    parser.add_argument('-r', '--resolve', help='resolve ip or domain name',
+                        action='store_true', required=False)
 
-	parser.add_argument('-z', '--zone', help='check for zone transfer',
-						action='store_true', required=False)
+    parser.add_argument('-z', '--zone', help='check for zone transfer',
+                        action='store_true', required=False)
 
-	args = parser.parse_args()
+    args = parser.parse_args()
 
-	# args strings
-	domain = args.domain
-	wlist = args.wordlist
-	if wlist: wlist = wlist[0]
+    # args strings
+    domain = args.domain
+    wlist = args.wordlist
+    if wlist:
+        wlist = wlist[0]
 
-	# args True or False
-	resolve = args.resolve
-	zone = args.zone
+    # args True or False
+    resolve = args.resolve
+    zone = args.zone
 
-	# [knockpy -r domain.com]
-	if domain and resolve and not zone:
-		# resolve = True
-		getinfo(domain, resolve)
+    # [knockpy -r domain.com]
+    if domain and resolve and not zone:
+        # resolve = True
+        getinfo(domain, resolve)
 
-	# [knockpy -z domain.com]
-	elif domain and zone and not resolve:
-		getzone(domain)
+    # [knockpy -z domain.com]
+    elif domain and zone and not resolve:
+        getzone(domain)
 
-	# [knockpy domain.com]
-	elif domain and not resolve and not zone:
-		# resolve = False
-		getinfo(domain, resolve)
+    # [knockpy domain.com]
+    elif domain and not resolve and not zone:
+        # resolve = False
+        getinfo(domain, resolve)
 
-		if wlist:
-			get_wordlist_targetlist(domain, wlist)
-		else:
-			# get_wordlist_targetlist(domain,path_to_worlist=False)
-			# no wlist
-			get_wordlist_targetlist(domain)
+        if wlist:
+            get_wordlist_targetlist(domain, wlist)
+        else:
+            # get_wordlist_targetlist(domain,path_to_worlist=False)
+            # no wlist
+            get_wordlist_targetlist(domain)
 
-		start(domain)
-		statistics()
-		savescan(domain)
+        start(domain)
+        statistics()
+        savescan(domain)
 
-	else:
-		exit('error arguments: use knockpy -h to help')
+    else:
+        exit('error arguments: use knockpy -h to help')
 
 if __name__ == '__main__':
-	main()
+    main()

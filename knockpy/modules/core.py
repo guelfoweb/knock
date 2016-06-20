@@ -128,7 +128,7 @@ def show_resolved(domain, resolve):
 
     # host always exists
     len_host = len(host)
-    for i in xrange(0, len_host):
+    for i in range(0, len_host):
         # get hostname by ip
         (ipaddr, hostname) = host[i][1], host[i][0]
         if ipaddr == hostname:

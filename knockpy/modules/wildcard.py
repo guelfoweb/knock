@@ -52,7 +52,7 @@ def rnd(alphabet):  # random string
     max_value = 15
     total = 2
     rndstring = ''
-    for count in xrange(1, total):
+    for count in range(1, total):
         for x in random.sample(alphabet, random.randint(min_value, max_value)):
             rndstring+=x
     return rndstring

@@ -30,12 +30,12 @@ def cogito(found, targetlist):
     len_found = len(found)
 
     # ip address discovered
-    for i in xrange(0, len_found):
+    for i in range(0, len_found):
         ipaddr.append(found[i][1])
     uniq_ipaddr = set(ipaddr)
 
     # subdomain discovered
-    for i in xrange(0, len_found):
+    for i in range(0, len_found):
         subdomain.append(found[i][2])
     uniq_subdomain = set(subdomain)
 
