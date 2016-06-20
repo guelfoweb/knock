@@ -15,8 +15,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
-
-from knockpy.modules import core
+try:
+    from modules import core
+except ImportError:
+    # Python 3 compat
+    from knockpy.modules import core
 import argparse
 
 __version__='3.0'
