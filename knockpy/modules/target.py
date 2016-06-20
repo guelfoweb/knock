@@ -18,6 +18,8 @@
 # along with Knock. If not, see <http://www.gnu.org/licenses/>.
 # ----------------------------------------------------------------------
 
+import csv
+
 from knockpy.modules import font
 from knockpy.modules import subscan
 from knockpy.modules import utilipy
@@ -65,16 +67,27 @@ def save_csv(domain):
         exit()
     timestamp = utilipy.timestamp()
     filename = domain.replace('.', '_') + '_' + str(timestamp) + '.csv'
-    try:
-        utilipy.touch(filename)
-        with open(filename, 'a') as f:
-            f.write('target,ip address,domain name,type\n')
-            for row in found:
-                f.write(row[0] + ',' + row[1] + ',' + row[2] + ',' + row[3] + '\n')
-        f.close()
-        return '\nOutput saved in CSV format: ' + filename
-    except:
-        return '\nCannot write csv file: ' + filename
+    utilipy.touch(filename)
+    with open(filename, 'a') as ofile:
+        writer = csv.writer(ofile)
+        writer.writerow(['target', 'ip address', 'domain name', 'type'])
+        for row in found:
+            writer.writerow(row)
+    return '\nOutput saved in CSV format: ' + filename
+
+
+def json(domain):
+    if not found:
+        return
+    res = {}
+    for row in found:
+        res[row[0]] = {
+            'ip': row[1],
+            'domain': row[2],
+            'type': row[3],
+        }
+
+    return res
 
 
 def get_report(targetlist):
