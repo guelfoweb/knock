@@ -22,7 +22,7 @@ import argparse
 __version__='3.0'
 __description__='''\
   ___________________________________________
-  
+
   knock subdomain scan (aka knockpy) | v.'''+__version__+'''
   Author: Gianni 'guelfoweb' Amato
   Github: https://github.com/guelfoweb/knock
@@ -63,13 +63,13 @@ def statistics():
 	core.header_stats_summary()
 	core.report()
 
-def savescan(domain):
+def savescan(domain, filename=None):
 	# Save result
-	core.save_in_csv(domain)
+	core.save_in_csv(domain, filename)
 
 def getzone(domain):
 	core.getzone(domain)
-	
+
 def main():
 	parser = argparse.ArgumentParser(
 		version=__version__,
@@ -101,11 +101,15 @@ The ALIAS name is marked in yellow''')
 	parser.add_argument('-z', '--zone', help='check for zone transfer',
 						action='store_true', required=False)
 
+	parser.add_argument('-o', '--output', help='output filename', nargs=1, required=False)
+
 	args = parser.parse_args()
 
 	# args strings
 	domain = args.domain
 	wlist = args.wordlist
+	filename = args.output
+	if filename: filename = filename[0]
 	if wlist: wlist = wlist[0]
 
 	# args True or False
@@ -125,17 +129,17 @@ The ALIAS name is marked in yellow''')
 	elif domain and not resolve and not zone:
 		# resolve = False
 		getinfo(domain, resolve)
-		
+
 		if wlist:
 			get_wordlist_targetlist(domain, wlist)
 		else:
 			# get_wordlist_targetlist(domain,path_to_worlist=False)
 			# no wlist
 			get_wordlist_targetlist(domain)
-			
+
 		start(domain)
 		statistics()
-		savescan(domain)
+		savescan(domain, filename)
 
 	else:
 		exit('error arguments: use knockpy -h to help')
