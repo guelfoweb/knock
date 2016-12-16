@@ -1,72 +1,55 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# ----------------------------------------------------------------------
-# This file is part of Knock subdomain scan (aka knockpy)
-#
-# Knock is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Knock is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Knock. If not, see <http://www.gnu.org/licenses/>.
-# ----------------------------------------------------------------------
-
+import json
 import socket
 
-# set the default timeout on sockets to 5 seconds
-if hasattr(socket, 'setdefaulttimeout'):
-	socket.setdefaulttimeout(5) # <- here
+''' set the default timeout on sockets to 5 seconds '''
+if hasattr(socket, 'setdefaulttimeout'): socket.setdefaulttimeout(5)
 
 try:
 	import dns.resolver, dns.query, dns.zone
 except:
-	exit('ImportError: No module named dnspython\ninstall python-dnspython')
+	exit('ImportError: No module named python-dnspython\npip install dnspython')
 
-def zonetransfer(domain): # Zone Transfer
-	ns = []
+
+def zonetransfer(target):
+	zonetransfer_list = []
+	my_resolver = dns.resolver.Resolver()
+	my_resolver.timeout=2.0
+	my_resolver.lifetime=2.0
 	try:
-		answers = dns.resolver.query(domain,'NS')
-	except: exit('zone transfer not found')
+		answers = my_resolver.query(target,'NS')
+	except: 
+		response = {'enabled': False, 'list': [] }
+		response = json.dumps(response, indent=4, separators=(',', ': '))
+		return response
 	
-	for rdata in answers:
-		rdata = str(rdata).rstrip('.')
-		ns.append(hostbyname(rdata))
+	ip_from_nslist = []
+	for name_server in answers:
+		name_server = str(name_server).rstrip('.')
+		ip_from_nslist.append(socket.gethostbyname(name_server))
 
-	for n in ns:
-		zt = []
+	for ip_from_ns in ip_from_nslist:
+		zone = False
+
 		try:
-			zone = dns.zone.from_xfr(dns.query.xfr(n, domain))
-		except: exit('zone transfer not found')
+			zone = dns.zone.from_xfr(dns.query.xfr(ip_from_ns, target))
+		except: 
+			pass
+		
 		if zone:
 			for name, node in zone.nodes.items():
 				rdataset = node.rdatasets
 				for record in rdataset:
 					name = str(name)
 					if name != '@' and name != '*':
-						zt.append(name+'.'+domain)
-			return zt
-
-def hostbyname(domain):
-	try:
-		# translate a host name to IPv4 address format
-		return socket.gethostbyname(domain)
-	except:
-		return False
-
-def check(domain):
-	found_list = []
-	if hostbyname(domain):
-		detected = zonetransfer(domain)
-		for subdomain in detected:
-			ip = hostbyname(subdomain)
-			if ip: found_list.append([ip, subdomain])
-		return found_list
+						zonetransfer_list.append(name+'.'+target)
+	
+	if zonetransfer_list:
+		zonetransfer_list = [item.lower() for item in zonetransfer_list]
+		zonetransfer_list = list(set(zonetransfer_list))
+		response = {'enabled': True, 'list': zonetransfer_list }
+		response = json.dumps(response, indent=4, separators=(',', ': '))
+		return response
 	else:
-		return False
+		response = {'enabled': False, 'list': [] }
+		response = json.dumps(response, indent=4, separators=(',', ': '))
+		return response
