@@ -1,5 +1,5 @@
 ==========================
-Knock Subdomain Scan v.3.0
+Knock Subdomain Scan v.4.0
 ==========================
 
 Knockpy is a python tool designed to enumerate subdomains on a target domain through a wordlist.
@@ -14,7 +14,7 @@ Usage
 
 .. code-block:: bash
 
-  knockpy [-h] [-v] [-w WORDLIST] [-r] [-z] domain
+  knockpy [-h] [-v] [-w WORDLIST] [-r] [-c] [-j] domain
 
 positional arguments:
 
@@ -30,9 +30,9 @@ optional arguments:
   -v, --version  show program's version number and exit
   -w WORDLIST    specific path to wordlist file
   -r, --resolve  resolve ip or domain name
-  -z, --zone     check for zone transfer
+  -c, --csv      save output in CSV
+  -j, --json     export full report in JSON
 
-note: the ALIAS name is marked in yellow.
 
 Example
 -------
@@ -53,13 +53,19 @@ resolve domain name and get response headers
 
 .. code-block:: bash
 
-  knockpy -r domain.com
+  knockpy -r domain.com [or IP]
 
-check zone transfer for domain name
+save output in csv
 
 .. code-block:: bash
 
-  knockpy -z domain.com
+  knockpy -c domain.com
+
+export full report in JSON
+
+.. code-block:: bash
+
+  knockpy -j domain.com
 
 =======
 Install
@@ -69,13 +75,13 @@ from pypi (as root)
 
 .. code-block:: bash
 
-  pip install https://github.com/guelfoweb/knock/archive/knock3.zip
+  pip install https://github.com/guelfoweb/knock/archive/knock4.zip
 
-or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock3.zip>`_ and extract folder
+or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock4.zip>`_ and extract folder
 
 .. code-block:: bash
 
-  cd knock-knock3/
+  cd knock-knock4/
 
 (as root)
 

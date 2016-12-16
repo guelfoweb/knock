@@ -1,144 +1,293 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Knock subdomain scan (aka knockpy)
-#
-# Knock is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# Knock is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Knock. If not, see <http://www.gnu.org/licenses/>.
+from modules import zonetransfer
+from modules import header
+from modules import resolve
+from modules import wildcard
+from modules import save_report
 
-from modules import core
+import sys
+import json
+import os.path
+import datetime
 import argparse
 
-__version__='3.0'
+__author__='Gianni \'guelfoweb\' Amato'
+__version__='4.0beta'
+__url__='https://github.com/guelfoweb/knock'
 __description__='''\
-  ___________________________________________
-  
-  knock subdomain scan (aka knockpy) | v.'''+__version__+'''
-  Author: Gianni 'guelfoweb' Amato
-  Github: https://github.com/guelfoweb/knock
-  ___________________________________________
+___________________________________________
+
+knock subdomain scan
+knockpy v.'''+__version__+'''
+Author: '''+__author__+'''
+Github: '''+__url__+'''
+___________________________________________
+'''
+__epilog__='''
+example:
+  knockpy domain.com
+  knockpy domain.com -w wordlist.txt
+  knockpy -r domain.com or IP
+  knockpy -c domain.com
+  knockpy -j domain.com
 '''
 
-def getinfo(domain, resolve):
-	# Resolve domain
-	core.header_target(domain)
-	# if [knockpy domain.com] -> resolve is False
-	# if [knockpy -r domain.com] -> resolve is True
-	core.show_resolved(domain,resolve)
+def loadfile_wordlist(filename):
+	filename = open(filename,'r')
+	wlist = filename.read().split('\n')
+	filename.close
+	return filter(None, wlist)
 
-	# Status code
-	core.header_response_code()
-	core.get_banner(domain)
-	core.show_banner('code')
+def print_header():
+	print """
+  _  __                 _                
+ | |/ /                | |   """+__version__+"""            
+ | ' / _ __   ___   ___| | ___ __  _   _ 
+ |  < | '_ \ / _ \ / __| |/ / '_ \| | | |
+ | . \| | | | (_) | (__|   <| |_) | |_| |
+ |_|\_\_| |_|\___/ \___|_|\_\ .__/ \__, |
+                            | |     __/ |
+                            |_|    |___/ 
+"""
 
-	# Headers
-	core.header_response_head()
-	core.show_banner('head')
+def print_header_scan():
+	print '\nIp Address\tStatus\tType\tDomain Name'
+	print '----------\t------\t----\t-----------'
 
-	# Wildcard
-	core.show_wildcard(domain)
+subdomain_csv_list = []
+def print_output(data):
+	if data['alias']:
+		for alias in data['alias']:
+			ip_alias = data['ipaddress'][0]
+			row = ip_alias+'\t'+str(data['status'])+'\t'+'alias'+'\t'+str(alias)
+			print (row)
+			subdomain_csv_list.append(row.replace('\t', ','))
+		for ip in data['ipaddress']:
+			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])
+			print (row)
+			subdomain_csv_list.append(row.replace('\t', ','))
+	else:
+		for ip in data['ipaddress']:
+			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])
+			print (row)
+			subdomain_csv_list.append(row.replace('\t', ','))
 
-def get_wordlist_targetlist(domain, path_to_worlist=False):
-	# Wordlist, targetlist
-	core.get_wordlist(domain, path_to_worlist)
-	core.get_targetlist(domain)
+def init(text, resp=False):
+	if resp:
+		print(text)
+	else:
+		print(text),
 
-def start(domain):
-	# Start
-	core.header_start_scan(domain)
-	core.subdomain_scan()
-
-def statistics():
-	# Statistics
-	core.header_stats_summary()
-	core.report()
-
-def savescan(domain):
-	# Save result
-	core.save_in_csv(domain)
-
-def getzone(domain):
-	core.getzone(domain)
-	
 def main():
 	parser = argparse.ArgumentParser(
 		version=__version__,
 		formatter_class=argparse.RawTextHelpFormatter,
 		prog='knockpy',
 		description=__description__,
-		epilog = '''\
-EXAMPLE:
+		epilog = __epilog__)
 
-subdomain scan with internal wordlist
-  knockpy domain.com
-
-resolve domain name and get response headers
-  knockpy -r domain.com
-
-check zone transfer for domain name
-  knockpy -z domain.com
-
-The ALIAS name is marked in yellow''')
-
-	parser.add_argument('domain', help='specific target domain, like domain.com')
-
+	parser.add_argument('domain', help='target to scan, like domain.com')
 	parser.add_argument('-w', help='specific path to wordlist file',
-						nargs=1, dest='wordlist', required=False)
-
+					nargs=1, dest='wordlist', required=False)
 	parser.add_argument('-r', '--resolve', help='resolve ip or domain name',
 						action='store_true', required=False)
-
-	parser.add_argument('-z', '--zone', help='check for zone transfer',
+	parser.add_argument('-c', '--csv', help='save output in csv',
+						action='store_true', required=False)
+	parser.add_argument('-j', '--json', help='export full report in JSON',
 						action='store_true', required=False)
 
 	args = parser.parse_args()
-
-	# args strings
-	domain = args.domain
+	
+	target = args.domain
 	wlist = args.wordlist
-	if wlist: wlist = wlist[0]
+	resolve_host = args.resolve
+	save_scan_csv = args.csv
+	save_scan_json = args.json
 
-	# args True or False
-	resolve = args.resolve
-	zone = args.zone
+	print_header()
 
-	# [knockpy -r domain.com]
-	if domain and resolve and not zone:
-		# resolve = True
-		getinfo(domain, resolve)
-
-	# [knockpy -z domain.com]
-	elif domain and zone and not resolve:
-		getzone(domain)
-
-	# [knockpy domain.com]
-	elif domain and not resolve and not zone:
-		# resolve = False
-		getinfo(domain, resolve)
-		
-		if wlist:
-			get_wordlist_targetlist(domain, wlist)
-		else:
-			# get_wordlist_targetlist(domain,path_to_worlist=False)
-			# no wlist
-			get_wordlist_targetlist(domain)
-			
-		start(domain)
-		statistics()
-		savescan(domain)
-
+	'''
+	start
+	'''
+	time_start = str(datetime.datetime.now())
+	
+	'''
+	check for wildcard
+	'''
+	init('+ checking for wildcard:', False)
+	wildcard_json = json.loads(wildcard.test_wildcard(target))
+	if wildcard_json['enabled']:
+		init('YES', True)
+		print(json.dumps(wildcard_json['detected'], indent=4, separators=(',', ': ')))
 	else:
-		exit('error arguments: use knockpy -h to help')
+		init('NO', True)
+
+	'''
+	check for zonetransfer
+	'''
+	init('+ checking for zonetransfer:', False)
+	subdomain_list = []
+	zonetransfer_json = json.loads(zonetransfer.zonetransfer(target))
+	if zonetransfer_json['enabled']:
+		init('YES', True)
+		print(json.dumps(zonetransfer_json['list'], indent=4, separators=(',', ': ')))
+		for item in zonetransfer_json['list']:
+			subdomain = item.replace('.'+target, '')
+			if subdomain not in subdomain_list:
+				subdomain_list.append(subdomain)
+	else:
+		init('NO', True)
+		
+	'''
+	optional argument -w WORDLIST
+	'''
+	if wlist: 
+		wordlist = wlist[0]
+	else:
+		_ROOT = os.path.abspath(os.path.dirname(__file__))
+		wordlist = os.path.join(_ROOT, 'wordlist', 'wordlist.txt')
+	
+	if not os.path.isfile(wordlist): 
+		exit('File not found: ' + wordlist)
+	
+	word_list = loadfile_wordlist(wordlist)
+	word_list = [item.lower() for item in word_list]
+	subdomain_list = subdomain_list + word_list
+	subdomain_list = list(set(subdomain_list))
+	subdomain_list = sorted(subdomain_list)
+	wordlist_count = len(subdomain_list)
+	
+	'''
+	resolve domain
+	'''
+	init('+ resolving target:', False)
+	response_resolve = json.loads(resolve.resolve(target))
+	response_resolve.update({'wildcard': wildcard_json, 'zonetransfer': zonetransfer_json})
+	response_resolve['ipaddress']
+	if response_resolve['hostname']:
+		init('YES', True)
+	else:
+		init('NO', True)
+	
+	ip_list = []
+	try:
+		del response_resolve['status']
+		for ip in response_resolve['ipaddress']:
+			ip_list.append(ip)
+	except:
+		pass
+	
+	time_end = str(datetime.datetime.now())
+	
+	stats = {'time_start': time_start, 'time_end': time_end}
+
+	'''
+	optional argument -r RESOLVE DOMAIN
+	'''
+	if resolve_host: 
+		response_resolve = json.dumps(response_resolve, indent=4, separators=(',', ': '))
+		exit(response_resolve)
+	
+	'''
+	scan for subdomain
+	'''
+	init('- scaning for subdomain...', True)
+		
+	print_header_scan()
+
+	subdomains_json_list = []
+
+	import sys
+	for item in subdomain_list:
+		sys.stdout.write("%s\r" % item)
+		sys.stdout.flush()
+		subdomain_target = item+'.'+target
+		subdomain_resolve = json.loads(resolve.resolve(subdomain_target))
+		if subdomain_resolve['hostname']:
+			try:
+				status_code = subdomain_resolve['http_response']['status']['code']
+			except:
+				status_code = ''
+			if wildcard_json['enabled']:
+				wildcard_code = wildcard_json['detected']['status_code']
+				if str(status_code) != '' and str(wildcard_code) != '' and str(status_code) == str(wildcard_code):
+					try:
+						content_length = str(subdomain_resolve['http_response']['http_headers']['content-length'])
+					except:
+						content_length = ''
+					try:
+						wildcard_content_length = wildcard_json['http_response']['http_headers']['content-length']
+					except:
+						wildcard_content_length = ''
+					'''
+					Experimental:
+					content_length == '0' => This is a work around.
+					'''
+					if content_length == '0' or str(content_length) == str(wildcard_content_length):
+						pass
+					else:
+						print_output(subdomain_resolve)
+						subdomains_json_list.append(subdomain_resolve)
+				else:
+					print_output(subdomain_resolve)
+					subdomains_json_list.append(subdomain_resolve)
+			else:
+				print_output(subdomain_resolve)
+				subdomains_json_list.append(subdomain_resolve)		
+		sys.stdout.write("%s\r" % ('                               ') )
+		sys.stdout.flush()
+
+	subdomain_found = []
+	for items in subdomains_json_list:
+		try:
+			del items['status']
+		except:
+			pass
+		
+		if items['hostname'] not in subdomain_found:
+			subdomain_found.append(str(items['hostname']))
+
+		for item in items['alias']:
+			if item not in subdomain_found:
+				subdomain_found.append(str(item))
+
+		for item in items['ipaddress']:
+			ip_list.append(str(item))
+
+	ipaddr_list = list(set(ip_list))
+	ip_count = len(ipaddr_list)
+	subdomain_found = list(set(subdomain_found))
+	sub_count = len(subdomain_found)
+	
+	'''
+	optional argument -s SAVE FULL SCAN REPORT
+	'''
+
+	stats = {'time_start': time_start, 'time_end': time_end, \
+			'sub_count': sub_count, 'ip_count': ip_count, \
+			'wordlist': {'filename': wordlist, 'item_count': wordlist_count}, \
+			'knockpy': {'version': __version__, 'query': sys.argv, 'url': __url__}}
+
+	try:
+		del resolve_host_report['stats']
+	except:
+		pass
+
+	if not resolve_host:
+		if save_scan_csv:
+			exit(save_report.export(target, subdomain_csv_list, 'csv'))
+		elif save_scan_json:
+			report_json = {'target_response': response_resolve, \
+							'subdomain_response': subdomains_json_list, \
+							'found': {'ipaddress': ipaddr_list, \
+							'subdomain': subdomain_found, \
+							'csv': subdomain_csv_list}, 'info': stats}
+			report_json = json.dumps(report_json, indent=4, separators=(',', ': '))
+			exit(save_report.export(target, report_json, 'json'))
+		else:
+			exit()
 
 if __name__ == '__main__':
 	main()
