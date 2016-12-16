@@ -1,7 +1,10 @@
 4.0 beta - 2016-12-16
 ====================
 
-- release v.4.0 beta
+- rewrited code and options
+- removed option -z
+- new -c or --csv option to export CSV output
+- new -j or --json option to export full output in JSON
 
 3.0 rc1 - 2014-02-21
 ====================
