@@ -63,9 +63,9 @@ def statistics():
 	core.header_stats_summary()
 	core.report()
 
-def savescan(domain):
+def savescan(domain, output_file):
 	# Save result
-	core.save_in_csv(domain)
+	core.save_in_csv(domain, output_file)
 
 def getzone(domain):
 	core.getzone(domain)
@@ -101,10 +101,13 @@ The ALIAS name is marked in yellow''')
 	parser.add_argument('-z', '--zone', help='check for zone transfer',
 						action='store_true', required=False)
 
+	parser.add_argument('-o', '--output', help='output file name')
+
 	args = parser.parse_args()
 
 	# args strings
 	domain = args.domain
+	output_file = args.output
 	wlist = args.wordlist
 	if wlist: wlist = wlist[0]
 
@@ -135,7 +138,7 @@ The ALIAS name is marked in yellow''')
 			
 		start(domain)
 		statistics()
-		savescan(domain)
+		savescan(domain, output_file)
 
 	else:
 		exit('error arguments: use knockpy -h to help')
