@@ -34,6 +34,7 @@ optional arguments:
   -w WORDLIST    specific path to wordlist file
   -r, --resolve  resolve ip or domain name
   -z, --zone     check for zone transfer
+  -o, --output   set output filename
 
 note: the ALIAS name is marked in yellow.
 

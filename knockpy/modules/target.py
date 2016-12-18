@@ -30,7 +30,7 @@ def get(target, verbose, test):
 	result = subscan.start(target)
 	if result: (alias, host) = result[0], result[1]
 	else: return
-		
+
 	# Detect alias
 	for item in alias:
 		found.append([target, item[1], item[0], 'alias'])
@@ -55,10 +55,11 @@ def get(target, verbose, test):
 
 	return text.rstrip()
 
-def save_csv(domain):
+def save_csv(domain, filename=None):
 	if not found: exit()
-	timestamp = utilipy.timestamp()
-	filename = domain.replace('.', '_')+'_'+str(timestamp)+'.csv'
+	if not filename:
+		timestamp = utilipy.timestamp()
+		filename = domain.replace('.', '_')+'_'+str(timestamp)+'.csv'
 	try:
 		utilipy.touch(filename)
 		with open(filename, 'a') as f:
@@ -68,6 +69,6 @@ def save_csv(domain):
 		f.close()
 		return '\nOutput saved in CSV format: '+filename
 	except: return '\nCannot write csv file: '+filename
-	
+
 def get_report(targetlist):
 	return stats.cogito(found, targetlist)
