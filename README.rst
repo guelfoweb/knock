@@ -4,6 +4,8 @@ Knock Subdomain Scan v.4.0beta
 
 Knockpy is a python tool designed to enumerate subdomains on a target domain through a wordlist.
 
+**Very simply**
+
 .. code-block:: bash
   
   $ knockpy domain.com
@@ -13,93 +15,115 @@ Knockpy is a python tool designed to enumerate subdomains on a target domain thr
    :width: 90%
    :figwidth: 85%
 
-Usage
------
+**Export full report in JSON**
+
+If you want to save full log `like this one <http://pastebin.com/d9nMiyP4>`_ just type:
 
 .. code-block:: bash
 
-  knockpy [-h] [-v] [-w WORDLIST] [-r] [-c] [-j] domain
+  $ knockpy domain.com --json
 
-positional arguments:
-
-.. code-block:: bash
-
-  domain         specific target domain, like domain.com
-
-optional arguments:
-
-.. code-block:: bash
-
-  -h, --help     show this help message and exit
-  -v, --version  show program's version number and exit
-  -w WORDLIST    specific path to wordlist file
-  -r, --resolve  resolve ip or domain name
-  -c, --csv      save output in CSV
-  -j, --json     export full report in JSON
-
-
-Example
--------
-
-subdomain scan with internal wordlist
-
-.. code-block:: bash
-
-  knockpy domain.com
-
-subdomain scan with external wordlist
-
-.. code-block:: bash
-
-  knockpy domain.com -w wordlist.txt
-
-resolve domain name and get response headers
-
-.. code-block:: bash
-
-  knockpy -r domain.com [or IP]
-
-save output in csv
-
-.. code-block:: bash
-
-  knockpy -c domain.com
-
-export full report in JSON
-
-.. code-block:: bash
-
-  knockpy -j domain.com
+Note that is to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ (8.8.8.8 | 8.8.4.4). Tested with python 2.7.6.
 
 =======
 Install
 =======
 
-from pypi (as root)
+**From pypi**
+
+.. code-block::
+
+  # pip install https://github.com/guelfoweb/knock/archive/knock4.zip
+
+**Or manually**
+
+`download zip <https://github.com/guelfoweb/knock/archive/knock4.zip>`_ and extract folder:
+
+.. code-block:: 
+
+  $ cd knock-knock4/
+
+  # python setup.py install
+
+Knockpy arguments
+-----
 
 .. code-block:: bash
 
-  pip install https://github.com/guelfoweb/knock/archive/knock4.zip
+  $ knockpy -h
+  usage: knockpy [-h] [-v] [-w WORDLIST] [-r] [-c] [-j] domain
+  
+  ___________________________________________
+  
+  knock subdomain scan
+  knockpy v.4.0beta
+  Author: Gianni 'guelfoweb' Amato
+  Github: https://github.com/guelfoweb/knock
+  ___________________________________________
+  
+  positional arguments:
+    domain         target to scan, like domain.com
+  
+  optional arguments:
+    -h, --help     show this help message and exit
+    -v, --version  show program's version number and exit
+    -w WORDLIST    specific path to wordlist file
+    -r, --resolve  resolve ip or domain name
+    -c, --csv      save output in csv
+    -j, --json     export full report in JSON
+  
+  example:
+    knockpy domain.com
+    knockpy domain.com -w wordlist.txt
+    knockpy -r domain.com or IP
+    knockpy -c domain.com
+    knockpy -j domain.com
 
-or manually, `download zip <https://github.com/guelfoweb/knock/archive/knock4.zip>`_ and extract folder
 
-.. code-block:: bash
+Example
+-------
 
-  cd knock-knock4/
+**Subdomain scan with internal wordlist**
 
-(as root)
+.. code-block::
 
-.. code-block:: bash
+  $ knockpy domain.com
 
-  python setup.py install
+**Subdomain scan with external wordlist**
 
-note: tested with python 2.7.6 | is recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ (8.8.8.8 | 8.8.4.4)
+.. code-block:: 
+
+  $ knockpy domain.com -w wordlist.txt
+
+**Resolve domain name and get response headers**
+
+.. code-block:: 
+
+  $ knockpy -r domain.com [or IP]
+
+**Save output in csv**
+
+.. code-block:: 
+
+  knockpy -c domain.com
+
+**Export full report in JSON**
+
+.. code-block:: 
+
+  $ knockpy -j domain.com
+
 
 ==========
 Talk about
 ==========
 
-`Ethical Hacking and Penetration Testing Guide <http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611>`_ Book by Rafay Baloch
+`Ethical Hacking and Penetration Testing Guide <http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611>`_ Book by Rafay Baloch.
+
+Knockpy comes pre-installed on the following security distributions for penetration test:
+
+- `BackBox Linux <http://www.backbox.org/>`_
+- `PentestBox for Windows <https://pentestbox.org/>`_
 
 =====
 Other
