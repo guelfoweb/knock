@@ -23,7 +23,7 @@ If you want to save full log `like this one <http://pastebin.com/d9nMiyP4>`_ jus
 
   $ knockpy domain.com --json
 
-Note that is to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ (8.8.8.8 | 8.8.4.4). Tested with python 2.7.6.
+Note that it's recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ (8.8.8.8 | 8.8.4.4). Tested with python 2.7.6.
 
 =======
 Install
