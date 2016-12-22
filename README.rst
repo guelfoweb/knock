@@ -40,13 +40,13 @@ Install
   $ sudo apt-get install python-dnspython
   
 
-**Install from pypi**
+**Installing with pypi**
 
 .. code-block::
 
   $ sudo pip install https://github.com/guelfoweb/knock/archive/knock4.zip
 
-**Install manually**
+**Installing manually**
 
 `Download zip <https://github.com/guelfoweb/knock/archive/knock4.zip>`_ and extract folder:
 
@@ -55,6 +55,14 @@ Install
   $ cd knock-knock4/
 
   $ sudo python setup.py install
+
+**Installing from Debian repository** `(Stretch) <https://packages.debian.org/stretch/all/knockpy/download>`_
+
+.. code-block:: 
+
+  $ sudo apt-get update
+
+  $ sudo apt-ge install knockpy
 
 Note that it's recommended to use `Google DNS <https://developers.google.com/speed/public-dns/docs/using>`_: 8.8.8.8 and 8.8.4.4
 
