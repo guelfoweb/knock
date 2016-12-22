@@ -56,7 +56,7 @@ Install
 
   $ sudo python setup.py install
 
-Note that it's recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_: 8.8.8.8 and 8.8.4.4
+Note that it's recommended to use `Google DNS <https://developers.google.com/speed/public-dns/docs/using>`_: 8.8.8.8 and 8.8.4.4
 
 Knockpy arguments
 -----
