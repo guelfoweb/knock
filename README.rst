@@ -6,7 +6,7 @@ Knockpy is a python tool designed to enumerate subdomains on a target domain thr
 
 **Very simply**
 
-.. code-block:: bash
+.. code-block:: 
   
   $ knockpy domain.com
 
@@ -19,7 +19,7 @@ Knockpy is a python tool designed to enumerate subdomains on a target domain thr
 
 If you want to save full log `like this one <http://pastebin.com/d9nMiyP4>`_ just type:
 
-.. code-block:: bash
+.. code-block:: 
 
   $ knockpy domain.com --json
 
@@ -29,26 +29,39 @@ Note that it's recommended to use `google dns <https://developers.google.com/spe
 Install
 =======
 
-**From pypi**
+**Prerequisites**
+
+- Python 2.7.6
+
+**Dependencies**
+
+- Dnspython
+
+.. code-block:: 
+  
+  $ sudo apt-get install python-dnspython
+  
+
+**Install from pypi**
 
 .. code-block::
 
-  # pip install https://github.com/guelfoweb/knock/archive/knock4.zip
+  $ sudo pip install https://github.com/guelfoweb/knock/archive/knock4.zip
 
-**Or manually**
+**Install manually**
 
-`download zip <https://github.com/guelfoweb/knock/archive/knock4.zip>`_ and extract folder:
+`Download zip <https://github.com/guelfoweb/knock/archive/knock4.zip>`_ and extract folder:
 
 .. code-block:: 
 
   $ cd knock-knock4/
 
-  # python setup.py install
+  $ sudo python setup.py install
 
 Knockpy arguments
 -----
 
-.. code-block:: bash
+.. code-block:: 
 
   $ knockpy -h
   usage: knockpy [-h] [-v] [-w WORDLIST] [-r] [-c] [-j] domain
@@ -105,7 +118,7 @@ Example
 
 .. code-block:: 
 
-  knockpy -c domain.com
+  $ knockpy -c domain.com
 
 **Export full report in JSON**
 
