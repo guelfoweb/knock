@@ -153,7 +153,7 @@ Example
   }
 
 
-**Save output in csv**
+**Save scan output in CSV**
 
 .. code-block:: 
 
