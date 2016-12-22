@@ -2,7 +2,7 @@
 Knock Subdomain Scan v.4.0beta
 ==========================
 
-Knockpy is a python tool designed to enumerate subdomains on a target domain through a wordlist.
+**Knockpy** is a python tool designed to enumerate subdomains on a target domain through a wordlist. It is designed to scan for **DNS zone transfer** and to try to bypass automatically the **wildcard DNS record** if it is enabled.
 
 **Very simply**
 
