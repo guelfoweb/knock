@@ -23,8 +23,6 @@ If you want to save full log `like this one <http://pastebin.com/d9nMiyP4>`_ jus
 
   $ knockpy domain.com --json
 
-Note that it's recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_ (8.8.8.8 | 8.8.4.4). Tested with python 2.7.6.
-
 =======
 Install
 =======
@@ -57,6 +55,8 @@ Install
   $ cd knock-knock4/
 
   $ sudo python setup.py install
+
+Note that it's recommended to use `google dns <https://developers.google.com/speed/public-dns/docs/using>`_: 8.8.8.8 and 8.8.4.4
 
 Knockpy arguments
 -----
@@ -113,6 +113,45 @@ Example
 .. code-block:: 
 
   $ knockpy -r domain.com [or IP]
+
+.. code-block::
+
+  + checking for wildcard: NO
+  + checking for zonetransfer: NO
+  + resolving target: YES
+  {
+      "zonetransfer": {
+          "enabled": false,
+          "list": []
+      },
+      "target": "google.com",
+      "hostname": "google.com",
+      "alias": [],
+      "wildcard": {
+          "detected": {},
+          "test_target": "kfwpsxvdnt.google.com",
+          "enabled": false,
+          "http_response": {}
+      },
+      "ipaddress": [
+          "216.58.205.142"
+      ],
+      "response_time": "0.0917398929596",
+      "http_response": {
+          "status": {
+              "reason": "Found",
+              "code": 302
+          },
+          "http_headers": {
+              "date": "Thu, 22 Dec 2016 09:28:48 GMT",
+              "content-length": "256",
+              "content-type": "text/html; charset=UTF-8",
+              "location": "http://www.google.it/?gfe_rd=cr&ei=0JxbWIGmLofCXruVhcgI",
+              "cache-control": "private"
+          }
+      }
+  }
+
 
 **Save output in csv**
 
