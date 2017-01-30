@@ -68,6 +68,12 @@ check zone transfer for domain name
 Install
 =======
 
+with apt-get (as root)
+
+.. code-block:: bash
+
+  sudo apt-get install knockpy 
+
 from pypi (as root)
 
 .. code-block:: bash
