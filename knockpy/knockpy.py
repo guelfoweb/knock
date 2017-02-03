@@ -7,6 +7,8 @@ from modules import resolve
 from modules import wildcard
 from modules import save_report
 
+from urlparse import urlparse
+
 import sys
 import json
 import os.path
@@ -14,7 +16,7 @@ import datetime
 import argparse
 
 __author__='Gianni \'guelfoweb\' Amato'
-__version__='4.0beta'
+__version__='4.0'
 __url__='https://github.com/guelfoweb/knock'
 __description__='''\
 ___________________________________________
@@ -112,7 +114,14 @@ def main():
 	start
 	'''
 	time_start = str(datetime.datetime.now())
-	
+
+	'''
+	parse target domain
+	'''
+	if target.startswith("http") or target.startswith("ftp"):
+		parsed_uri = urlparse(target)
+		target = '{uri.netloc}'.format(uri=parsed_uri)
+
 	'''
 	check for wildcard
 	'''
