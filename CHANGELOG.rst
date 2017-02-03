@@ -1,10 +1,6 @@
 4.0 - 2017-02-03
 ====================
-- parse target domain
-- rewrited code and options
-- removed option -z
-- new -c or --csv option to export CSV output
-- new -j or --json option to export full output in JSON
+- release v.4.0.0
 
 4.0 beta - 2016-12-16
 ====================
