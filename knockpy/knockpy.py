@@ -197,7 +197,8 @@ def main():
 	'''
 	if resolve_host: 
 		response_resolve = json.dumps(response_resolve, indent=4, separators=(',', ': '))
-		exit(response_resolve)
+		print(response_resolve)
+		exit()
 	
 	'''
 	scan for subdomain
