@@ -62,7 +62,7 @@ Install
 
   $ sudo apt-get update
 
-  $ sudo apt-ge install knockpy
+  $ sudo apt-get install knockpy
 
 Note that it's recommended to use `Google DNS <https://developers.google.com/speed/public-dns/docs/using>`_: 8.8.8.8 and 8.8.4.4
 
