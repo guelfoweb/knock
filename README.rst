@@ -184,6 +184,7 @@ Knockpy comes pre-installed on the following security distributions for penetrat
 
 - `BackBox Linux <http://www.backbox.org/>`_
 - `PentestBox for Windows <https://pentestbox.org/>`_
+- `Buscador Investigative Operating System <https://inteltechniques.com/buscador/>`_
 
 =====
 Other
