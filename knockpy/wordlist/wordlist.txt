@@ -29,6 +29,7 @@ a01
 a02
 a1
 a2
+aa
 a.auth-ns
 abc
 about
@@ -42,6 +43,7 @@ acid
 activestat
 ad
 adam
+adfs
 adkit
 admin
 administracion
@@ -74,6 +76,7 @@ albuquerque
 alerts
 alpha
 alterwind
+alumni
 am
 amarillo
 americas
@@ -122,6 +125,7 @@ auction
 austin
 auth
 auto
+autodiscover
 av
 aw
 aws
@@ -138,6 +142,8 @@ ba
 back
 backend
 backup
+baidu
+baijiale
 baker
 bakersfield
 balance
@@ -175,9 +181,12 @@ bn
 bnc
 bo
 bob
+bocaiwang
 bof
 boise
 bolsa
+book
+booking
 border
 boston
 boulder
@@ -208,6 +217,7 @@ bulletins
 burn
 burner
 buscador
+business
 buy
 bv
 bw
@@ -222,12 +232,14 @@ calendar
 california
 call
 calvin
+campus
 canada
 canal
 canon
 careers
 catalog
 c.auth-ns
+cb
 cc
 cd
 cdburner
@@ -238,6 +250,8 @@ certify
 certserv
 certsrv
 cf
+cf-protected
+cf-protected-www
 cg
 cgi
 ch
@@ -249,10 +263,12 @@ chat
 chats
 chatserver
 check
+checkout
 checkpoint
 chef
 chi
 chicago
+china
 ci
 cims
 cincinnati
@@ -314,6 +330,7 @@ consumer
 contact
 content
 contracts
+control
 core
 core0
 core01
@@ -333,6 +350,7 @@ crm
 crowd
 crs
 cs
+csg
 cso
 css
 ct
@@ -510,6 +528,7 @@ desarrollo
 descargas
 design
 designer
+desktop
 detroit
 dev
 dev0
@@ -525,6 +544,7 @@ devserver
 devsql
 dhcp
 dial
+dialin
 dialup
 digital
 dilbert
@@ -567,6 +587,7 @@ downloads
 downtown
 dragon
 drupal
+dsasa
 dsl
 dyn
 dynamic
@@ -591,6 +612,7 @@ ee
 eg
 eh
 ejemplo
+elearning
 elk
 elpaso
 email
@@ -605,6 +627,7 @@ eng1
 engine
 engineer
 engineering
+english
 enterprise
 epsilon
 er
@@ -626,11 +649,13 @@ external
 extranet
 f
 f5
+facebook
 falcon
 farm
 faststats
 fax
 fb
+fc
 feedback
 feeds
 fi
@@ -641,6 +666,7 @@ fileserv
 fileserver
 filestore
 filter
+finance
 find
 finger
 firewall
@@ -656,6 +682,7 @@ fm
 fo
 foobar
 formacion
+forms
 foro
 foros
 fortworth
@@ -723,6 +750,7 @@ git
 gitlab
 gl
 glendale
+global
 gm
 gmail
 gn
@@ -749,17 +777,20 @@ gu
 guest
 gw
 gw1
+gx
 gy
 h
 hal
 halflife
 hawaii
+health
 hello
 help
 helpdesk
 helponline
 henry
 hermes
+hfgfgf
 hgfgdf
 hi
 hidden
@@ -795,6 +826,7 @@ https
 hu
 hub
 humanresources
+hwmaint
 i
 ia
 ias
@@ -803,6 +835,7 @@ ibmdb
 id
 ida
 idaho
+idp
 ids
 ie
 iis
@@ -867,6 +900,8 @@ israel
 isync
 it
 italy
+iuyuy
+iuyuyt
 ix
 j
 jabber
@@ -876,6 +911,7 @@ je
 jedi
 jenkins
 jira
+jl
 jm
 jo
 jobs
@@ -888,6 +924,8 @@ juegos
 juliet
 juliette
 juniper
+jupiter
+jx
 k
 kafka
 kansas
@@ -900,6 +938,7 @@ kerberos
 keynote
 kg
 kh
+khjghg
 ki
 kilo
 king
@@ -929,6 +968,7 @@ launch
 lb
 lc
 ldap
+learn
 legacy
 legal
 leo
@@ -951,6 +991,8 @@ listserver
 live
 lk
 lkjkui
+lkljk
+lms
 load
 loadbalancer
 local
@@ -980,6 +1022,8 @@ lu
 luke
 lv
 ly
+lync
+lyncdiscover
 lyris
 m
 ma
@@ -1004,8 +1048,10 @@ mailhost
 mailing
 maillist
 maillists
+mailout
 mailroom
 mailserv
+mailserver
 mailsite
 mailsrv
 main
@@ -1032,6 +1078,7 @@ mc
 mci
 md
 mdaemon
+mdm
 me
 media
 member
@@ -1057,7 +1104,9 @@ mirror
 mis
 mississippi
 missouri
+mjurr
 mk
+mkuu
 ml
 mm
 mn
@@ -1099,6 +1148,7 @@ mw
 mx
 mx1
 my
+myaccount
 mysql
 mysql0
 mysql01
@@ -1154,6 +1204,7 @@ nm
 nms
 nntp
 no
+noc
 node
 nokia
 nombres
@@ -1198,6 +1249,7 @@ office
 offices
 oh
 ohio
+oilkjm
 ok
 oklahoma
 oklahomacity
@@ -1258,6 +1310,8 @@ partners
 patch
 patches
 paul
+payment
+payments
 payroll
 pbx
 pc
@@ -1349,6 +1403,7 @@ pictures
 pink
 pipex-gw
 pittsburgh
+piwik
 pix
 pk
 pki
@@ -1360,6 +1415,7 @@ pm
 pm1
 pn
 po
+poczta
 policy
 polls
 pop
@@ -1401,7 +1457,9 @@ ppp9
 pptp
 pr
 prensa
+preprod
 press
+preview
 priv
 privacy
 private
@@ -1428,12 +1486,16 @@ pw
 py
 q
 qa
+qh
 qmail
 qotd
 quake
 quebec
 queen
 quotes
+qwqee
+qwqwq
+qwrer
 r
 r01
 r02
@@ -1456,6 +1518,7 @@ realserver
 recruiting
 red
 redhat
+redirect
 redmine
 ref
 reference
@@ -1469,8 +1532,10 @@ rem
 remote
 remstats
 reports
+rerew
 research
 reseller
+reservations
 reserved
 resumenes
 rho
@@ -1520,6 +1585,7 @@ sbs
 sc
 scanner
 schedules
+school
 scotland
 scotty
 sd
@@ -1534,6 +1600,7 @@ securemail
 securid
 security
 sendmail
+sentry
 seri
 serv
 serv2
@@ -1567,6 +1634,7 @@ sirius
 site
 sj
 sk
+sklep
 skywalker
 sl
 slackware
@@ -1599,11 +1667,13 @@ southeast
 southwest
 spain
 spam
+speedtest
 spider
 spiderman
 splunk
 spock
 spokane
+sports
 springfield
 sqa
 sql
@@ -1620,6 +1690,7 @@ ssl
 ssl0
 ssl01
 ssl1
+sslvpn
 st
 staff
 stage
@@ -1638,7 +1709,9 @@ storefront
 streaming
 stronghold
 strongmail
+student
 studio
+style
 submit
 subversion
 sun
@@ -1672,6 +1745,7 @@ sz
 t
 tacoma
 taiwan
+taiyangchengyulecheng
 talk
 tampa
 tango
@@ -1706,6 +1780,8 @@ texas
 tf
 tftp
 tg
+tgrrre
+tgtggb
 th
 thailand
 theta
@@ -1732,14 +1808,18 @@ tour
 tp
 tr
 tracker
+tracking
 train
 training
 transfers
+travel
+traveler
 trinidad
 trinity
 ts
 ts1
 tt
+ttyulecheng
 tucson
 tulsa
 tumb
@@ -1785,6 +1865,7 @@ vader
 vantive
 vault
 vc
+vdi
 ve
 vega
 vegas
@@ -1801,6 +1882,7 @@ viking
 violet
 vip
 virginia
+virtual
 vista
 vm
 vmserver
@@ -1837,10 +1919,12 @@ web
 webaccess
 webadmin
 webalizer
+webapps
 webboard
 webcache
 webcam
 webcast
+webconf
 webdev
 webdocs
 webfarm
@@ -1907,6 +1991,7 @@ wordpress
 work
 world
 wp
+wqwqw
 write
 ws
 ws1
@@ -1944,15 +2029,19 @@ wwwchat
 wwwdev
 www-int
 wwwmail
+wwww
+wxsxc
 wy
 wyoming
 x
 xi
+xj
 xlogan
 xmail
 xml
 xp
 x-ray
+xz
 y
 yankee
 ye
@@ -1962,10 +2051,13 @@ yt
 yu
 z
 za
+zabbix
+zcvbnnn
 zebra
 zera
 zeus
 zimbra
+zj
 zlog
 z-log
 zm
