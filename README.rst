@@ -10,7 +10,7 @@ Knock Subdomain Scan v.4.1.0
   
   $ knockpy domain.com
 
-.. figure:: https://cloud.githubusercontent.com/assets/41558/21270690/f8854cb8-c3b7-11e6-933b-c47e358f4a70.png
+.. figure:: https://user-images.githubusercontent.com/41558/29026398-dcd76fba-7b7b-11e7-9aa8-344637522c76.png
    :align: center
    :width: 90%
    :figwidth: 85%
