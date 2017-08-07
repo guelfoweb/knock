@@ -31,7 +31,7 @@ def zonetransfer(target):
 		zone = False
 
 		try:
-			zone = dns.zone.from_xfr(dns.query.xfr(ip_from_ns, target))
+			zone = dns.zone.from_xfr(dns.query.xfr(ip_from_ns, target, timeout = 1))
 		except: 
 			pass
 		
