@@ -66,7 +66,11 @@ setup(
     keywords='knock sudbomain scan',
 
     packages=["knockpy", "knockpy.modules"],
-    package_data={'knockpy': ['wordlist/wordlist.txt']},
+    package_data={
+		'knockpy': ['wordlist/wordlist.txt'], 
+		'knockpy': ['config.json']
+	},
+    
 	install_requires = ['dnspython>=1.3.5'],
 
     entry_points={
