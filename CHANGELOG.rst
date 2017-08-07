@@ -1,3 +1,7 @@
+4.1 - 2017-08-07
+====================
+- added VirusTotal support. Setting the API_KEY within the config.json file
+
 4.0 - 2017-02-03
 ====================
 - release v.4.0.0
