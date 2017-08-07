@@ -163,7 +163,7 @@ def main():
 	_ROOT = os.path.abspath(os.path.dirname(__file__))
 	config_file = os.path.join(_ROOT, '', 'config.json')
 
-	if config_file: 
+	if os.path.isfile(config_file):
 		with open(config_file) as data_file:    
 			apikey = json.load(data_file)
 			try:
