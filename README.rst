@@ -40,29 +40,17 @@ Install
   $ sudo apt-get install python-dnspython
   
 
-**Installing with pypi**
+**Installing**
 
 .. code-block::
 
-  $ sudo pip install https://github.com/guelfoweb/knock/archive/knock4.zip
-
-**Installing manually**
-
-`Download zip <https://github.com/guelfoweb/knock/archive/knock4.zip>`_ and extract folder:
-
-.. code-block:: 
-
-  $ cd knock-knock4/
-
+  $ git clone https://github.com/guelfoweb/knock.git
+  
+  $ cd knock
+  
+  $ nano knockpy/config.json <- set your virustotal API_KEY
+  
   $ sudo python setup.py install
-
-**Installing from Debian repository** `(Stretch) <https://packages.debian.org/stretch/all/knockpy/download>`_
-
-.. code-block:: 
-
-  $ sudo apt-get update
-
-  $ sudo apt-get install knockpy
 
 Note that it's recommended to use `Google DNS <https://developers.google.com/speed/public-dns/docs/using>`_: 8.8.8.8 and 8.8.4.4
 
@@ -77,7 +65,7 @@ Knockpy arguments
   ___________________________________________
   
   knock subdomain scan
-  knockpy v.4.0beta
+  knockpy v.4.1
   Author: Gianni 'guelfoweb' Amato
   Github: https://github.com/guelfoweb/knock
   ___________________________________________
@@ -99,6 +87,8 @@ Knockpy arguments
     knockpy -r domain.com or IP
     knockpy -c domain.com
     knockpy -j domain.com
+
+For virustotal subdomains support you can setting your API_KEY in the config.json file.
 
 
 Example
@@ -124,41 +114,99 @@ Example
 
 .. code-block::
 
-  + checking for wildcard: NO
-  + checking for zonetransfer: NO
-  + resolving target: YES
-  {
-      "zonetransfer": {
-          "enabled": false,
-          "list": []
-      },
-      "target": "google.com",
-      "hostname": "google.com",
-      "alias": [],
-      "wildcard": {
-          "detected": {},
-          "test_target": "kfwpsxvdnt.google.com",
-          "enabled": false,
-          "http_response": {}
-      },
-      "ipaddress": [
-          "216.58.205.142"
-      ],
-      "response_time": "0.0917398929596",
-      "http_response": {
-          "status": {
-              "reason": "Found",
-              "code": 302
-          },
-          "http_headers": {
-              "date": "Thu, 22 Dec 2016 09:28:48 GMT",
-              "content-length": "256",
-              "content-type": "text/html; charset=UTF-8",
-              "location": "http://www.google.it/?gfe_rd=cr&ei=0JxbWIGmLofCXruVhcgI",
-              "cache-control": "private"
-          }
-      }
-  }
+	+ checking for virustotal subdomains: YES
+	[
+		"partnerissuetracker.corp.google.com",
+		"issuetracker.google.com",
+		"r5---sn-ogueln7k.c.pack.google.com",
+		"cse.google.com",
+
+		.......too long.......
+
+		"612.talkgadget.google.com",
+		"765.talkgadget.google.com",
+		"973.talkgadget.google.com"
+	]
+	+ checking for wildcard: NO
+	+ checking for zonetransfer: NO
+	+ resolving target: YES
+	{
+		"zonetransfer": {
+		    "enabled": false,
+		    "list": []
+		},
+		"target": "google.com",
+		"hostname": "google.com",
+		"virustotal": [
+		    "partnerissuetracker.corp.google.com",
+		    "issuetracker.google.com",
+		    "r5---sn-ogueln7k.c.pack.google.com",
+		    "cse.google.com",
+		    "mt0.google.com",
+		    "earth.google.com",
+		    "clients1.google.com",
+		    "pki.google.com",
+		    "www.sites.google.com",
+		    "appengine.google.com",
+		    "fcmatch.google.com",
+		    "dl.google.com",
+		    "translate.google.com",
+		    "feedproxy.google.com",
+		    "hangouts.google.com",
+		    "news.google.com",
+
+		    .......too long.......
+
+		    "100.talkgadget.google.com",
+		    "services.google.com",
+		    "301.talkgadget.google.com",
+		    "857.talkgadget.google.com",
+		    "600.talkgadget.google.com",
+		    "992.talkgadget.google.com",
+		    "93.talkgadget.google.com",
+		    "storage.cloud.google.com",
+		    "863.talkgadget.google.com",
+		    "maps.google.com",
+		    "661.talkgadget.google.com",
+		    "325.talkgadget.google.com",
+		    "sites.google.com",
+		    "feedburner.google.com",
+		    "support.google.com",
+		    "code.google.com",
+		    "562.talkgadget.google.com",
+		    "190.talkgadget.google.com",
+		    "58.talkgadget.google.com",
+		    "612.talkgadget.google.com",
+		    "765.talkgadget.google.com",
+		    "973.talkgadget.google.com"
+		],
+		"alias": [],
+		"wildcard": {
+		    "detected": {},
+		    "test_target": "eqskochdzapjbt.google.com",
+		    "enabled": false,
+		    "http_response": {}
+		},
+		"ipaddress": [
+		    "216.58.205.142"
+		],
+		"response_time": "0.0351989269257",
+		"http_response": {
+		    "status": {
+		        "reason": "Found",
+		        "code": 302
+		    },
+		    "http_headers": {
+		        "content-length": "256",
+		        "location": "http://www.google.it/?gfe_rd=cr&ei=60WIWdmnDILCXoKbgfgK",
+		        "cache-control": "private",
+		        "date": "Mon, 07 Aug 2017 10:50:19 GMT",
+		        "referrer-policy": "no-referrer",
+		        "content-type": "text/html; charset=UTF-8"
+		    }
+		}
+	}
+
 
 
 **Save scan output in CSV**
