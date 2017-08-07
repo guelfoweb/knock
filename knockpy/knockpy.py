@@ -159,8 +159,12 @@ def main():
 	'''
 	init('+ checking for virustotal subdomains:', False)
 	subdomain_list = []
-	if os.path.isfile('config.json'): 
-		with open('config.json') as data_file:    
+
+	_ROOT = os.path.abspath(os.path.dirname(__file__))
+	config_file = os.path.join(_ROOT, '', 'config.json')
+
+	if config_file: 
+		with open(config_file) as data_file:    
 			apikey = json.load(data_file)
 			try:
 				apikey_vt = apikey['virustotal']
