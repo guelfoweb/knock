@@ -272,7 +272,7 @@ def main():
 	'''
 	scan for subdomain
 	'''
-	init('- scaning for subdomain...', True)
+	init('- scanning for subdomain...', True)
 		
 	print_header_scan()
 
