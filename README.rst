@@ -1,5 +1,5 @@
 ==========================
-Knock Subdomain Scan v.4.1.0
+Knock Subdomain Scan v.4.1.1
 ==========================
 
 **Knockpy** is a python tool designed to enumerate subdomains on a target domain through a wordlist. It is designed to scan for **DNS zone transfer** and to try to bypass the **wildcard DNS record** automatically if it is enabled. Now knockpy supports queries to VirusTotal subdomains, you can setting the API_KEY within the config.json file.
