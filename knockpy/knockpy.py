@@ -17,7 +17,7 @@ import datetime
 import argparse
 
 __author__='Gianni \'guelfoweb\' Amato'
-__version__='4.1'
+__version__='4.1.1'
 __url__='https://github.com/guelfoweb/knock'
 __description__='''\
 ___________________________________________
@@ -128,6 +128,8 @@ def main():
 						action='store_true', required=False)
 	parser.add_argument('-c', '--csv', help='save output in csv',
 						action='store_true', required=False)
+	parser.add_argument('-f', '--csvfields', help='add fields name to the first row of csv output file',
+						action='store_true', required=False)
 	parser.add_argument('-j', '--json', help='export full report in JSON',
 						action='store_true', required=False)
 
@@ -138,6 +140,7 @@ def main():
 	wlist = args.wordlist
 	resolve_host = args.resolve
 	save_scan_csv = args.csv
+	save_scan_csvfields = args.csvfields
 	save_scan_json = args.json
 
 	print_header()
@@ -359,6 +362,8 @@ def main():
 	if not resolve_host:
 		if save_scan_csv:
 			exit(save_report.export(target, subdomain_csv_list, 'csv'))
+		elif save_scan_csvfields:
+			exit(save_report.export(target, subdomain_csv_list, 'csv', save_scan_csvfields))
 		elif save_scan_json:
 			report_json = {'target_response': response_resolve, \
 							'subdomain_response': subdomains_json_list, \
