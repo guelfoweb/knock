@@ -74,12 +74,13 @@ Knockpy arguments
     domain         target to scan, like domain.com
   
   optional arguments:
-    -h, --help     show this help message and exit
-    -v, --version  show program's version number and exit
-    -w WORDLIST    specific path to wordlist file
-    -r, --resolve  resolve ip or domain name
-    -c, --csv      save output in csv
-    -j, --json     export full report in JSON
+    -h, --help      show this help message and exit
+    -v, --version   show program's version number and exit
+    -w WORDLIST     specific path to wordlist file
+    -r, --resolve   resolve ip or domain name
+    -c, --csv       save output in csv
+    -f, --csvfields add fields name to the first row of csv output file
+    -j, --json      export full report in JSON
   
   example:
     knockpy domain.com
