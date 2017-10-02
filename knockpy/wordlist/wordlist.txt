@@ -3,7 +3,6 @@
 03
 1
 10
-1rer
 11
 12
 13
@@ -13,6 +12,7 @@
 17
 18
 19
+1rer
 2
 20
 2tty
@@ -276,15 +276,15 @@ colombus
 colorado
 columbus
 com
-comunicare
-comunicati
-comunicazione
 commerce
 commerceserver
 communigate
 community
 compaq
 compras
+comunicare
+comunicati
+comunicazione
 con
 concentrator
 conf
@@ -603,7 +603,6 @@ et
 eta
 europe
 events
-domain
 exchange
 exec
 extern
