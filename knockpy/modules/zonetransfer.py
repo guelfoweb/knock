@@ -25,10 +25,10 @@ def zonetransfer(target):
 	ip_from_nslist = []
 	for name_server in answers:
 		name_server = str(name_server).rstrip('.')
-                try:
-		    ip_from_nslist.append(socket.gethostbyname(name_server))
-                except socket.gaierror: # skip non resolvable name servers
-                    pass
+		try:
+			ip_from_nslist.append(socket.gethostbyname(name_server))
+		except socket.gaierror: # skip non resolvable name server
+			pass
 
 	for ip_from_ns in ip_from_nslist:
 		zone = False
