@@ -1502,6 +1502,7 @@ servidor
 setup
 sg
 sh
+sha2
 shared
 sharepoint
 shareware
