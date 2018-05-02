@@ -1161,6 +1161,7 @@ o
 oakland
 ocean
 odin
+odoo
 office
 offices
 oh
@@ -1502,6 +1503,7 @@ servidor
 setup
 sg
 sh
+sha2
 shared
 sharepoint
 shareware
