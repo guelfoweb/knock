@@ -44,7 +44,7 @@ config.json file.
 def loadfile_wordlist(filename):
 	filename = open(filename,'r')
 	wlist = filename.read().split('\n')
-	filename.close
+	filename.close()
 	return filter(None, wlist)
 
 def print_header():
