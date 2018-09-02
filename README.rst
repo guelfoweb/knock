@@ -231,6 +231,7 @@ Talk about
 
 Knockpy comes pre-installed on the following security distributions for penetration test:
 
+- `ArchStrike <https://archstrike.org>`_
 - `BackBox Linux <http://www.backbox.org/>`_
 - `PentestBox for Windows <https://pentestbox.org/>`_
 - `Buscador Investigative Operating System <https://inteltechniques.com/buscador/>`_
