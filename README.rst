@@ -48,7 +48,7 @@ Install
   
   $ cd knock
   
-  $ nano knockpy/config.json <- set your virustotal API_KEY
+  $ nano knockpy/config.json # set your virustotal API_KEY
   
   $ sudo python setup.py install
 
