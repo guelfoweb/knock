@@ -1,5 +1,5 @@
 import json
-import header
+from . import header
 import socket
 import random
 
@@ -11,7 +11,7 @@ def rnd(alphabet):
 	max       = 15
 	total     = 2
 	random_string = ''
-	for count in xrange(1, total):
+	for count in range(1, total):
 		for x in random.sample(alphabet,random.randint(min,max)):
 			random_string += x
 	return random_string

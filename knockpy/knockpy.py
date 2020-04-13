@@ -8,7 +8,10 @@ from modules import wildcard
 from modules import save_report
 from modules import virustotal_subdomains
 
-from urlparse import urlparse
+try:
+	from urllib.parse import urlparse
+except ImportError:
+	from urlparse import urlparse
 
 import sys
 import json
@@ -45,10 +48,10 @@ def loadfile_wordlist(filename):
 	filename = open(filename,'r')
 	wlist = filename.read().split('\n')
 	filename.close
-	return filter(None, wlist)
+	return [_f for _f in wlist if _f]
 
 def print_header():
-	print """
+	print("""
   _  __                 _                
  | |/ /                | |   """+__version__+"""            
  | ' / _ __   ___   ___| | ___ __  _   _ 
@@ -57,11 +60,11 @@ def print_header():
  |_|\_\_| |_|\___/ \___|_|\_\ .__/ \__, |
                             | |     __/ |
                             |_|    |___/ 
-"""
+""")
 
 def print_header_scan():
-	print '\nIp Address\tStatus\tType\tDomain Name\t\t\tServer'
-	print '----------\t------\t----\t-----------\t\t\t------'
+	print('\nIp Address\tStatus\tType\tDomain Name\t\t\tServer')
+	print('----------\t------\t----\t-----------\t\t\t------')
 
 def get_tab(string):
 		if len(str(string)) > 23:
@@ -111,16 +114,17 @@ def init(text, resp=False):
 	if resp:
 		print(text)
 	else:
-		print(text),
+		#print((text), end=' ')
+		sys.stdout.write(text)
 
 def main():
 	parser = argparse.ArgumentParser(
-		version=__version__,
 		formatter_class=argparse.RawTextHelpFormatter,
 		prog='knockpy',
 		description=__description__,
 		epilog = __epilog__)
 
+	parser.add_argument('--version', action='version', version=__version__)
 	parser.add_argument('domain', help='target to scan, like domain.com')
 	parser.add_argument('-w', help='specific path to wordlist file',
 					nargs=1, dest='wordlist', required=False)
@@ -175,7 +179,7 @@ def main():
 					virustotal_list = virustotal_subdomains.get_subdomains(target, apikey_vt)
 					if virustotal_list:
 						init('YES', True)
-						print(json.dumps(virustotal_list, indent=4, separators=(',', ': ')))
+						print((json.dumps(virustotal_list, indent=4, separators=(',', ': '))))
 						for item in virustotal_list:
 							subdomain = item.replace('.'+target, '')
 							if subdomain not in subdomain_list:
@@ -202,7 +206,7 @@ def main():
 	wildcard_json = json.loads(wildcard.test_wildcard(target))
 	if wildcard_json['enabled']:
 		init('YES', True)
-		print(json.dumps(wildcard_json['detected'], indent=4, separators=(',', ': ')))
+		print((json.dumps(wildcard_json['detected'], indent=4, separators=(',', ': '))))
 	else:
 		init('NO', True)
 
@@ -213,7 +217,7 @@ def main():
 	zonetransfer_json = json.loads(zonetransfer.zonetransfer(target))
 	if zonetransfer_json['enabled']:
 		init('YES', True)
-		print(json.dumps(zonetransfer_json['list'], indent=4, separators=(',', ': ')))
+		print((json.dumps(zonetransfer_json['list'], indent=4, separators=(',', ': '))))
 		for item in zonetransfer_json['list']:
 			subdomain = item.replace('.'+target, '')
 			if subdomain not in subdomain_list:

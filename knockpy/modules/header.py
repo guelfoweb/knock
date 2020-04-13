@@ -1,5 +1,9 @@
 import json
-import httplib
+
+try:
+	import http.client as httplib
+except ImportError:
+	import httplib
 
 def header(url, path='/', method='HEAD'):
 	headers = {}

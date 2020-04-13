@@ -39,7 +39,7 @@ def zonetransfer(target):
 			pass
 		
 		if zone:
-			for name, node in zone.nodes.items():
+			for name, node in list(zone.nodes.items()):
 				rdataset = node.rdatasets
 				for record in rdataset:
 					name = str(name)

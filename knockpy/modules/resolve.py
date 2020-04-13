@@ -1,5 +1,5 @@
 import json
-import header
+from . import header
 import socket
 import time
 #import zonetransfer
