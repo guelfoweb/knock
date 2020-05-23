@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from modules import zonetransfer
-from modules import header
-from modules import resolve
-from modules import wildcard
-from modules import save_report
-from modules import virustotal_subdomains
+from .modules import zonetransfer
+from .modules import header
+from .modules import resolve
+from .modules import wildcard
+from .modules import save_report
+from .modules import virustotal_subdomains
 
 try:
 	from urllib.parse import urlparse
