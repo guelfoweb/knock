@@ -1,3 +1,4 @@
+*
 01
 02
 03
@@ -34,8 +35,11 @@ abc
 about
 ac
 academico
+academy
+acc
 acceso
 access
+account
 accounting
 accounts
 acid
@@ -108,6 +112,7 @@ arlington
 as
 as400
 asia
+assets
 asterix
 at
 athena
@@ -119,8 +124,11 @@ auction
 austin
 auth
 auto
+autoconfig
+autodiscover
 av
 aw
+ax
 ayuda
 az
 b
@@ -158,6 +166,7 @@ billing
 biz
 biztalk
 bj
+bl
 black
 blackberry
 blog
@@ -171,10 +180,13 @@ bob
 bof
 boise
 bolsa
+book
+booking
 border
 boston
 boulder
 boy
+bq
 br
 bravo
 brazil
@@ -240,6 +252,7 @@ chat
 chats
 chatserver
 check
+checkout
 checkpoint
 chi
 chicago
@@ -255,6 +268,7 @@ classes
 classifieds
 classroom
 cleveland
+click
 clicktrack
 client
 clientes
@@ -314,7 +328,11 @@ correoweb
 cortafuegos
 counterstrike
 courses
+cpanel
+cpcalendars
+cpcontacts
 cr
+crazy
 cricket
 crm
 crs
@@ -453,11 +471,13 @@ customer
 customers
 cv
 cvs
+cw
 cx
 cy
 cz
 d
 dallas
+dashboard
 data
 database
 database01
@@ -500,6 +520,7 @@ dev
 dev0
 dev01
 dev1
+dev2
 devel
 develop
 developer
@@ -538,6 +559,8 @@ dns1
 dns2
 dns3
 do
+doc
+docker
 docs
 documentacion
 documentos
@@ -551,6 +574,7 @@ download
 downloads
 downtown
 dragon
+drive
 drupal
 dsl
 dyn
@@ -576,6 +600,7 @@ ee
 eg
 eh
 ejemplo
+elearning
 elpaso
 email
 employees
@@ -583,6 +608,7 @@ empresa
 empresas
 en
 enable
+endpointsportal
 eng
 eng01
 eng1
@@ -639,6 +665,7 @@ fm
 fo
 foobar
 formacion
+forms
 foro
 foros
 fortworth
@@ -650,6 +677,7 @@ foundry
 fox
 foxtrot
 fr
+framework
 france
 frank
 fred
@@ -691,6 +719,7 @@ gate
 gatekeeper
 gateway
 gauss
+gb
 gd
 ge
 gemini
@@ -698,10 +727,13 @@ general
 george
 georgia
 germany
+get
 gf
 gg
 gh
 gi
+git
+gitlab
 gl
 glendale
 gm
@@ -718,6 +750,7 @@ govyty
 gp
 gq
 gr
+grafana
 green
 group
 groups
@@ -826,6 +859,8 @@ iplanet
 ipmonitor
 ipsec
 ipsec-gw
+ipv
+ipv6
 iq
 ir
 irc
@@ -851,6 +886,7 @@ java
 je
 jedi
 jenkins
+jira
 jm
 jo
 jobs
@@ -873,6 +909,7 @@ keynote
 kg
 kh
 ki
+kibana
 kilo
 king
 km
@@ -894,6 +931,7 @@ laboratory
 labs
 lambda
 lan
+landing
 laptop
 laserjet
 lasvegas
@@ -901,6 +939,7 @@ launch
 lb
 lc
 ldap
+learn
 legal
 leo
 li
@@ -939,6 +978,7 @@ logging
 loghost
 login
 logs
+loja
 london
 longbeach
 losangeles
@@ -965,6 +1005,8 @@ mac5
 mach
 macintosh
 madrid
+magento
+magento2
 mail
 mail1
 mail2
@@ -989,6 +1031,7 @@ manufacturing
 map
 mapas
 maps
+marco
 marketing
 marketplace
 mars
@@ -998,12 +1041,17 @@ maryland
 massachusetts
 master
 max
+mboss
+mbox
 mc
 mci
 md
 mdaemon
 me
 media
+media1
+media2
+meet
 member
 members
 memphis
@@ -1011,6 +1059,7 @@ mercury
 merlin
 messages
 messenger
+mf
 mg
 mgmt
 mh
@@ -1038,6 +1087,7 @@ mom
 monitor
 monitoring
 montana
+moodle
 moon
 moscow
 movies
@@ -1062,6 +1112,7 @@ mta
 mtu
 mu
 multimedia
+murftown
 music
 mv
 mw
@@ -1107,9 +1158,11 @@ news
 newsfeed
 newsfeeds
 newsgroups
+newsletter
 newton
 newyork
 newzealand
+nextcloud
 nf
 ng
 nh
@@ -1164,6 +1217,7 @@ odin
 odoo
 office
 offices
+ogw
 oh
 ohio
 ok
@@ -1193,6 +1247,7 @@ orange
 order
 orders
 oregon
+origin
 orion
 orlando
 oscar
@@ -1207,6 +1262,7 @@ owa01
 owa02
 owa1
 owa2
+owncloud
 ows
 oxnard
 p
@@ -1215,6 +1271,7 @@ page
 pager
 pages
 paginas
+panel
 papa
 paris
 parners
@@ -1223,6 +1280,7 @@ partners
 patch
 patches
 paul
+pay
 payroll
 pbx
 pc
@@ -1306,7 +1364,9 @@ phoenix
 phoeniz
 phone
 phones
+photo
 photos
+phpmyadmin
 pi
 pics
 picture
@@ -1320,15 +1380,19 @@ pki
 pl
 plano
 platinum
+plesk
+plex
 pluto
 pm
 pm1
+pma
 pn
 po
 policy
 polls
 pop
 pop3
+portainer
 portal
 portals
 portfolio
@@ -1364,15 +1428,20 @@ ppp9
 pptp
 pr
 prensa
+preprod
 press
+preview
 priv
 privacy
 private
+pro
 problemtracker
+prod
 products
 profiles
 project
 projects
+prometheus
 promo
 proxy
 prueba
@@ -1401,6 +1470,7 @@ r02
 r1
 r2
 ra
+radarr
 radio
 radius
 rapidsite
@@ -1429,6 +1499,7 @@ remstats
 reports
 research
 reseller
+reservations
 reserved
 resumenes
 rho
@@ -1467,6 +1538,7 @@ saltlake
 sam
 san
 sanantonio
+sandbox
 sandiego
 sanfrancisco
 sanjose
@@ -1477,9 +1549,11 @@ sbs
 sc
 scanner
 schedules
+school
 scotland
 scotty
 sd
+sd2
 se
 search
 seattle
@@ -1504,6 +1578,7 @@ setup
 sg
 sh
 sha2
+share
 shared
 sharepoint
 shareware
@@ -1519,7 +1594,9 @@ signin
 signup
 silver
 sim
+sip
 sirius
+sistema
 site
 sj
 sk
@@ -1544,6 +1621,7 @@ software
 sol
 solaris
 solutions
+sonarr
 soporte
 source
 sourcecode
@@ -1580,17 +1658,21 @@ st
 staff
 stage
 staging
+staging1
+staging2
 start
 stat
 static
 statistics
 stats
+status
 stlouis
 stock
 storage
 store
 storefront
 streaming
+stripe
 stronghold
 strongmail
 studio
@@ -1602,10 +1684,12 @@ sun01
 sun02
 sun1
 sun2
+sunshop
 superman
 supplier
 suppliers
 support
+survey
 sv
 sw
 sw0
@@ -1614,6 +1698,7 @@ sw1
 sweden
 switch
 switzerland
+sx
 sy
 sybase
 sydney
@@ -1646,8 +1731,11 @@ terminal
 terminalserver
 termserv
 test
+test1
+test2
 test2k
 testbed
+teste
 testing
 testlab
 testlinux
@@ -1664,6 +1752,7 @@ th
 thailand
 theta
 thor
+tickets
 tienda
 tiger
 time
@@ -1671,6 +1760,7 @@ titan
 tivoli
 tj
 tk
+tl
 tm
 tn
 to
@@ -1685,6 +1775,7 @@ tour
 tp
 tr
 tracker
+traefik
 train
 training
 transfers
@@ -1692,6 +1783,7 @@ trinidad
 trinity
 ts
 ts1
+tst
 tt
 tucson
 tulsa
@@ -1704,10 +1796,12 @@ tx
 tz
 u
 ua
+uat
 uddi
 ug
 uk
 um
+unifi
 uniform
 union
 unitedkingdom
@@ -1732,8 +1826,10 @@ utilities
 uy
 uz
 v
+v2
 va
 vader
+valuation
 vantive
 vault
 vc
@@ -1769,6 +1865,7 @@ vpn01
 vpn02
 vpn1
 vpn2
+vps
 vt
 vu
 w
@@ -1793,6 +1890,7 @@ webcache
 webcam
 webcast
 webdev
+webdisk
 webdocs
 webfarm
 webhelp
@@ -1821,6 +1919,7 @@ westvirginia
 wf
 whiskey
 white
+whm
 whois
 wi
 wichita
