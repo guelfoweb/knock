@@ -232,6 +232,9 @@ Example
 Talk about
 ==========
 
+
+`100 Hacking Tools and Resources <https://www.hackerone.com/blog/100-hacking-tools-and-resources>`_ HackerOne.
+
 `Ethical Hacking and Penetration Testing Guide <http://www.amazon.com/Ethical-Hacking-Penetration-Testing-Guide/dp/1482231611>`_ Book by Rafay Baloch.
 
 Knockpy comes pre-installed on the following security distributions for penetration test:
