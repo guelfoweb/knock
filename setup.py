@@ -70,7 +70,7 @@ setup(
 		'knockpy': ['wordlist/*.txt', '*.json'], 
 	},
     
-	install_requires = ['dnspython>=1.3.5'],
+	install_requires = ['dnspython==1.16.0'],
 
     entry_points={
         'console_scripts': [
