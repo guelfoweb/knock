@@ -70,7 +70,12 @@ def get_tab(string):
 			return '\t\t'
 		else:
 			return '\t\t\t'
-
+		
+def escape_csv(user_generated_string):
+	if user_generated_string[0] in ('@','+','-', '='):
+		user_generated_string = "'" + user_generated_string
+	return user_generated_string
+		
 subdomain_csv_list = []
 def print_output(data):
 	if data['alias']:
@@ -84,7 +89,7 @@ def print_output(data):
 
 			row = ip_alias+'\t'+str(data['status'])+'\t'+'alias'+'\t'+str(alias)+get_tab(alias)+str(server_type)
 			print (row)
-			subdomain_csv_list.append(ip_alias+','+str(data['status'])+','+'alias'+','+str(alias)+','+str(server_type))
+			subdomain_csv_list.append(ip_alias+','+str(data['status'])+','+'alias'+','+str(alias)+','+escape_csv(str(server_type)))
 		
 		for ip in data['ipaddress']:
 			try:
@@ -94,7 +99,7 @@ def print_output(data):
 
 			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])+get_tab(data['hostname'])+str(server_type)
 			print (row)
-			subdomain_csv_list.append(ip+','+str(data['status'])+','+'host'+','+str(data['hostname'])+','+str(server_type))
+			subdomain_csv_list.append(ip+','+str(data['status'])+','+'host'+','+str(data['hostname'])+','+escape_csv(str(server_type)))
 	else:
 		
 		for ip in data['ipaddress']:
@@ -105,7 +110,7 @@ def print_output(data):
 
 			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])+get_tab(data['hostname'])+str(server_type)
 			print (row)
-			subdomain_csv_list.append(ip+','+str(data['status'])+','+'host'+','+str(data['hostname'])+','+str(server_type))
+			subdomain_csv_list.append(ip+','+str(data['status'])+','+'host'+','+str(data['hostname'])+','+escape_csv(str(server_type)))
 
 def init(text, resp=False):
 	if resp:
