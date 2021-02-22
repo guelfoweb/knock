@@ -72,7 +72,7 @@ def get_tab(string):
 			return '\t\t\t'
 		
 def escape_csv(user_generated_string):
-	if user_generated_string[0] in ('@','+','-', '='):
+	if user_generated_string in ('@','+','-', '='):
 		user_generated_string = "'" + user_generated_string
 	return user_generated_string
 		
