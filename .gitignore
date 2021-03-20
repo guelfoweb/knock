@@ -1,0 +1,5 @@
+dist/
+venv3/
+build/
+baldicms.egg-info/
+*.pyc
