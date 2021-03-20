@@ -15,7 +15,6 @@ setup(
 		"knockpy": [
 			"wordlist.txt",
 			"config.json",
-			"requirements.txt"
 			], 
 	},
 	install_requires = [
@@ -24,4 +23,9 @@ setup(
 			"colorama"
 			],
 	python_requires=">=3.6",
+	entry_points={
+		'console_scripts': [
+			'knockpy=knockpy.knockpy:main',
+		],
+	}
 )

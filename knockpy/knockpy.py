@@ -16,7 +16,9 @@ import os
 from os import path
 
 try:
-	config = json.load(open("config.json"))
+	_ROOT = os.path.abspath(os.path.dirname(__file__))
+	onfig_file = os.path.join(_ROOT, "", "config.json")
+	config = json.load(open(onfig_file))
 except:
 	sys.exit("config.json is missing")
 
@@ -61,7 +63,12 @@ class Request():
 
 class Wordlist():
 	def local(filename):
-		wlist = open(filename,'r').read().split('\n')
+		try:
+			wlist = open(filename,'r').read().split('\n')
+		except:
+			_ROOT = os.path.abspath(os.path.dirname(__file__))
+			filename = os.path.join(_ROOT, "", filename)
+			wlist = open(filename,'r').read().split('\n')
 		return filter(None, wlist)
 	
 	def google(domain):
@@ -89,6 +96,7 @@ class Wordlist():
 
 	def get(domain):
 		config_wordlist = config["wordlist"]
+	
 		config_api = config["api"]
 		user_agent = random.choice(config["user_agent"])
 
@@ -312,7 +320,7 @@ class Start():
 		description += "fast scan:\tknockpy domain.com --no-http\n"
 		description += "timeout:\tknockpy domain.com -t 5\n\n"
 		description += "dictionary:\tknockpy domain.com -w /path/to/wordlist.txt\n"
-		description += "show report:\tknockpy output/domain.com_yyyy_mm_dd_hh_mm_ss.json\n"
+		description += "show report:\tknockpy domain.com_yyyy_mm_dd_hh_mm_ss.json\n"
 		description += "-"*80
 		epilog = "warning:\tapikey virustotal missing (https://www.virustotal.com/)\n\n" if not config["api"]["virustotal"] else "\n\n"
 		epilog += "once you get knockpy results, don't forget to use 'nmap' and 'dirsearch'\n\n"

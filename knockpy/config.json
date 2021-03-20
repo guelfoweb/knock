@@ -13,7 +13,7 @@
 	},
 	"report": {
 		"save": true,
-		"folder": "output",
+		"folder": "knockpy_report",
 		"strftime": "%Y_%m_%d_%H_%M_%S"
 	}
 }
