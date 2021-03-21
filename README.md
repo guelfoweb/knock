@@ -75,11 +75,53 @@ optional arguments:
 - Show the report in the terminal.
 
 ### Output folder
-
 ```$ knockpy domain.com -o /path/to/new/folder```
 
 - All scans are saved in the default folder ```knock_report``` that you can edit in the ```config.json``` file. 
 - Alternatively, you can use the ```-o``` option to define the new folder path.
+
+### Report
+- At each scan the report will be automatically saved in ```json``` format inside the file with the name ```domain.com_yyyy_mm_dd_hh_mm_ss.json```.
+- If you don't like autosave you can disable it from the ```config.json``` file by changing the value to ```"save": false```.
+- To read the report in a human format you can do as described in [Show report](https://github.com/guelfoweb/knock#show-report).
+
+Report example ```domain.com_yyyy_mm_dd_hh_mm_ss.json```:
+
+```
+{
+    "sub-1.domain.com": {
+        "domain": "host.domain.ext",
+        "alias": ["sub-1.domain.com"],
+        "ipaddr": [
+            "123.123.123.123"
+        ],
+        "code": 200,
+        "server": "Microsoft-IIS/8.5"
+    },
+    ...................................
+               -- cut --
+    ...................................
+    "sub-n.domain.com"{
+        "domain": "",
+        "alias": [],
+        "ipaddr": [
+            "123.123.123.124"
+        ],
+        "code": 500,
+        "server": "nginx/1.15.6 "
+    },
+    "_meta": {
+        "name": "knockpy",
+        "version": "5.0.0",
+        "time_start": 1616353591.2510355,
+        "time_end": 1616353930.6632543,
+        "domain": "domain.com",
+        "wordlist": 2120
+    }
+}
+```
+
+```_meta``` is a reserved key that contains the basic information of the scan.
 
 # License
 

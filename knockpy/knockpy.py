@@ -17,8 +17,8 @@ from os import path
 
 try:
 	_ROOT = os.path.abspath(os.path.dirname(__file__))
-	onfig_file = os.path.join(_ROOT, "", "config.json")
-	config = json.load(open(onfig_file))
+	config_file = os.path.join(_ROOT, "", "config.json")
+	config = json.load(open(config_file))
 except:
 	sys.exit("config.json is missing")
 
