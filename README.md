@@ -2,6 +2,8 @@
 
 Knockpy is a python tool designed to enumerate subdomains on a target domain through dictionary attack.
 
+![knockpy5](https://user-images.githubusercontent.com/41558/111915750-1bad8f80-8a78-11eb-951a-d5da1adc2bdc.png)
+
 ### Very simply
 ```$ knockpy domain.com```
 
@@ -54,7 +56,7 @@ optional arguments:
 - Knockpy also tries to get subdomains from ```google```, ```duckduckgo```, and ```virustotal```. The results will be added to the general dictionary.
 - It is highly recommended to use a [virustotal](https://virustotal.com/) ```API_KEY``` which you can get for free. The best results always come from ```virustotal```.
 - But, if you only want to work with local word lists, without search engines queries, you can add ```--no-remote``` to bypass remote recon.
-- if you want to ignore http(s) responses with specific code, you can use the ```--no-http-code``` option followed by the code list ```404 500 530```
+- If you want to ignore http(s) responses with specific code, you can use the ```--no-http-code``` option followed by the code list ```404 500 530```
 
 ### Fast scan
 ```$ knockpy domain.com --no-http```
