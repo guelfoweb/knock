@@ -2,7 +2,7 @@
 
 5.0.0 - 2021-03-20
 ---------
-- rewrite code in python 3.
+- rewriting code in python 3.
 
 4.1.1 - 2017-09-05
 ---------
