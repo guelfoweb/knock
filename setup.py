@@ -9,7 +9,7 @@ setup(
 	description="Knock is a python tool designed to enumerate subdomains on a target domain through dictionary attack.",
 	url="https://github.com/guelfoweb/knock",
 	author="Gianni 'guelfoweb' Amato",
-	license="MIT",
+	license="GPL-3.0",
 	packages=["knockpy"],
 	package_data={
 		"knockpy": [
