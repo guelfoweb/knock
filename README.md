@@ -16,7 +16,7 @@ add your ```virustotal API_KEY```
 		"virustotal": "YOUR VIRUSTOTAL API_KEY HERE"
 	},
 ```
-and save
+save.
 
 ```$ sudo python setup.py install```
 
