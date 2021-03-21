@@ -11,6 +11,7 @@
 	"api": {
 		"virustotal": ""
 	},
+	"no_http_code": [],
 	"report": {
 		"save": true,
 		"folder": "knockpy_report",

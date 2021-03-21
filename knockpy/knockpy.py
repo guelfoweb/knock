@@ -23,7 +23,7 @@ except:
 	sys.exit("config.json is missing")
 
 class Request():
-	if hasattr(socket, 'setdefaulttimeout'): socket.setdefaulttimeout(config["timeout"])
+	if hasattr(socket, "setdefaulttimeout"): socket.setdefaulttimeout(config["timeout"])
 
 	def dns(target):
 		try:
@@ -64,11 +64,11 @@ class Request():
 class Wordlist():
 	def local(filename):
 		try:
-			wlist = open(filename,'r').read().split('\n')
+			wlist = open(filename,'r').read().split("\n")
 		except:
 			_ROOT = os.path.abspath(os.path.dirname(__file__))
 			filename = os.path.join(_ROOT, "", filename)
-			wlist = open(filename,'r').read().split('\n')
+			wlist = open(filename,'r').read().split("\n")
 		return filter(None, wlist)
 	
 	def google(domain):
@@ -87,8 +87,8 @@ class Wordlist():
 
 	def virustotal(domain, apikey):
 		if not apikey: return []
-		url = 'https://www.virustotal.com/vtapi/v2/domain/report'
-		params = {'apikey': apikey,'domain': domain}
+		url = "https://www.virustotal.com/vtapi/v2/domain/report"
+		params = {"apikey": apikey,"domain": domain}
 		resp = requests.get(url, params=params)
 		resp = resp.json()
 		subdomains = [item.replace("."+domain, "") for item in resp["subdomains"]] if "subdomains" in resp.keys() else []
@@ -312,7 +312,7 @@ class Start():
 
 	def msg_rnd():
 		return ["happy hacking ;)", "good luck!", "never give up!",
-				"https://en.wikipedia.org/wiki/Bug_bounty_program"]
+				"hacking is not a crime", "https://en.wikipedia.org/wiki/Bug_bounty_program"]
 
 	def arguments():		
 		description = "-"*80+"\n"
@@ -327,14 +327,15 @@ class Start():
 		epilog += random.choice(Start.msg_rnd())
 
 		parser = argparse.ArgumentParser(prog="knockpy", description=description, epilog=epilog, formatter_class=RawTextHelpFormatter)
-		parser.add_argument('domain', help='target to scan')
-		parser.add_argument('-v', '--version', action='version', version="%(prog)s " + Start.__version__)
-		parser.add_argument('--no-local', help='local wordlist ignore', action='store_true', required=False)
-		parser.add_argument('--no-remote', help='remote wordlist ignore', action='store_true', required=False)
-		parser.add_argument('--no-http', help='http requests ignore', action='store_true', required=False)
-		parser.add_argument('-w', help='wordlist file to import', dest='wordlist', required=False)
-		parser.add_argument('-o', help='report folder to store json results', dest='folder', required=False)
-		parser.add_argument('-t', help='timeout in seconds', nargs=1, dest='sec', type=int, required=False)
+		parser.add_argument("domain", help="target to scan")
+		parser.add_argument("-v", "--version", action="version", version="%(prog)s " + Start.__version__)
+		parser.add_argument("--no-local", help="local wordlist ignore", action="store_true", required=False)
+		parser.add_argument("--no-remote", help="remote wordlist ignore", action="store_true", required=False)
+		parser.add_argument("--no-http", help="http requests ignore", action="store_true", required=False)
+		parser.add_argument("--no-http-code", help="http code ignore", nargs="+", type=int, required=False)
+		parser.add_argument("-w", help="wordlist file to import", dest="wordlist", required=False)
+		parser.add_argument("-o", help="report folder to store json results", dest="folder", required=False)
+		parser.add_argument("-t", help="timeout in seconds", nargs=1, dest="sec", type=int, required=False)
 
 		args = parser.parse_args()
 
@@ -343,6 +344,7 @@ class Start():
 			return [domain, "report"] if path.isfile(domain) else sys.exit("report not found")
 
 		if domain.startswith("http"): sys.exit("remove protocol http(s)://")
+		if domain.startswith("www."): sys.exit("remove www.")
 		if domain.find(".") == -1: sys.exit("invalid domain")
 
 		if args.no_local and args.no_remote: sys.exit("no wordlist")
@@ -356,6 +358,9 @@ class Start():
 		if args.no_http:
 			if "http" in config["attack"]:
 				config["attack"].remove("http")
+		
+		if args.no_http_code:
+			config["no_http_code"] = args.no_http_code
 
 		if args.folder:
 			if not os.access(args.folder, os.W_OK): sys.exit("folder not writable: " + args.folder)
@@ -475,9 +480,10 @@ def main():
 			else:
 				req.append("")
 				req.append("")
-		
+
 		# print line and update report
 		data = Output.jsonzeRequestData(req, target)
+		if data["code"] in config["no_http_code"]: continue
 		print (Output.linePrint(data, max_len))
 		del data["target"]
 		results.update({target: data})
