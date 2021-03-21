@@ -1,6 +1,6 @@
 # Knock Subdomain Scan v5.0.0
 
-Knockpy is a python tool designed to enumerate subdomains on a target domain through dictionary attack.
+Knockpy is a python3 tool designed to enumerate subdomains on a target domain through dictionary attack.
 
 ![knockpy5](https://user-images.githubusercontent.com/41558/111915750-1bad8f80-8a78-11eb-951a-d5da1adc2bdc.png)
 
