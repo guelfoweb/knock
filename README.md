@@ -35,6 +35,10 @@ optional arguments:
   --no-local     local wordlist ignore
   --no-remote    remote wordlist ignore
   --no-http      http requests ignore
+
+  --no-http-code CODE [CODE ...]
+                 http code list to ignore
+
   -w WORDLIST    wordlist file to import
   -o FOLDER      report folder to store json results
   -t SEC         timeout in seconds
@@ -50,6 +54,7 @@ optional arguments:
 - Knockpy also tries to get subdomains from ```google```, ```duckduckgo```, and ```virustotal```. The results will be added to the general dictionary.
 - It is highly recommended to use a [virustotal](https://virustotal.com/) ```API_KEY``` which you can get for free. The best results always come from ```virustotal```.
 - But, if you only want to work with local word lists, without search engines queries, you can add ```--no-remote``` to bypass remote recon.
+- if you want to ignore http(s) responses with specific code, you can use the ```--no-http-code``` option followed by the code list ```404 500 530```
 
 ### Fast scan
 ```$ knockpy domain.com --no-http```

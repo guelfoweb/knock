@@ -331,8 +331,8 @@ class Start():
 		parser.add_argument("-v", "--version", action="version", version="%(prog)s " + Start.__version__)
 		parser.add_argument("--no-local", help="local wordlist ignore", action="store_true", required=False)
 		parser.add_argument("--no-remote", help="remote wordlist ignore", action="store_true", required=False)
-		parser.add_argument("--no-http", help="http requests ignore", action="store_true", required=False)
-		parser.add_argument("--no-http-code", help="http code ignore", nargs="+", type=int, required=False)
+		parser.add_argument("--no-http", help="http requests ignore\n\n", action="store_true", required=False)
+		parser.add_argument("--no-http-code", help="http code list to ignore\n\n", nargs="+", dest="code", type=int, required=False)
 		parser.add_argument("-w", help="wordlist file to import", dest="wordlist", required=False)
 		parser.add_argument("-o", help="report folder to store json results", dest="folder", required=False)
 		parser.add_argument("-t", help="timeout in seconds", nargs=1, dest="sec", type=int, required=False)
@@ -359,8 +359,8 @@ class Start():
 			if "http" in config["attack"]:
 				config["attack"].remove("http")
 		
-		if args.no_http_code:
-			config["no_http_code"] = args.no_http_code
+		if args.code:
+			config["no_http_code"] = args.code
 
 		if args.folder:
 			if not os.access(args.folder, os.W_OK): sys.exit("folder not writable: " + args.folder)
