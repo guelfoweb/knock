@@ -19,7 +19,7 @@ setup(
 	},
 	install_requires = [
 			"requests",
-			"bs4",
+			"beautifulsoup4",
 			"colorama"
 			],
 	python_requires=">=3.6",
