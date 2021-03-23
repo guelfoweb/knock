@@ -1,5 +1,5 @@
 dist/
 venv3/
 build/
-baldicms.egg-info/
+knockpy.egg-info/
 *.pyc
