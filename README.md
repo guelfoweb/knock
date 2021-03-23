@@ -130,7 +130,7 @@ Report example ```domain.com_yyyy_mm_dd_hh_mm_ss.json```:
 
 A dockerized image is hosted on [nocommentlab/knock](https://hub.docker.com/r/nocommentlab/knock) a project of [Antonio Blescia](https://github.com/nocommentlab).
 
-You can use classic docker commands or run [kdocker](https://github.com/guelfoweb/knock/blob/master/kdocker) script.
+You can use classic docker commands or run [kdocker](https://raw.githubusercontent.com/guelfoweb/knock/master/kdocker) script.
 
 ```./kdocker domain.com <arg1> <arg2> <argn>```
 
