@@ -21,11 +21,11 @@ You need python3, pip3, git.
 		"virustotal": "YOUR VIRUSTOTAL API_KEY HERE"
 	},
 ```
-- install with setup.py:
+###### Install with setup.py:
 
 ```$ python setup.py install --user```
 
-- or virtualenv + pip
+###### Or virtualenv + pip
 
 ```virtualenv --python=python3 venv3```
 
