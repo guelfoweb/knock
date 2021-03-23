@@ -9,20 +9,31 @@ Knockpy is a python3 tool designed to enumerate subdomains on a target domain th
 
 # Install
 
+You need python3, pip3, git.
+
 ```$ git clone https://github.com/guelfoweb/knock.git```
 
-edit ```knockpy/config.json```
-add your ```virustotal API_KEY```
+- edit ```knockpy/config.json```
+- add your [virustotal](https://virustotal.com/) ```API_KEY``` and save.
+
 ```
 "api": {
 		"virustotal": "YOUR VIRUSTOTAL API_KEY HERE"
 	},
 ```
-save.
+- install with setup.py:
 
-```$ sudo python setup.py install```
+```$ python setup.py install --user```
 
-Are you looking for a [knockpy docker](https://github.com/guelfoweb/knock#knockpy-docker)?
+- or virtualenv + pip
+
+```virtualenv --python=python3 venv3```
+
+```source venv3/bin/activate```
+
+```pip install -r requirements.txt```
+
+Are you looking for a [dockerized image of knockpy](https://github.com/guelfoweb/knock#knockpy-docker)?
 
 
 # Knockpy -h
