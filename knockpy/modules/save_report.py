@@ -9,6 +9,7 @@ def touch(filename):
 def export(domain, report, _type, fields=False):
 	timestamp = time.time()
 	filename = domain.replace('.', '_')+'_'+str(timestamp)+'.'+_type
+	filename = '/tmp/' + filename
 	if _type == 'csv':
 		csv_report = ''
 		if fields:
@@ -20,6 +21,10 @@ def export(domain, report, _type, fields=False):
 		with open(filename, 'a') as f:
 			f.write(report)
 		f.close()
-		return '\n'+_type.upper()+' report saved in: '+filename
-	except: 
-		return '\nCannot write report file: '+filename
+		r='\n'+_type.upper()+' report saved in: '+filename
+		print(str(r))
+		return r
+	except:
+		r='\nCannot write report file: '+filename
+		print(str(r))
+	return r
