@@ -9,7 +9,7 @@ Knockpy is a python3 tool designed to enumerate subdomains on a target domain th
 
 # Install
 
-You need python3, pip3, git.
+###### You need python3, pip3, git.
 
 ```$ git clone https://github.com/guelfoweb/knock.git```
 
@@ -22,25 +22,25 @@ You need python3, pip3, git.
 	},
 ```
 
-**Choose one of the three installation methods**
+__Choose one of the three installation methods__
 
-###### Install in the __global__ site-packages directory:
+**Install in the __global__ site-packages directory:**
 
-- as root
+###### as root
 
 ```# python setup.py install```
 
-###### Install in the __user__ site-packages directory:
+**Install in the __user__ site-packages directory:**
 
 ```$ python setup.py install --user```
 
-###### Use virtualenv + pip
+**Use virtualenv + pip**
 
-```virtualenv --python=python3 venv3```
+```$ virtualenv --python=python3 venv3```
 
-```source venv3/bin/activate```
+```$ source venv3/bin/activate```
 
-```pip install -r requirements.txt```
+```$ pip install -r requirements.txt```
 
 Are you looking for a [dockerized image of knockpy](https://github.com/guelfoweb/knock#knockpy-docker)?
 
