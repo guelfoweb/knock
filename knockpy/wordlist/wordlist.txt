@@ -1323,6 +1323,7 @@ platinum
 pluto
 pm
 pm1
+pma
 pn
 po
 policy
