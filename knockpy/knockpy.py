@@ -6,6 +6,7 @@ from modules import header
 from modules import resolve
 from modules import wildcard
 from modules import save_report
+from modules import virustotal_subdomains
 
 from urlparse import urlparse
 
@@ -16,7 +17,7 @@ import datetime
 import argparse
 
 __author__='Gianni \'guelfoweb\' Amato'
-__version__='4.0'
+__version__='4.1.1'
 __url__='https://github.com/guelfoweb/knock'
 __description__='''\
 ___________________________________________
@@ -34,6 +35,10 @@ example:
   knockpy -r domain.com or IP
   knockpy -c domain.com
   knockpy -j domain.com
+
+For virustotal subdomains support you can setting your API KEY in the
+config.json file.
+ 
 '''
 
 def loadfile_wordlist(filename):
@@ -55,26 +60,57 @@ def print_header():
 """
 
 def print_header_scan():
-	print '\nIp Address\tStatus\tType\tDomain Name'
-	print '----------\t------\t----\t-----------'
+	print '\nIp Address\tStatus\tType\tDomain Name\t\t\tServer'
+	print '----------\t------\t----\t-----------\t\t\t------'
 
+def get_tab(string):
+		if len(str(string)) > 23:
+			return '\t'
+		elif len(str(string)) > 15 and len(str(string)) <= 23:
+			return '\t\t'
+		else:
+			return '\t\t\t'
+		
+def escape_csv(user_generated_string):
+	if user_generated_string[0] in ('@','+','-', '='):
+		user_generated_string = "'" + user_generated_string
+	return user_generated_string
+		
 subdomain_csv_list = []
 def print_output(data):
 	if data['alias']:
+		
 		for alias in data['alias']:
 			ip_alias = data['ipaddress'][0]
-			row = ip_alias+'\t'+str(data['status'])+'\t'+'alias'+'\t'+str(alias)
+			try:
+				server_type = str(data['http_response']['http_headers']['server'])
+			except:
+				server_type = ''
+
+			row = ip_alias+'\t'+str(data['status'])+'\t'+'alias'+'\t'+str(alias)+get_tab(alias)+str(server_type)
 			print (row)
-			subdomain_csv_list.append(row.replace('\t', ','))
+			subdomain_csv_list.append(ip_alias+','+str(data['status'])+','+'alias'+','+str(alias)+','+escape_csv(str(server_type)))
+		
 		for ip in data['ipaddress']:
-			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])
+			try:
+				server_type = str(data['http_response']['http_headers']['server'])
+			except:
+				server_type = ''
+
+			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])+get_tab(data['hostname'])+str(server_type)
 			print (row)
-			subdomain_csv_list.append(row.replace('\t', ','))
+			subdomain_csv_list.append(ip+','+str(data['status'])+','+'host'+','+str(data['hostname'])+','+escape_csv(str(server_type)))
 	else:
+		
 		for ip in data['ipaddress']:
-			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])
+			try:
+				server_type = str(data['http_response']['http_headers']['server'])
+			except:
+				server_type = ''
+
+			row = ip+'\t'+str(data['status'])+'\t'+'host'+'\t'+str(data['hostname'])+get_tab(data['hostname'])+str(server_type)
 			print (row)
-			subdomain_csv_list.append(row.replace('\t', ','))
+			subdomain_csv_list.append(ip+','+str(data['status'])+','+'host'+','+str(data['hostname'])+','+escape_csv(str(server_type)))
 
 def init(text, resp=False):
 	if resp:
@@ -93,19 +129,23 @@ def main():
 	parser.add_argument('domain', help='target to scan, like domain.com')
 	parser.add_argument('-w', help='specific path to wordlist file',
 					nargs=1, dest='wordlist', required=False)
-	parser.add_argument('-r', '--resolve', help='resolve ip or domain name',
+	parser.add_argument('-r', '--resolve', help='resolve single ip or domain name',
 						action='store_true', required=False)
 	parser.add_argument('-c', '--csv', help='save output in csv',
+						action='store_true', required=False)
+	parser.add_argument('-f', '--csvfields', help='add fields name to the first row of csv output file',
 						action='store_true', required=False)
 	parser.add_argument('-j', '--json', help='export full report in JSON',
 						action='store_true', required=False)
 
+						
 	args = parser.parse_args()
 	
 	target = args.domain
 	wlist = args.wordlist
 	resolve_host = args.resolve
 	save_scan_csv = args.csv
+	save_scan_csvfields = args.csvfields
 	save_scan_json = args.json
 
 	print_header()
@@ -123,6 +163,44 @@ def main():
 		target = '{uri.netloc}'.format(uri=parsed_uri)
 
 	'''
+	check for virustotal subdomains
+	'''
+	init('+ checking for virustotal subdomains:', False)
+	subdomain_list = []
+
+	_ROOT = os.path.abspath(os.path.dirname(__file__))
+	config_file = os.path.join(_ROOT, '', 'config.json')
+
+	if os.path.isfile(config_file):
+		with open(config_file) as data_file:    
+			apikey = json.load(data_file)
+			try:
+				apikey_vt = apikey['virustotal']
+				if apikey_vt != '':
+					virustotal_list = virustotal_subdomains.get_subdomains(target, apikey_vt)
+					if virustotal_list:
+						init('YES', True)
+						print(json.dumps(virustotal_list, indent=4, separators=(',', ': ')))
+						for item in virustotal_list:
+							subdomain = item.replace('.'+target, '')
+							if subdomain not in subdomain_list:
+								subdomain_list.append(subdomain)
+					else:
+						init('NO', True)
+				else:
+					init('SKIP', True)
+					init('\tVirusTotal API_KEY not found', True)
+					virustotal_list = []
+			except:
+				init('SKIP', True)
+				init('\tVirusTotal API_KEY not found', True)
+				virustotal_list = []
+	else:
+		init('SKIP', True)
+		init('\tCONFIG FILE NOT FOUND', True)
+		virustotal_list = []
+
+	'''
 	check for wildcard
 	'''
 	init('+ checking for wildcard:', False)
@@ -137,7 +215,6 @@ def main():
 	check for zonetransfer
 	'''
 	init('+ checking for zonetransfer:', False)
-	subdomain_list = []
 	zonetransfer_json = json.loads(zonetransfer.zonetransfer(target))
 	if zonetransfer_json['enabled']:
 		init('YES', True)
@@ -173,7 +250,7 @@ def main():
 	'''
 	init('+ resolving target:', False)
 	response_resolve = json.loads(resolve.resolve(target))
-	response_resolve.update({'wildcard': wildcard_json, 'zonetransfer': zonetransfer_json})
+	response_resolve.update({'wildcard': wildcard_json, 'zonetransfer': zonetransfer_json, 'virustotal': virustotal_list})
 	response_resolve['ipaddress']
 	if response_resolve['hostname']:
 		init('YES', True)
@@ -203,7 +280,7 @@ def main():
 	'''
 	scan for subdomain
 	'''
-	init('- scaning for subdomain...', True)
+	init('- scanning for subdomain...', True)
 		
 	print_header_scan()
 
@@ -215,11 +292,13 @@ def main():
 		sys.stdout.flush()
 		subdomain_target = item+'.'+target
 		subdomain_resolve = json.loads(resolve.resolve(subdomain_target))
+
 		if subdomain_resolve['hostname']:
 			try:
 				status_code = subdomain_resolve['http_response']['status']['code']
 			except:
 				status_code = ''
+
 			if wildcard_json['enabled']:
 				wildcard_code = wildcard_json['detected']['status_code']
 				if str(status_code) != '' and str(wildcard_code) != '' and str(status_code) == str(wildcard_code):
@@ -288,6 +367,8 @@ def main():
 	if not resolve_host:
 		if save_scan_csv:
 			exit(save_report.export(target, subdomain_csv_list, 'csv'))
+		elif save_scan_csvfields:
+			exit(save_report.export(target, subdomain_csv_list, 'csv', save_scan_csvfields))
 		elif save_scan_json:
 			report_json = {'target_response': response_resolve, \
 							'subdomain_response': subdomains_json_list, \

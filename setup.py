@@ -30,7 +30,7 @@ with open(path.join(here, 'CHANGELOG.rst'), encoding='utf-8') as f:
 
 setup(
     name='knockpy',
-    version='4.0',
+    version='4.1.1',
 
     description='Knock is a python tool designed to enumerate subdomains on a target domain through a wordlist.',
     long_description=long_description,
@@ -66,7 +66,10 @@ setup(
     keywords='knock sudbomain scan',
 
     packages=["knockpy", "knockpy.modules"],
-    package_data={'knockpy': ['wordlist/wordlist.txt']},
+    package_data={
+		'knockpy': ['wordlist/*.txt', '*.json'], 
+	},
+    
 	install_requires = ['dnspython>=1.3.5'],
 
     entry_points={
