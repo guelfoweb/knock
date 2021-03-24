@@ -28,11 +28,11 @@ __Choose one of the three installation methods__
 
 ###### as root
 
-```# python setup.py install```
+```# python3 setup.py install```
 
 **Install in the __user__ site-packages directory:**
 
-```$ python setup.py install --user```
+```$ python3 setup.py install --user```
 
 **Use virtualenv + pip**
 
@@ -40,7 +40,7 @@ __Choose one of the three installation methods__
 
 ```$ source venv3/bin/activate```
 
-```$ pip install -r requirements.txt```
+```$ pip3 install -r requirements.txt```
 
 Are you looking for a [dockerized image of knockpy](https://github.com/guelfoweb/knock#knockpy-docker)?
 
