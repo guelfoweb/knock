@@ -1898,6 +1898,7 @@ weblib
 weblogic
 webmail
 webmaster
+webmin
 webproxy
 webring
 webs
