@@ -151,8 +151,11 @@ class Output():
 		line += Output.colorizeHeader("Wordlist: ", local + google + duckduckgo + virustotal, "| ")
 
 		req = Request.dns(domain)
-		ip_req = req[2][0]
-		ip = ip_req if req else ""
+		if req != []:
+			ip_req = req[2][0]
+			ip = ip_req if req else ""
+		else:
+			ip = "None"
 
 		line += Output.colorizeHeader("Target: ", domain, "| ")
 		line += Output.colorizeHeader("Ip: ", ip, "\n")
