@@ -76,14 +76,20 @@ class Wordlist():
 		dork = "site:%s -site:www.%s" % (domain, domain)
 		url = "https://google.com/search?q=%s&start=%s" % (dork, str(5))
 		params = [domain, url, headers]
-		return Request.bs4scrape(params)
+		try:
+			return Request.bs4scrape(params)
+		except Exception as e:
+			return []
 
 	def duckduckgo(domain):
 		headers = {"user-agent": random.choice(config["user_agent"])}
 		dork = "site:%s -site:www.%s" % (domain, domain)
 		url = "https://duckduckgo.com/html/?q=%s" % dork
 		params = [domain, url, headers]
-		return Request.bs4scrape(params)
+		try:
+			return Request.bs4scrape(params)
+		except Exception as e:
+			return []
 
 	def virustotal(domain, apikey):
 		if not apikey: return []
