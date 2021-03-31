@@ -1,5 +1,12 @@
 # Changelog
 
+5.1.0 - 2021-03-31
+---------
+- added show report --report
+- added csv report --csv
+- added plot report --plot
+- added set apikey --set apikey-virustotal=
+
 5.0.0 - 2021-03-20
 ---------
 - rewriting code in python 3.
