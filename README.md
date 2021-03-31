@@ -1,4 +1,4 @@
-# Knock Subdomain Scan v5.0.0
+# Knock Subdomain Scan v5.1.0
 
 Knockpy is a python3 tool designed to enumerate subdomains on a target domain through dictionary attack.
 
@@ -12,15 +12,6 @@ Knockpy is a python3 tool designed to enumerate subdomains on a target domain th
 ###### You need python3, pip3, git.
 
 ```$ git clone https://github.com/guelfoweb/knock.git```
-
-- edit ```knockpy/config.json```
-- add your [virustotal](https://virustotal.com/) ```API_KEY``` and save.
-
-```
-"api": {
-		"virustotal": "YOUR VIRUSTOTAL API_KEY HERE"
-	},
-```
 
 __Choose one of the three installation methods__
 
@@ -48,25 +39,43 @@ Are you looking for a [dockerized image of knockpy](https://github.com/guelfoweb
 # Knockpy -h
 
 ```
-$ knockpy -h
-usage: knockpy [-h] [-v] [--no-local] [--no-remote] [--no-http] [-w WORDLIST] [-o FOLDER] [-t SEC] domain
+usage: knockpy [-h] [-v] [--no-local] [--no-remote] [--no-http] [--no-http-code CODE [CODE ...]] [-w WORDLIST] [-o FOLDER] [-t SEC] domain
+
+--------------------------------------------------------------------------------
+* SCAN
+full scan:  knockpy domain.com
+fast scan:  knockpy domain.com --no-http
+quick scan: knockpy domain.com --no-http --no-local
+ignore code:  knockpy domain.com --no-http-code 404 500 530
+timeout:  knockpy domain.com -t 2
+
+* REPORT
+show report:  knockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
+plot report:  knockpy --plot knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
+csv report: knockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
+
+* SETTINGS
+set apikey: knockpy --set apikey-virustotal=APIKEY
+set timeout:  knockpy --set timeout=sec
+--------------------------------------------------------------------------------
 
 positional arguments:
-  domain         target to scan
+  domain                target to scan
 
 optional arguments:
-  -h, --help     show this help message and exit
-  -v, --version  show program's version number and exit
-  --no-local     local wordlist ignore
-  --no-remote    remote wordlist ignore
-  --no-http      http requests ignore
-
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  --no-local            local wordlist ignore
+  --no-remote           remote wordlist ignore
+  --no-http             http requests ignore
+                        
   --no-http-code CODE [CODE ...]
-                 http code list to ignore
+                        http code list to ignore
+                        
+  -w WORDLIST           wordlist file to import
+  -o FOLDER             report folder to store json results
+  -t SEC                timeout in seconds
 
-  -w WORDLIST    wordlist file to import
-  -o FOLDER      report folder to store json results
-  -t SEC         timeout in seconds
 ```
 
 # Usage
@@ -77,7 +86,7 @@ optional arguments:
 - Attack type: **dns** + **http(s)** requests
 - Knockpy uses internal file ```wordlist.txt```. If you want to use an external dictionary you can use the ```-w``` option and specify the path to your dictionary text file.
 - Knockpy also tries to get subdomains from ```google```, ```duckduckgo```, and ```virustotal```. The results will be added to the general dictionary.
-- It is highly recommended to use a [virustotal](https://virustotal.com/) ```API_KEY``` which you can get for free. The best results always come from ```virustotal```.
+- It is highly recommended to use a [virustotal](https://github.com/guelfoweb/knock#virustotal-apikey) ```API_KEY``` which you can get for free. The best results always come from ```virustotal```.
 - But, if you only want to work with local word lists, without search engines queries, you can add ```--no-remote``` to bypass remote recon.
 - If you want to ignore http(s) responses with specific code, you can use the ```--no-http-code``` option followed by the code list ```404 500 530```
 
@@ -93,14 +102,29 @@ optional arguments:
 
 - default timeout = ```3``` seconds.
 
+### Virustotal APIKEY
+```$ knockpy --set apikey-virustotal=APIKEY```
+
+- Get [virustotal](https://virustotal.com/) ```APIKEY``` for free.
+
 ### Show report
-```$ knockpy domain.com_yyyy_mm_dd_hh_mm_ss.json```
+```$ knockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json```
 - Show the report in the terminal.
+
+### Csv report
+```$ knockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json```
+- Save report as csv file.
+
+### Plot report
+```$ knockpy --plot knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json```
+- Plot relationships.
+
+![facebook](https://user-images.githubusercontent.com/41558/113183466-5a9bcc00-9254-11eb-8d9f-6a9c239eea7d.png)
 
 ### Output folder
 ```$ knockpy domain.com -o /path/to/new/folder```
 
-- All scans are saved in the default folder ```knock_report``` that you can edit in the ```config.json``` file. 
+- All scans are saved in the default folder ```knockpy_report``` that you can edit in the ```config.json``` file. 
 - Alternatively, you can use the ```-o``` option to define the new folder path.
 
 ### Report
@@ -135,7 +159,7 @@ Report example ```domain.com_yyyy_mm_dd_hh_mm_ss.json```:
     },
     "_meta": {
         "name": "knockpy",
-        "version": "5.0.0",
+        "version": "5.1.0",
         "time_start": 1616353591.2510355,
         "time_end": 1616353930.6632543,
         "domain": "domain.com",

@@ -1,3 +1,6 @@
 requests
 beautifulsoup4
 colorama
+matplotlib
+networkx
+PyQt5
