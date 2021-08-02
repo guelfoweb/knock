@@ -26,6 +26,74 @@ If you want to save full log `like this one <http://pastebin.com/d9nMiyP4>`_ jus
 
   $ knockpy domain.com --json
 
+===============
+Use with Docker
+===============
+
+**Prerequisites**
+
+- Docker engine
+
+**Build the image**
+
+.. code-block::
+
+  $ docker build --tag guelfoweb/knockpy:4.1.1 .
+
+**Use the image: show man page**
+
+.. code-block::
+ 
+  $ docker run -ti --rm guelfoweb/knockpy:4.1.1 --help
+  usage: knockpy [-h] [-v] [-w WORDLIST] [-r] [-c] [-f] [-j] domain
+
+  ___________________________________________
+
+  knock subdomain scan
+  knockpy v.4.1.1
+  Author: Gianni 'guelfoweb' Amato
+  Github: https://github.com/guelfoweb/knock
+  ___________________________________________
+
+  positional arguments:
+    domain           target to scan, like domain.com
+
+  optional arguments:
+    -h, --help       show this help message and exit
+    -v, --version    show program's version number and exit
+    -w WORDLIST      specific path to wordlist file
+    -r, --resolve    resolve single ip or domain name
+    -c, --csv        save output in csv
+    -f, --csvfields  add fields name to the first row of csv output file
+    -j, --json       export full report in JSON
+
+  example:
+    knockpy domain.com
+    knockpy domain.com -w wordlist.txt
+    knockpy -r domain.com or IP
+    knockpy -c domain.com
+    knockpy -j domain.com
+
+  For virustotal subdomains support you can setting your API KEY in the
+  config.json file.
+  
+**Use the image: run with defaults**
+
+.. code-block::
+
+  $ docker run -ti --rm guelfoweb/knockpy:4.1.1 domain.com  
+  
+**Use the image: run with customisations**
+
+.. code-block::
+
+  $ docker run -ti --rm \
+    -v "myconfig.json:/src/app/knockpy/config.json:ro" \
+    -v "mywordlist.txt:/tmp/mywordlist.txt:ro" \
+    guelfoweb/knockpy:4.1.1 \
+    	-w /tmp/mywordlist.txt \
+    	domain.com
+
 =======
 Install
 =======
