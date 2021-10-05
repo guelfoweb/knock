@@ -1,7 +1,9 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 from argparse import RawTextHelpFormatter
 from colorama import Fore, Style
+import concurrent.futures
 from os import path
 import colorama
 import argparse
@@ -14,15 +16,14 @@ import json
 import sys
 import re
 import os
-import matplotlib.pyplot as plt
-import networkx as nx
 
 try:
     _ROOT = os.path.abspath(os.path.dirname(__file__))
     config_file = os.path.join(_ROOT, "", "config.json")
     config = json.load(open(config_file))
 except:
-    sys.exit("error in config.json")
+    print ("error in config.json:", config_file)
+    sys.exit(1)
 
 if hasattr(socket, "setdefaulttimeout"): socket.setdefaulttimeout(config["timeout"])
 
@@ -76,7 +77,7 @@ class Wordlist():
     def google(domain):
         headers = {"user-agent": random.choice(config["user_agent"])}
         dork = "site:%s -site:www.%s" % (domain, domain)
-        url = "https://google.com/search?q=%s&start=%s" % (dork, str(5))
+        url = "https://google.com/search?q=%s&start=%s" % (dork, str(3))
         params = [domain, url, headers]
         try:
             return Request.bs4scrape(params)
@@ -127,9 +128,6 @@ class Output():
         sys.stdout.write("%s\r" % text_dim)
         sys.stdout.flush()
         sys.stdout.write("\r")
-
-    def percentage(i, len_wordlist):
-        return (i/len_wordlist)*100
 
     def colorizeHeader(text, count, sep):
         newText = Style.BRIGHT + Fore.YELLOW + text + Style.RESET_ALL
@@ -202,7 +200,7 @@ class Output():
         
         return line
 
-    def jsonzeRequestData(req, target):
+    def jsonizeRequestData(req, target):
         if len(req) == 3:
             subdomain, aliasList, ipList = req
             domain = subdomain if subdomain != target else ""
@@ -366,6 +364,13 @@ class Report():
         return results
 
     def plot(report):
+        try:
+            import matplotlib.pyplot as plt
+            import networkx as nx
+        except:
+            print("Plot needs these libraries. Use 'pip' to install them:\n- matplotlib\n- networkx\n- PyQt5")
+            sys.exit(1)
+
         dataset = []
         for item in report.keys():
             dataset.append((report[item]["ipaddr"][0], item))
@@ -378,7 +383,7 @@ class Report():
         plt.show()
 
 class Start():
-    __version__ = "5.1.0"
+    __version__ = "5.2.0"
 
     def msg_rnd():
         return ["happy hacking ;)", "good luck!", "never give up!",
@@ -394,7 +399,7 @@ class Start():
                         report = Report.terminal(args[2])
                         if report: sys.exit(report)
                     sys.exit("report not found: %s" % args[2])
-                sys.exit("use: knockpy --report path/to/domain.com_yyyy_mm_dd_hh_mm_ss.json")
+                sys.exit("try using: knockpy --report path/to/domain.com_yyyy_mm_dd_hh_mm_ss.json")
 
             # plot
             if args[1] == "--plot":
@@ -404,7 +409,7 @@ class Start():
                         if report: Report.plot(report)
                         sys.exit()
                     sys.exit("report not found: %s" % args[2])
-                sys.exit("use: knockpy --plot path/to/domain.com_yyyy_mm_dd_hh_mm_ss.json")
+                sys.exit("try using: knockpy --plot path/to/domain.com_yyyy_mm_dd_hh_mm_ss.json")
 
             # csv
             if args[1] == "--csv":
@@ -416,7 +421,7 @@ class Start():
                             Output.write_csv(csv_file, Report.csv(report))
                             sys.exit("csv report: %s" % csv_file)
                     sys.exit("report not found: %s" % args[2])
-                sys.exit("use: knockpy --csv path/to/domain.com_yyyy_mm_dd_hh_mm_ss.json")
+                sys.exit("try using: knockpy --csv path/to/domain.com_yyyy_mm_dd_hh_mm_ss.json")
 
             # set
             if args[1] == "--set":
@@ -429,14 +434,23 @@ class Start():
                     sys.exit("%s added!" % apikey)
                 
                 # timeout
-                if args[2].startswith("timeout="):
+                elif args[2].startswith("timeout="):
                     seconds = args[2].split("=")[1]
                     orig_config = json.load(open(config_file))
                     orig_config["timeout"] = int(seconds)
                     Output.write_json(config_file, orig_config)
                     sys.exit("timeout is %s" % seconds)
 
-                sys.exit("use: knockpy --set apikey-virustotal=APIKEY")
+                #threads
+                elif args[2].startswith("threads="):
+                    number = args[2].split("=")[1]
+                    orig_config = json.load(open(config_file))
+                    orig_config["threads"] = int(number)
+                    Output.write_json(config_file, orig_config)
+                    sys.exit("threads is %s" % number)
+
+                else:
+                    sys.exit("try using:\nknockpy --set apikey-virustotal=APIKEY\nknockpy --set timeout=SEC\nknockpy --set threads=NUM")
 
 
     def arguments():
@@ -445,9 +459,8 @@ class Start():
         description = "-"*80+"\n"
         description += "* SCAN\n"
         description += "full scan:\tknockpy domain.com\n"
-        description += "fast scan:\tknockpy domain.com --no-http\n"
-        description += "quick scan:\tknockpy domain.com --no-http --no-local\n"
         description += "ignore code:\tknockpy domain.com --no-http-code 404 500 530\n"
+        description += "threads:\tknockpy domain.com -th 50\n"
         description += "timeout:\tknockpy domain.com -t 2\n\n"
         description += "* REPORT\n"
         description += "show report:\tknockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json\n"
@@ -456,8 +469,9 @@ class Start():
         description += "* SETTINGS\n"
         description += "set apikey:\tknockpy --set apikey-virustotal=APIKEY\n"
         description += "set timeout:\tknockpy --set timeout=sec\n"
+        description += "set threads:\tknockpy --set threads=num\n"
         description += "-"*80
-        epilog = "warning:\tapikey virustotal missing (https://www.virustotal.com/)\n\n" if not config["api"]["virustotal"] else "\n\n"
+        epilog = "warning:\tapikey virustotal is missing (https://www.virustotal.com/)\n\n" if not config["api"]["virustotal"] else "\n\n"
         epilog += "once you get knockpy results, don't forget to use 'nmap' and 'dirsearch'\n\n"
         epilog += random.choice(Start.msg_rnd())
 
@@ -471,12 +485,13 @@ class Start():
         parser.add_argument("-w", help="wordlist file to import", dest="wordlist", required=False)
         parser.add_argument("-o", help="report folder to store json results", dest="folder", required=False)
         parser.add_argument("-t", help="timeout in seconds", nargs=1, dest="sec", type=int, required=False)
+        parser.add_argument("-th", help="threads num", nargs=1, dest="num", type=int, required=False)
 
         args = parser.parse_args()
 
         domain = args.domain
 
-        if domain.startswith("http"): sys.exit("remove protocol http(s)://")
+        if domain.startswith("http"): sys.exit("remove http(s)://")
         if domain.startswith("www."): sys.exit("remove www.")
         if domain.find(".") == -1: sys.exit("invalid domain")
 
@@ -503,11 +518,61 @@ class Start():
         if args.sec:
             config["timeout"] = args.sec[0]
 
+        if args.num:
+            config["threads"] = args.num[0]
+
         if args.wordlist:
             config["wordlist"]["local"] = args.wordlist
 
         return domain
 
+
+    def scan(max_len, domain, subdomain, percentage, results):
+        ctrl_c = "(ctrl+c) | "
+
+        #Output.progressPrint(ctrl_c + subdomain)
+        target = subdomain+"."+domain
+        Output.progressPrint(ctrl_c + str(percentage*100)[:4] + "% | " + target + " "*max_len)
+        req = Request.dns(target)
+
+        if not req: return None
+
+        req = list(req)
+        ip_req = req[2][0]
+
+        if ip_req in config["ignore"]: return None
+
+        # dns only
+        if not "http" in config["attack"]:
+            # print line and update report
+            data = Output.jsonizeRequestData(req, target)
+            print (Output.linePrint(data, max_len))
+            del data["target"]
+            return results.update({target: data})
+            
+
+        # dns and http(s)
+        https = Request.https(target)
+        
+        if https:
+            for item in https:
+                req.append(item)
+        else:
+            http = Request.http(target)
+            
+            if http:
+                for item in http:
+                    req.append(item)
+            else:
+                req.append("")
+                req.append("")
+
+        # print line and update report
+        data = Output.jsonizeRequestData(req, target)
+        if data["code"] in config["no_http_code"]: return None
+        print (Output.linePrint(data, max_len))
+        del data["target"]
+        return results.update({target: data})
 
 
     def logo():
@@ -521,8 +586,6 @@ class Start():
                             | |     __/ |
                             |_|    |___/ 
 """ % Start.__version__
-    
-
 
 def main():
     domain = Start.arguments()
@@ -543,70 +606,33 @@ def main():
     print (Output.headerPrint(local, google, duckduckgo, virustotal, domain))
     time_start = time.time()
     print (Output.headerBarPrint(time_start, max_len))
-
+    
     # init
-    i = 0
     len_wordlist = len(wordlist)
     results = {}
     
     # start
-    for subdomain in wordlist:
-        i = i+1
-        percentage = str(int(Output.percentage(i, len_wordlist)))+"% (ctrl-z) | "
+    with concurrent.futures.ThreadPoolExecutor(max_workers=config["threads"]) as executor:
+        results_executor = {executor.submit(Start.scan, max_len, domain, subdomain, wordlist.index(subdomain)/len_wordlist, results) for subdomain in wordlist}
 
-        Output.progressPrint(percentage + subdomain)
-        target = subdomain+"."+domain
-
-        Output.progressPrint(percentage + "DNS -> %s" % target+" "*max_len)
-        req = Request.dns(target)
-
-        if not req: continue
-
-        req = list(req)
-        ip_req = req[2][0]
-
-        if ip_req in config["ignore"]: continue
-
-        # dns only
-        if not "http" in config["attack"]:
-            # print line and update report
-            data = Output.jsonzeRequestData(req, target)
-            print (Output.linePrint(data, max_len))
-            del data["target"]
-            results.update({target: data})
-            continue
-
-        # dns and http(s)
-        Output.progressPrint(percentage + "dns: %s | https://%s" % (ip_req, target))
-        https = Request.https(target)
-        
-        if https:
-            for item in https:
-                req.append(item)
-        else:
-            Output.progressPrint(percentage + "dns: %s | https: no | http://%s" % (ip_req, target))
-            http = Request.http(target)
-            
-            if http:
-                for item in http:
-                    req.append(item)
-            else:
-                req.append("")
-                req.append("")
-
-        # print line and update report
-        data = Output.jsonzeRequestData(req, target)
-        if data["code"] in config["no_http_code"]: continue
-        print (Output.linePrint(data, max_len))
-        del data["target"]
-        results.update({target: data})
+        for item in concurrent.futures.as_completed(results_executor):
+            if item.result() != None:
+                print (item.result())
 
     # footer
     time_end = time.time()
+
     print (Output.footerPrint(time_end, time_start, results))
 
     # save report
     if config["report"]["save"]: Report.save(results, domain, time_start, time_end, len_wordlist)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nInterrupted")
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)

@@ -1,62 +1,45 @@
-# Knock Subdomain Scan v5.1.0
+# Knock Subdomain Scan v5.2.0
 
-Knockpy is a python3 tool designed to enumerate subdomains on a target domain through dictionary attack.
+Knockpy is a python3 tool designed to quickly enumerate subdomains on a target domain through dictionary attack.
 
 ![knockpy5](https://user-images.githubusercontent.com/41558/111915750-1bad8f80-8a78-11eb-951a-d5da1adc2bdc.png)
 
 ### Very simply
-```$ knockpy domain.com```
+```python3 knockpy.py domain.com```
 
 # Install
 
 ###### You need python3, pip3, git.
 
-```$ git clone https://github.com/guelfoweb/knock.git```
-
-__Choose one of the three installation methods__
-
-**Install in the __global__ site-packages directory:**
-
-###### as root
-
-```# python3 setup.py install```
-
-**Install in the __user__ site-packages directory:**
-
-```$ python3 setup.py install --user```
-
-**Use virtualenv + pip**
-
-```$ virtualenv --python=python3 venv3```
-
-```$ source venv3/bin/activate```
-
-```$ pip3 install -r requirements.txt```
-
-Are you looking for a [dockerized image of knockpy](https://github.com/guelfoweb/knock#knockpy-docker)?
-
+```
+git clone https://github.com/guelfoweb/knock.git
+cd knock
+pip3 install -r requirements.txt
+python3 knockpy.py <DOMAIN>
+```
 
 # Knockpy -h
 
 ```
-usage: knockpy [-h] [-v] [--no-local] [--no-remote] [--no-http] [--no-http-code CODE [CODE ...]] [-w WORDLIST] [-o FOLDER] [-t SEC] domain
+usage: knockpy [-h] [-v] [--no-local] [--no-remote] [--no-http] [--no-http-code CODE [CODE ...]] 
+               [-w WORDLIST] [-o FOLDER] [-t SEC] [-th NUM] domain
 
 --------------------------------------------------------------------------------
 * SCAN
-full scan:  knockpy domain.com
-fast scan:  knockpy domain.com --no-http
-quick scan: knockpy domain.com --no-http --no-local
+full scan:    knockpy domain.com
 ignore code:  knockpy domain.com --no-http-code 404 500 530
-timeout:  knockpy domain.com -t 2
+threads:      knockpy domain.com -th 50
+timeout:      knockpy domain.com -t 2
 
 * REPORT
 show report:  knockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
 plot report:  knockpy --plot knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
-csv report: knockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
+csv report:   knockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
 
 * SETTINGS
-set apikey: knockpy --set apikey-virustotal=APIKEY
+set apikey:   knockpy --set apikey-virustotal=APIKEY
 set timeout:  knockpy --set timeout=sec
+set threads:  knockpy --set threads=num
 --------------------------------------------------------------------------------
 
 positional arguments:
@@ -75,6 +58,7 @@ optional arguments:
   -w WORDLIST           wordlist file to import
   -o FOLDER             report folder to store json results
   -t SEC                timeout in seconds
+  -th NUM               threads num
 
 ```
 
@@ -96,6 +80,11 @@ optional arguments:
 - Attack type: **dns**
 - DNS requests only, no http(s) requests will be made. This way the response will be much faster and you will get the IP address and the Subdomain.
 - The subdomain will be cyan in color if it is an ```alias``` and in that case the real host name will also be provided.
+
+### Set threads
+```$ knockpy domain.com -th 50```
+
+- default threads = ```30```
 
 ### Set timeout
 ```$ knockpy domain.com -t 5```
@@ -169,14 +158,6 @@ Report example ```domain.com_yyyy_mm_dd_hh_mm_ss.json```:
 ```
 
 ```_meta``` is a reserved key that contains the basic information of the scan.
-
-### Knockpy docker
-
-A dockerized image is hosted on [nocommentlab/knock](https://hub.docker.com/r/nocommentlab/knock) a project of [Antonio Blescia](https://github.com/nocommentlab).
-
-You can use classic docker commands or run [kdocker](https://raw.githubusercontent.com/guelfoweb/knock/master/kdocker) script.
-
-```./kdocker domain.com <arg1> <arg2> <argn>```
 
 # License
 

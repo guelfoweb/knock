@@ -1,4 +1,7 @@
 # Changelog
+5.2.0 - 2021-10-03
+---------
+- added asynchronous execution
 
 5.1.0 - 2021-03-31
 ---------
