@@ -1,4 +1,14 @@
 # Changelog
+5.2.0 - 2021-10-03
+---------
+- added asynchronous execution
+
+5.1.0 - 2021-03-31
+---------
+- added show report --report
+- added csv report --csv
+- added plot report --plot
+- added set apikey --set apikey-virustotal=
 
 5.0.0 - 2021-03-20
 ---------
