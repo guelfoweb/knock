@@ -99,8 +99,10 @@ class Wordlist():
         url = "https://www.virustotal.com/vtapi/v2/domain/report"
         params = {"apikey": apikey,"domain": domain}
         resp = requests.get(url, params=params)
-        resp = resp.json()
-        subdomains = [item.replace("."+domain, "") for item in resp["subdomains"]] if "subdomains" in resp.keys() else []
+        subdomains = []
+        if resp.status_code == 200:
+            resp = resp.json()
+            subdomains = [item.replace("."+domain, "") for item in resp["subdomains"]] if "subdomains" in resp.keys() else []
         return subdomains
 
     def get(domain):
