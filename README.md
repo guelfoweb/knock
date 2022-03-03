@@ -1,4 +1,4 @@
-# Knock Subdomain Scan v5.2.0
+# Knock Subdomain Scan v5.3.0
 
 Knockpy is a python3 tool designed to quickly enumerate subdomains on a target domain through dictionary attack.
 
@@ -54,7 +54,9 @@ optional arguments:
                         
   --no-http-code CODE [CODE ...]
                         http code list to ignore
-                        
+
+  --dns DNS             use custom DNS ex. 8.8.8.8                        
+
   -w WORDLIST           wordlist file to import
   -o FOLDER             report folder to store json results
   -t SEC                timeout in seconds
@@ -80,6 +82,11 @@ optional arguments:
 - Attack type: **dns**
 - DNS requests only, no http(s) requests will be made. This way the response will be much faster and you will get the IP address and the Subdomain.
 - The subdomain will be cyan in color if it is an ```alias``` and in that case the real host name will also be provided.
+
+### Custom DNS
+```$ knockpy domain.com --dns 8.8.8.8```
+
+- by default it uses the pre-configured DNS on your system (ex. /etc/resolv.conf).
 
 ### Set threads
 ```$ knockpy domain.com -th 50```

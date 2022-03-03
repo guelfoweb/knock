@@ -8,9 +8,10 @@ from os import path
 import colorama
 import argparse
 import socket
+from . import dns_socket
 import requests
 import random
-import bs4 
+import bs4
 import time
 import json
 import sys
@@ -30,6 +31,8 @@ if hasattr(socket, "setdefaulttimeout"): socket.setdefaulttimeout(config["timeou
 class Request():
     def dns(target):
         try:
+            if config["dns"]:
+                return dns_socket._gethostbyname_ex(target, config["dns"])
             return socket.gethostbyname_ex(target)
         except:
             return []
@@ -383,7 +386,7 @@ class Report():
         plt.show()
 
 class Start():
-    __version__ = "5.2.0"
+    __version__ = "5.3.0"
 
     def msg_rnd():
         return ["happy hacking ;)", "good luck!", "never give up!",
@@ -482,6 +485,7 @@ class Start():
         parser.add_argument("--no-remote", help="remote wordlist ignore", action="store_true", required=False)
         parser.add_argument("--no-http", help="http requests ignore\n\n", action="store_true", required=False)
         parser.add_argument("--no-http-code", help="http code list to ignore\n\n", nargs="+", dest="code", type=int, required=False)
+        parser.add_argument("--dns", help="use custom DNS ex. 8.8.8.8\n\n", dest="dns", required=False)
         parser.add_argument("-w", help="wordlist file to import", dest="wordlist", required=False)
         parser.add_argument("-o", help="report folder to store json results", dest="folder", required=False)
         parser.add_argument("-t", help="timeout in seconds", nargs=1, dest="sec", type=int, required=False)
@@ -523,6 +527,9 @@ class Start():
 
         if args.wordlist:
             config["wordlist"]["local"] = args.wordlist
+
+        if args.dns:
+            config["dns"] = args.dns
 
         return domain
 
