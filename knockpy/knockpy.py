@@ -97,6 +97,14 @@ class Wordlist():
         except Exception as e:
             return []
 
+    def anubis(domain):
+        url = "https://jonlu.ca/anubis/subdomains/%s" % domain
+        subdomainre = "^[a-z1-9]{1}[a-z1-9-\\.]{0,70}\\.%s$" % re.escape(domain)
+        resp = requests.get(url)
+        resp = json.loads(resp.text)
+        subdomains = [item.replace("."+domain, "") for item in resp if re.match(subdomainre, item)]
+        return subdomains
+
     def virustotal(domain, apikey):
         if not apikey: return []
         url = "https://www.virustotal.com/vtapi/v2/domain/report"
@@ -106,13 +114,22 @@ class Wordlist():
         subdomains = [item.replace("."+domain, "") for item in resp["subdomains"]] if "subdomains" in resp.keys() else []
         return subdomains
 
+    def post(domain, results):
+        url = "https://jonlu.ca/anubis/subdomains/%s" % domain
+        subdomains = list(set(item for item in results.keys() if item != "_meta"))
+        data = {"subdomains": json.dumps(subdomains)}
+        try:
+            requests.post(url, data=data)
+        except Exception:
+            pass
+
     def get(domain):
         config_wordlist = config["wordlist"]
     
         config_api = config["api"]
         user_agent = random.choice(config["user_agent"])
 
-        local, google, duckduckgo, virustotal = [], [], [], []
+        local, google, duckduckgo, anubis, virustotal = [], [], [], [], []
 
         if "local" in config_wordlist["default"]:
             local = list(Wordlist.local(config_wordlist["local"])) if "local" in config_wordlist["default"] else []
@@ -120,9 +137,10 @@ class Wordlist():
         if "remote" in config_wordlist["default"]:
             google = list(Wordlist.google(domain)) if "google" in config_wordlist["remote"] else []
             duckduckgo = list(Wordlist.duckduckgo(domain)) if "duckduckgo" in config_wordlist["remote"] else []
+            anubis = list(Wordlist.anubis(domain)) if "anubis" in config_wordlist["remote"] else []
             virustotal = list(Wordlist.virustotal(domain, config_api["virustotal"])) if "virustotal" in config_wordlist["remote"] else []
 
-        return local, google, duckduckgo, virustotal
+        return local, google, duckduckgo, anubis, virustotal
 
 class Output():
     def progressPrint(text):
@@ -145,9 +163,9 @@ class Output():
 
         return newText + newCount + newSep
 
-    def headerPrint(local, google, duckduckgo, virustotal, domain):
+    def headerPrint(local, google, duckduckgo, anubis, virustotal, domain):
         """
-        local: 0 | google: 2 | duckduckgo: 0 | virustotal: 100
+        local: 0 | google: 2 | duckduckgo: 0 | anubis: 48 | virustotal: 100
         
         Wordlist: 102 | Target: domain.com | Ip: 123.123.123.123
         """
@@ -155,9 +173,10 @@ class Output():
         line = Output.colorizeHeader("local: ", local, "| ")
         line += Output.colorizeHeader("google: ", google, "| ")
         line += Output.colorizeHeader("duckduckgo: ", duckduckgo, "| ")
+        line += Output.colorizeHeader("anubis: ", anubis, "| ")
         line += Output.colorizeHeader("virustotal: ", virustotal, "\n")
         line += "\n"
-        line += Output.colorizeHeader("Wordlist: ", local + google + duckduckgo + virustotal, "| ")
+        line += Output.colorizeHeader("Wordlist: ", local + google + duckduckgo + anubis + virustotal, "| ")
 
         req = Request.dns(domain)
         if req != []:
@@ -602,15 +621,15 @@ def main():
 
     # wordlist
     Output.progressPrint("getting wordlist ...")
-    local, google, duckduckgo, virustotal = Wordlist.get(domain)
-    wordlist = list(dict.fromkeys((local + google + duckduckgo + virustotal)))
+    local, google, duckduckgo, anubis, virustotal = Wordlist.get(domain)
+    wordlist = list(dict.fromkeys(local + google + duckduckgo + anubis + virustotal))
     wordlist = sorted(wordlist, key=str.lower)
     max_len = len(max(wordlist, key=len) + "." + domain) if wordlist else sys.exit("\nno wordlist")
 
     if not wordlist: sys.exit("no wordlist")
 
     # header
-    print (Output.headerPrint(local, google, duckduckgo, virustotal, domain))
+    print (Output.headerPrint(local, google, duckduckgo, anubis, virustotal, domain))
     time_start = time.time()
     print (Output.headerBarPrint(time_start, max_len))
     
@@ -633,6 +652,9 @@ def main():
 
     # save report
     if config["report"]["save"]: Report.save(results, domain, time_start, time_end, len_wordlist)
+
+    # submit results to Anubis API
+    if config["share_results_with_anubis"]: Wordlist.post(domain, results)
 
 if __name__ == "__main__":
     try:

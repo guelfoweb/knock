@@ -15,6 +15,7 @@
         "remote": [
             "google",
             "duckduckgo",
+            "anubis",
             "virustotal"
         ],
         "default": [
@@ -31,5 +32,6 @@
         "save": true,
         "folder": "knockpy_report",
         "strftime": "%Y_%m_%d_%H_%M_%S"
-    }
+    },
+    "share_results_with_anubis": true
 }
