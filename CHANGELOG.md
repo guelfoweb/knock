@@ -1,7 +1,7 @@
 # Changelog
 5.4.0 - 2023-01-09
 ---------
-- added plugins for passive reconnaissance
+- added passive reconnaissance plugins
 
 5.3.0 - 2022-03-03
 ---------
