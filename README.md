@@ -79,7 +79,7 @@ optional arguments:
 
 - Attack type: **dns** + **http(s)** requests
 - Knockpy uses internal file ```wordlist.txt```. If you want to use an external dictionary you can use the ```-w``` option and specify the path to your dictionary text file.
-- Knockpy also tries to get subdomains from ```virustotal``` or from other sources through ```plugins```. The results will be added to the general dictionary. You can write a new plugin to populate the wordlist with subdomains obtained from external services. Take a look at the ones in the [passive](https://github.com/guelfoweb/knock/tree/master/knockpy/passive) folder and use them as an example.
+- Knockpy also tries to get subdomains from ```virustotal``` or other sources through ```plugins```. The results will be added to the general dictionary. You can write a new plugin to populate the wordlist with subdomains obtained from external services. Take a look at the ones in the [passive](https://github.com/guelfoweb/knock/tree/master/knockpy/passive) folder and use them as an example.
 - It is highly recommended to use a [virustotal](https://github.com/guelfoweb/knock#virustotal-apikey) ```API_KEY``` which you can get for free. The best results always come from ```virustotal```.
 - But, if you only want to work with local word lists, without search engines queries, you can add ```--no-remote``` to bypass remote recon.
 - If you want to ignore http(s) responses with specific code, you can use the ```--no-http-code``` option followed by the code list ```404 500 530```
