@@ -1,4 +1,13 @@
 # Changelog
+5.4.0 - 2023-01-09
+---------
+- added plugins for passive reconnaissance
+
+5.3.0 - 2022-03-03
+---------
+- added custom dns --dns
+
+
 5.2.0 - 2021-10-03
 ---------
 - added asynchronous execution
