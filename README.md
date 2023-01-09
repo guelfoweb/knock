@@ -1,6 +1,6 @@
-# Knock Subdomain Scan v5.3.0
+# Knock Subdomain Scan v5.4.0
 
-Knockpy is a python3 tool designed to quickly enumerate subdomains on a target domain through dictionary attack.
+Knockpy is a python3 tool designed to quickly enumerate subdomains on a target domain through ```passive reconnaissance``` and ```dictionary attack```.
 
 ![knockpy5](https://user-images.githubusercontent.com/41558/111915750-1bad8f80-8a78-11eb-951a-d5da1adc2bdc.png)
 
@@ -79,7 +79,7 @@ optional arguments:
 
 - Attack type: **dns** + **http(s)** requests
 - Knockpy uses internal file ```wordlist.txt```. If you want to use an external dictionary you can use the ```-w``` option and specify the path to your dictionary text file.
-- Knockpy also tries to get subdomains from ```google```, ```duckduckgo```, and ```virustotal```. The results will be added to the general dictionary.
+- Knockpy also tries to get subdomains from ```virustotal``` or from other sources through ```plugins```. The results will be added to the general dictionary. You can write a new plugin to populate the wordlist with subdomains obtained from external services. Take a look at the ones in the [passive](https://github.com/guelfoweb/knock/tree/master/knockpy/passive) folder and use them as an example.
 - It is highly recommended to use a [virustotal](https://github.com/guelfoweb/knock#virustotal-apikey) ```API_KEY``` which you can get for free. The best results always come from ```virustotal```.
 - But, if you only want to work with local word lists, without search engines queries, you can add ```--no-remote``` to bypass remote recon.
 - If you want to ignore http(s) responses with specific code, you can use the ```--no-http-code``` option followed by the code list ```404 500 530```
@@ -90,6 +90,10 @@ optional arguments:
 - Attack type: **dns**
 - DNS requests only, no http(s) requests will be made. This way the response will be much faster and you will get the IP address and the Subdomain.
 - The subdomain will be cyan in color if it is an ```alias``` and in that case the real host name will also be provided.
+
+```$ knockpy domain.com --no-local```
+
+Alternatively you can exclude the local wordlist and test only subdomains obtained by ```passive reconnaissance```. 
 
 ### Custom DNS
 ```$ knockpy domain.com --dns 8.8.8.8```

@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from importlib.machinery import SourceFileLoader
 from argparse import RawTextHelpFormatter
 from colorama import Fore, Style
 import concurrent.futures
-from os import path
+from os import path, walk
 import colorama
 import argparse
 import socket
@@ -77,26 +78,6 @@ class Wordlist():
             wlist = open(filename,'r').read().split("\n")
         return filter(None, wlist)
     
-    def google(domain):
-        headers = {"user-agent": random.choice(config["user_agent"])}
-        dork = "site:%s -site:www.%s" % (domain, domain)
-        url = "https://google.com/search?q=%s&start=%s" % (dork, str(3))
-        params = [domain, url, headers]
-        try:
-            return Request.bs4scrape(params)
-        except Exception as e:
-            return []
-
-    def duckduckgo(domain):
-        headers = {"user-agent": random.choice(config["user_agent"])}
-        dork = "site:%s -site:www.%s" % (domain, domain)
-        url = "https://duckduckgo.com/html/?q=%s" % dork
-        params = [domain, url, headers]
-        try:
-            return Request.bs4scrape(params)
-        except Exception as e:
-            return []
-
     def virustotal(domain, apikey):
         if not apikey: return []
         url = "https://www.virustotal.com/vtapi/v2/domain/report"
@@ -106,23 +87,58 @@ class Wordlist():
         subdomains = [item.replace("."+domain, "") for item in resp["subdomains"]] if "subdomains" in resp.keys() else []
         return subdomains
 
+    def passivescan(domain):
+        result = []
+
+        # plugin directory
+        dir_plugins = _ROOT + '/passive'
+        
+        for (dir_plugins, dir_names, plugins) in walk(dir_plugins):
+            for plugin in plugins:
+
+                Output.progressPrint('') # print empty line
+
+                # filter for .py scripts and exclude __init__.py file
+                if plugin.endswith('.py') and plugin != '__init__.py':
+                    plugin_path = os.path.join(dir_plugins, plugin)
+                    
+                    try:
+                        # load module
+                        foo = SourceFileLoader(plugin, plugin_path).load_module()
+                        Output.progressPrint(plugin) # print name of the module
+                        
+                        # get module's result
+                        plugin_result = foo.get(domain)
+                        
+                        # add subdomains
+                        result = result + plugin_result
+                    except:
+                        # print plugin error and sleep 3 secs.
+                        Output.progressPrint("error plugin -> "+plugin)
+                        time.sleep(3)
+                        continue
+        
+        result = list(set([r.lower() for r in result]))
+        subdomains = [item.replace('.'+domain, '') for item in result]
+        return subdomains
+
+
     def get(domain):
         config_wordlist = config["wordlist"]
     
         config_api = config["api"]
         user_agent = random.choice(config["user_agent"])
 
-        local, google, duckduckgo, virustotal = [], [], [], []
+        local, virustotal, passive = [], [], []
 
         if "local" in config_wordlist["default"]:
             local = list(Wordlist.local(config_wordlist["local"])) if "local" in config_wordlist["default"] else []
 
         if "remote" in config_wordlist["default"]:
-            google = list(Wordlist.google(domain)) if "google" in config_wordlist["remote"] else []
-            duckduckgo = list(Wordlist.duckduckgo(domain)) if "duckduckgo" in config_wordlist["remote"] else []
             virustotal = list(Wordlist.virustotal(domain, config_api["virustotal"])) if "virustotal" in config_wordlist["remote"] else []
+            passive = list(Wordlist.passivescan(domain)) if "passive" in config_wordlist["remote"] else []
 
-        return local, google, duckduckgo, virustotal
+        return local, virustotal, passive
 
 class Output():
     def progressPrint(text):
@@ -145,19 +161,18 @@ class Output():
 
         return newText + newCount + newSep
 
-    def headerPrint(local, google, duckduckgo, virustotal, domain):
+    def headerPrint(local, virustotal, passive, domain):
         """
-        local: 0 | google: 2 | duckduckgo: 0 | virustotal: 100
+        local: 0 | virustotal: 100 | passive: 270
         
-        Wordlist: 102 | Target: domain.com | Ip: 123.123.123.123
+        Wordlist: 370 | Target: domain.com | Ip: 123.123.123.123
         """
 
         line = Output.colorizeHeader("local: ", local, "| ")
-        line += Output.colorizeHeader("google: ", google, "| ")
-        line += Output.colorizeHeader("duckduckgo: ", duckduckgo, "| ")
-        line += Output.colorizeHeader("virustotal: ", virustotal, "\n")
+        line += Output.colorizeHeader("virustotal: ", virustotal, "| ")
+        line += Output.colorizeHeader("passive: ", passive, "\n")
         line += "\n"
-        line += Output.colorizeHeader("Wordlist: ", local + google + duckduckgo + virustotal, "| ")
+        line += Output.colorizeHeader("Wordlist: ", local + virustotal + passive, "| ")
 
         req = Request.dns(domain)
         if req != []:
@@ -337,6 +352,7 @@ class Report():
         for item in report.keys():
             if len(report[item]) == 5:
                 """
+                fix injection:
                 https://github.com/guelfoweb/knock/commit/156378d97f10871d30253eeefe15ec399aaa0b03
                 https://www.exploit-db.com/exploits/49342
                 """
@@ -367,6 +383,8 @@ class Report():
         return results
 
     def plot(report):
+        # todo:
+        # get modules list from sys.modules.keys()
         try:
             import matplotlib.pyplot as plt
             import networkx as nx
@@ -386,7 +404,7 @@ class Report():
         plt.show()
 
 class Start():
-    __version__ = "5.3.0"
+    __version__ = "5.4.0"
 
     def msg_rnd():
         return ["happy hacking ;)", "good luck!", "never give up!",
@@ -602,15 +620,15 @@ def main():
 
     # wordlist
     Output.progressPrint("getting wordlist ...")
-    local, google, duckduckgo, virustotal = Wordlist.get(domain)
-    wordlist = list(dict.fromkeys((local + google + duckduckgo + virustotal)))
+    local, virustotal, passive = Wordlist.get(domain)
+    wordlist = list(dict.fromkeys((local + virustotal + passive)))
     wordlist = sorted(wordlist, key=str.lower)
     max_len = len(max(wordlist, key=len) + "." + domain) if wordlist else sys.exit("\nno wordlist")
 
     if not wordlist: sys.exit("no wordlist")
 
     # header
-    print (Output.headerPrint(local, google, duckduckgo, virustotal, domain))
+    print (Output.headerPrint(local, virustotal, passive, domain))
     time_start = time.time()
     print (Output.headerBarPrint(time_start, max_len))
     
