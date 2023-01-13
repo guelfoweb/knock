@@ -15,6 +15,7 @@ setup(
 		"knockpy": [
 			"wordlist.txt",
 			"config.json",
+			"passive/*",
 			], 
 	},
 	include_package_data=True,
