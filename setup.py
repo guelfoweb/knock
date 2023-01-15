@@ -2,21 +2,25 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+import os
+
+# local wordlist
+local = "local{sep}*.txt".format(sep=os.sep)
+# remote wordlist
+remote = "remote{sep}*.py".format(sep=os.sep)
+# lib
+lib = "lib{sep}*.py".format(sep=os.sep)
 
 setup(
 	name="knockpy",
-	version="5.4.0",
-	description="Knock is a python tool designed to quickly enumerate subdomains on a target domain through dictionary attack.",
+	version="6.0.0",
+	description="Knock is a Knockpy is a portable and modular python3 tool designed to quickly enumerate subdomains on a target domain through passive reconnaissance and dictionary attack.",
 	url="https://github.com/guelfoweb/knock",
 	author="Gianni 'guelfoweb' Amato",
 	license="GPL-3.0",
 	packages=["knockpy"],
 	package_data={
-		"knockpy": [
-			"wordlist.txt",
-			"config.json",
-			"passive/*",
-			], 
+		"knockpy": [lib, local, remote],
 	},
 	include_package_data=True,
 	install_requires = [

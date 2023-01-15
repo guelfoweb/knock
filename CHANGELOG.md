@@ -1,4 +1,17 @@
 # Changelog
+6.0.0 - 2023-01-15
+---------
+- added silent mode --silent
+- added ignore scanning --no-scan
+- added api_shodan and api_virustotal to plugin
+- added custom user agent --user-agent
+- added callable python module (Scanning.start())
+- added stdin
+- changed passive folder to remote
+- moved wordlist.txt to local folder
+- deleted --set
+- optimized some parts of the code
+
 5.4.0 - 2023-01-09
 ---------
 - added passive reconnaissance plugins
@@ -6,7 +19,6 @@
 5.3.0 - 2022-03-03
 ---------
 - added custom dns --dns
-
 
 5.2.0 - 2021-10-03
 ---------

@@ -1,24 +1,60 @@
-# Knock Subdomain Scan v5.4.0
+# Knock Subdomain Scan v6.0.0
 
-Knockpy is a python3 tool designed to quickly enumerate subdomains on a target domain through ```passive reconnaissance``` and ```dictionary attack```.
+Knockpy is a portable and modular python3 tool designed to quickly enumerate subdomains on a target domain through **passive reconnaissance** and **dictionary scan**.
 
-![knockpy5](https://user-images.githubusercontent.com/41558/111915750-1bad8f80-8a78-11eb-951a-d5da1adc2bdc.png)
+![knockpy6](https://user-images.githubusercontent.com/41558/212566603-3120aef5-7df0-402d-b80d-7ea8b14f8c73.png)
 
 ### Very simply
-```python3 knockpy.py domain.com```
+```bash
+python3 knockpy.py domain.com
+```
+
+# Table of Contents
+* [Install](#install)
+    * [Run from folder](#run-from-folder)
+    * [Install package](#install-package)
+    * [Docker](#docker)
+* [Usage](#usage)
+    * [Full scan](#full-scan)
+    * [Scan with remote list only](#scan-with-remote-list-only---no-local)
+    * [No scan, get remote list only](#no-scan-get-remote-list-only---no-local---no-scan)
+    * [Use a custom DNS](#use-a-custom-dns---dns)
+    * [Silent mode](#silent-mode---silent)
+    * [Output folder](#output-folder--o)
+* [Report](#report)
+    * [Show report](#show-report---report)
+    * [Convert report in csv](#convert-report-in-csv---csv)
+    * [Plot report](#plot-report---plot)
+* [Module](#module)
+* [Plugin](#plugin)
+* [License](#license)
+
+---
 
 # Install
 
+### Run from folder
 ###### You need python3, pip3, git.
 
-```
+```bash
 git clone https://github.com/guelfoweb/knock.git
 cd knock
 pip3 install -r requirements.txt
+
 python3 knockpy.py <DOMAIN>
 ```
+### Install package
+###### As root
 
-# Docker
+```bash
+git clone https://github.com/guelfoweb/knock.git
+cd knock
+python3 setup.py install
+
+knockpy <DOMAIN>
+````
+
+### Docker
 
 Knockpy image hosted at [DockerHub Page](https://hub.docker.com/r/secsi/knockpy) and automatically updated with [RAUDI](https://github.com/cybersecsi/RAUDI)
 
@@ -26,28 +62,35 @@ Knockpy image hosted at [DockerHub Page](https://hub.docker.com/r/secsi/knockpy)
 docker run -it --rm secsi/knockpy <domain>
 ```
 
-# Knockpy -h
+---
+
+# Usage
+
+#### As a standalone command line tool
+
+### Knockpy ```-h```
 
 ```
-usage: knockpy [-h] [-v] [--no-local] [--no-remote] [--no-http] [--no-http-code CODE [CODE ...]] 
-               [-w WORDLIST] [-o FOLDER] [-t SEC] [-th NUM] domain
+usage: knockpy [-h] [-v] [--no-local] [--no-remote] [--no-scan] [--no-http] 
+               [--no-http-code CODE [CODE ...]] [--dns DNS] [-w WORDLIST] 
+               [-o FOLDER] [-t SEC] [-th NUM] [--silent [{False,json,json-pretty,csv}]]
+               domain
 
 --------------------------------------------------------------------------------
 * SCAN
 full scan:    knockpy domain.com
+quick scan:   knockpy domain.com --no-local
+faster scan:  knockpy domain.com --no-local --no-http
 ignore code:  knockpy domain.com --no-http-code 404 500 530
-threads:      knockpy domain.com -th 50
-timeout:      knockpy domain.com -t 2
+silent mode:  knockpy domain.com --silent
+
+* SUBDOMAINS
+show recon:   knockpy domain.com --no-local --no-scan
 
 * REPORT
 show report:  knockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
 plot report:  knockpy --plot knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
 csv report:   knockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
-
-* SETTINGS
-set apikey:   knockpy --set apikey-virustotal=APIKEY
-set timeout:  knockpy --set timeout=sec
-set threads:  knockpy --set threads=num
 --------------------------------------------------------------------------------
 
 positional arguments:
@@ -58,6 +101,7 @@ optional arguments:
   -v, --version         show program's version number and exit
   --no-local            local wordlist ignore
   --no-remote           remote wordlist ignore
+  --no-scan             scanning ignore, show wordlist and exit
   --no-http             http requests ignore
                         
   --no-http-code CODE [CODE ...]
@@ -70,75 +114,105 @@ optional arguments:
   -t SEC                timeout in seconds
   -th NUM               threads num
 
+  --silent [{False,json,json-pretty,csv}]
+                        silent or quiet mode, default: False
 ```
 
-# Usage
+---
 
 ### Full scan
-```$ knockpy domain.com```
+```bash
+$ knockpy domain.com
+```
 
-- Attack type: **dns** + **http(s)** requests
-- Knockpy uses internal file ```wordlist.txt```. If you want to use an external dictionary you can use the ```-w``` option and specify the path to your dictionary text file.
-- Knockpy also tries to get subdomains from ```virustotal``` or other sources through ```plugins```. The results will be added to the general dictionary. You can write a new plugin to populate the wordlist with subdomains obtained from external services. Take a look at the ones in the [passive](https://github.com/guelfoweb/knock/tree/master/knockpy/passive) folder and use them as an example.
-- It is highly recommended to use a [virustotal](https://github.com/guelfoweb/knock#virustotal-apikey) ```API_KEY``` which you can get for free. The best results always come from ```virustotal```.
-- But, if you only want to work with local word lists, without search engines queries, you can add ```--no-remote``` to bypass remote recon.
-- If you want to ignore http(s) responses with specific code, you can use the ```--no-http-code``` option followed by the code list ```404 500 530```
+- Scan type: **dns** + **http(s)** requests
+- Wordlist: **local** + **remote**
 
-### Fast scan
-```$ knockpy domain.com --no-http```
+Knockpy uses by default a internal file **wordlist.txt** and a remote list obtained by scanning other sources (passive recon) through **plugins**. To use a custom dictionary you can use the ```-w``` option and specify the path to your local dictionary. Also, you can write a new plugin to populate the wordlist with subdomains obtained from external services. Take a look at the ones in the [remote](knockpy/remote) folder and use them as an example. Remember that some plugins, like [Virustotal](knockpy/remote/api_virustotal.py) or [Shodan](knockpy/remote/api_shodan.py), need apikey to work.
 
-- Attack type: **dns**
-- DNS requests only, no http(s) requests will be made. This way the response will be much faster and you will get the IP address and the Subdomain.
-- The subdomain will be cyan in color if it is an ```alias``` and in that case the real host name will also be provided.
+The domain target can be passed via STDIN.
 
-```$ knockpy domain.com --no-local```
+```bash
+echo "domain.com" | knockpy
+```
 
-Alternatively you can exclude the local wordlist and test only subdomains obtained by ```passive reconnaissance```. 
+To ignore http(s) responses with specific code, you can use the ```--no-http-code``` followed by the code list ```404 500 530```. With the ```--no-ip``` option you can ignore ip list ```192.168.1.100 192.168.101 192.168.1.102```
 
-### Custom DNS
-```$ knockpy domain.com --dns 8.8.8.8```
+---
 
-- by default it uses the pre-configured DNS on your system (ex. /etc/resolv.conf).
+### Scan with remote list only: ```--no-local```
+```bash
+$ knockpy domain.com --no-local
+```
 
-### Set threads
-```$ knockpy domain.com -th 50```
+- Scan type: **dns** + **http(s)** requests
+- Wordlist: **remote**
 
-- default threads = ```30```
+Only test subdomains obtained through **passive reconnaissance** using plugins. This scanning mode will be faster because it excludes the local dictionary.
 
-### Set timeout
-```$ knockpy domain.com -t 5```
+---
 
-- default timeout = ```3``` seconds.
+### No scan, get remote list only: ```--no-local --no-scan```
+```bash
+$ knockpy domain.com --no-scan --no-local
+```
 
-### Virustotal APIKEY
-```$ knockpy --set apikey-virustotal=APIKEY```
+- Scan type: **none**
+- Wordlist: **remote list**
 
-- Get [virustotal](https://virustotal.com/) ```APIKEY``` for free.
+Print passive-only wordlist and exit. No scan will be performed.
 
-### Show report
-```$ knockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json```
-- Show the report in the terminal.
+---
 
-### Csv report
-```$ knockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json```
-- Save report as csv file.
+### Use a custom DNS: ```--dns```
+```bash
+$ knockpy domain.com --dns 8.8.8.8
+```
 
-### Plot report
-```$ knockpy --plot knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json```
-- Plot relationships.
+By default it uses the pre-configured DNS on your system (ex. ```/etc/resolv.conf```).
 
-![facebook](https://user-images.githubusercontent.com/41558/113183466-5a9bcc00-9254-11eb-8d9f-6a9c239eea7d.png)
+---
 
-### Output folder
-```$ knockpy domain.com -o /path/to/new/folder```
+### Silent mode: ```--silent```
+```bash
+$ knockpy domain.com --silent
+```
 
-- All scans are saved in the default folder ```knockpy_report``` that you can edit in the ```config.json``` file. 
-- Alternatively, you can use the ```-o``` option to define the new folder path.
+Hide terminal output and save **json** report in the output folder. Using ```--silent``` with the ```--no-scan``` option hides the banner and shows the **list** of subdomains to the terminal.
 
-### Report
-- At each scan the report will be automatically saved in ```json``` format inside the file with the name ```domain.com_yyyy_mm_dd_hh_mm_ss.json```.
-- If you don't like autosave you can disable it from the ```config.json``` file by changing the value to ```"save": false```.
-- To read the report in a human format you can do as described in [Show report](https://github.com/guelfoweb/knock#show-report).
+```bash
+$ knockpy domain.com --silent json
+```
+
+Hide terminal output and print final results in **json** format.
+
+```bash
+$ knockpy domain.com --silent json-pretty
+```
+
+Hide terminal output and print final results in **intented json**.
+
+```bash
+$ knockpy domain.com --silent csv
+```
+
+Hide terminal output and print final results in **csv** format.
+
+**Note** that at each scan the report will be [automatically saved](#report).
+
+---
+
+### Output folder: ```-o```
+```bash
+$ knockpy domain.com -o /path/to/new/folder
+```
+
+All scans are saved in the default folder ```knockpy_report```. Alternatively, you can use the ```-o /path/folder``` to define the new folder path or disable autosave using ```-o false```.
+
+---
+
+# Report
+At each scan the report will be automatically saved in **json** format inside the file with the name ```domain.com_yyyy_mm_dd_hh_mm_ss.json```. If you don't like autosave you can disable using ```-o false```.
 
 Report example ```domain.com_yyyy_mm_dd_hh_mm_ss.json```:
 
@@ -167,7 +241,7 @@ Report example ```domain.com_yyyy_mm_dd_hh_mm_ss.json```:
     },
     "_meta": {
         "name": "knockpy",
-        "version": "5.1.0",
+        "version": "5.4.1",
         "time_start": 1616353591.2510355,
         "time_end": 1616353930.6632543,
         "domain": "domain.com",
@@ -175,9 +249,133 @@ Report example ```domain.com_yyyy_mm_dd_hh_mm_ss.json```:
     }
 }
 ```
-
 ```_meta``` is a reserved key that contains the basic information of the scan.
 
-# License
+---
 
+### Show report: ```--report```
+```bash
+$ knockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
+```
+
+Print the report in the terminal in a human format.
+
+---
+
+### Convert report in CSV: ```--csv```
+```bash
+$ knockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
+```
+
+Save the existing report in csv file.
+
+---
+
+### Plot report: ```--plot```
+```bash
+$ knockpy --plot knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json
+```
+
+- Plot relationships.
+
+Plot needs these libraries: 
+- matplotlib
+- networkx
+- PyQt5
+
+![facebook](https://user-images.githubusercontent.com/41558/113183466-5a9bcc00-9254-11eb-8d9f-6a9c239eea7d.png)
+
+---
+
+# Module
+
+#### Usage as a library
+
+Importing knockpy as a module (dependence) in your python script is quite simple. Naturally, the package [must be installed](#install-package) on your system.
+
+```python
+from knockpy import knockpy
+```
+The command-line parameters can be managed with the following dictionary.
+
+```python
+params = {
+    "no_local": False,  # [bool] local wordlist ignore
+    "no_remote": False, # [bool] remote wordlist ignore
+    "no_scan": False,   # [bool] scanning ignore, show wordlist
+    "no_http": False,   # [bool] http requests ignore
+    "no_http_code": [], # [list] http code list to ignore
+    "no_ip": [],        # [list] ip address to ignore
+    "dns": "",          # [str] use custom DNS ex. 8.8.8.8
+    "timeout": 3,       # [int] timeout in seconds
+    "threads": 30,      # [int] threads num
+    "useragent": "",    # [str] use a custom user agent
+    "wordlist": ""      # [str] path to custom wordlist
+}
+```
+You can choose pass only the keys you want to change and keep the others with the default values. Eg:
+
+```python
+params = {
+    "no_local": True,
+    "no_scan": True
+}
+```
+Then you can call the function ```knockpy.Scanning.start()``` passing as values the **domain** and the dictionary assigned to the variable **params** to get the results in **json** format. 
+
+```python
+results = knockpy.Scanning.start("domain.com", params)
+```
+
+---
+
+# Plugin
+
+#### Write your own plugin
+
+The plugins are situated in ```remote``` folder. If you want to write your own plugin it's important to pay attention to some precautions:
+
+- if apikey is required, use ```api_``` before the plugin name:
+```
+    api_service.py
+```
+- the function name must be ```get``` and take as parameter ```domain```:
+```python
+    def get(domain):
+        foo
+```
+- the function must return a possibly unique list of subdomains:
+```
+    ['sub1.domain.com', 'sub2.domain.com', ...]
+```
+- to parse/scrape the results it is recommended to use the standard modules such as:
+```python
+    requests, json, bs4, re
+```
+
+Here is an **example** of how a plugin should be structured. You can find other examples in the [remote](knockpy/remote) folder.
+
+```python
+import requests
+import json
+
+def get(domain):
+    # servicename -> JSON: key -> subdomain
+    url = "https://servicename.com/search/?q={domain}".format(domain=domain)
+    resp = requests.get(url, timeout=5).text
+    
+    resp = json.loads(resp)
+    
+    result = []
+    for item in resp['data']:
+        subdomain = item['subdomain']
+        if subdomain not in result:
+            result.append(subdomain)
+
+    return result
+```
+
+---
+
+# License
 Knockpy is currently under development by [@guelfoweb](https://twitter.com/guelfoweb) and it's released under the GPL 3 license.

@@ -5,98 +5,79 @@ from importlib.machinery import SourceFileLoader
 from argparse import RawTextHelpFormatter
 from colorama import Fore, Style
 import concurrent.futures
-from os import path, walk
 import colorama
 import argparse
 import socket
-from . import dns_socket
+from knockpy.lib import dns_socket
 import requests
 import random
-import bs4
 import time
 import json
 import sys
 import re
 import os
 
-try:
-    _ROOT = os.path.abspath(os.path.dirname(__file__))
-    config_file = os.path.join(_ROOT, "", "config.json")
-    config = json.load(open(config_file))
-except:
-    print ("error in config.json:", config_file)
-    sys.exit(1)
+# socket timeout
+timeout = 3
+if hasattr(socket, "setdefaulttimeout"): socket.setdefaulttimeout(timeout)
 
-if hasattr(socket, "setdefaulttimeout"): socket.setdefaulttimeout(config["timeout"])
+user_agent = [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0",
+    "Mozilla/5.0 (MSIE 10.0; Windows NT 6.1; Trident/5.0)",
+    "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A"
+]
 
+_ROOT = os.path.abspath(os.path.dirname(__file__))
+
+# resolve requests: DNS, HTTP, HTTPS
 class Request():
     def dns(target):
         try:
-            if config["dns"]:
-                return dns_socket._gethostbyname_ex(target, config["dns"])
+            if dns: # use the specified DNS
+                return dns_socket._gethostbyname_ex(target, dns)
             return socket.gethostbyname_ex(target)
         except:
             return []
 
     def https(url):
-        headers = {"user-agent": random.choice(config["user_agent"])}
+        headers = {"user-agent": useragent}
         try:
-            resp = requests.get("https://"+url, headers=headers, timeout=config["timeout"])
+            resp = requests.get("https://"+url, headers=headers, timeout=timeout)
             return [resp.status_code, resp.headers["Server"] if "Server" in resp.headers.keys() else ""]
         except:
             return []
+    
     def http(url):
-        headers = {"user-agent": random.choice(config["user_agent"])}
+        headers = {"user-agent": useragent}
         try:
-            resp = requests.get("http://"+url, headers=headers, timeout=config["timeout"])
+            resp = requests.get("http://"+url, headers=headers, timeout=timeout)
             return [resp.status_code, resp.headers["Server"] if "Server" in resp.headers.keys() else ""]
         except:
             return []
 
-    def bs4scrape(params):
-        target, url, headers = params
-        resp = requests.get(url, headers=headers, timeout=config["timeout"])
-        
-        pattern = "http(s)?:\/\/(.*)\.%s" % target
-        subdomains = []
-        if resp.status_code == 200:
-            soup = bs4.BeautifulSoup(resp.text, "html.parser")
-            for item in soup.find_all("a", href=True):
-                if item["href"].startswith("http") and item["href"].find(target) != -1 and item["href"].find("-site:") == -1:
-                    match = re.match(pattern, item["href"])
-                    if match and re.match("^[a-zA-Z0-9-]*$", match.groups()[1]):
-                        subdomains.append(match.groups()[1])
-        return list(dict.fromkeys(subdomains))
-
+# get and purge local/remote wordlist
 class Wordlist():
+    # get local dictionary
     def local(filename):
         try:
-            wlist = open(filename,'r').read().split("\n")
-        except:
-            _ROOT = os.path.abspath(os.path.dirname(__file__))
             filename = os.path.join(_ROOT, "", filename)
             wlist = open(filename,'r').read().split("\n")
+        except:
+            if not silent_mode: Output.progressPrint("wordlist not found: {filename}".format(filename=filename))
+            return []
+            #sys.exit("wordlist not found: {filename}".format(filename=filename))
         return filter(None, wlist)
     
-    def virustotal(domain, apikey):
-        if not apikey: return []
-        url = "https://www.virustotal.com/vtapi/v2/domain/report"
-        params = {"apikey": apikey,"domain": domain}
-        resp = requests.get(url, params=params)
-        resp = resp.json()
-        subdomains = [item.replace("."+domain, "") for item in resp["subdomains"]] if "subdomains" in resp.keys() else []
-        return subdomains
-
-    def passivescan(domain):
+    # get remote wordlist using plugin
+    def remotescan(domain):
         result = []
 
         # plugin directory
-        dir_plugins = _ROOT + '/passive'
+        dir_plugins = _ROOT + '{sep}remote'.format(sep=os.sep)
         
-        for (dir_plugins, dir_names, plugins) in walk(dir_plugins):
+        for (dir_plugins, dir_names, plugins) in os.walk(dir_plugins):
             for plugin in plugins:
-
-                Output.progressPrint('') # print empty line
 
                 # filter for .py scripts and exclude __init__.py file
                 if plugin.endswith('.py') and plugin != '__init__.py':
@@ -105,7 +86,9 @@ class Wordlist():
                     try:
                         # load module
                         foo = SourceFileLoader(plugin, plugin_path).load_module()
-                        Output.progressPrint(plugin) # print name of the module
+                        if not silent_mode: 
+                            Output.progressPrint('') # print empty line
+                            Output.progressPrint(plugin) # print name of the module
                         
                         # get module's result
                         plugin_result = foo.get(domain)
@@ -114,33 +97,34 @@ class Wordlist():
                         result = result + plugin_result
                     except:
                         # print plugin error and sleep 3 secs.
-                        Output.progressPrint("error plugin -> "+plugin)
-                        time.sleep(3)
+                        if not silent_mode: 
+                            Output.progressPrint("error plugin -> "+plugin)
+                            time.sleep(3)
                         continue
         
         result = list(set([r.lower() for r in result]))
         subdomains = [item.replace('.'+domain, '') for item in result]
         return subdomains
 
+    # purge wordlist
+    def purge(wordlist):
+        return [word for word in wordlist if word and re.match("[a-z0-9\.-]", word)]
 
+    # get wordlist local and/or remote
     def get(domain):
-        config_wordlist = config["wordlist"]
-    
-        config_api = config["api"]
-        user_agent = random.choice(config["user_agent"])
+        local, remote = [], []
 
-        local, virustotal, passive = [], [], []
+        if not no_local:
+            local = list(Wordlist.local(local_wordlist))
 
-        if "local" in config_wordlist["default"]:
-            local = list(Wordlist.local(config_wordlist["local"])) if "local" in config_wordlist["default"] else []
+        if not no_remote:
+            remote = list(Wordlist.remotescan(domain))
 
-        if "remote" in config_wordlist["default"]:
-            virustotal = list(Wordlist.virustotal(domain, config_api["virustotal"])) if "virustotal" in config_wordlist["remote"] else []
-            passive = list(Wordlist.passivescan(domain)) if "passive" in config_wordlist["remote"] else []
+        return local, remote
 
-        return local, virustotal, passive
-
+# manage terminal output
 class Output():
+    # print progressbar
     def progressPrint(text):
         if not text: text = " "*80
         text_dim = Style.DIM + text + Style.RESET_ALL
@@ -148,6 +132,7 @@ class Output():
         sys.stdout.flush()
         sys.stdout.write("\r")
 
+    # colorize line
     def colorizeHeader(text, count, sep):
         newText = Style.BRIGHT + Fore.YELLOW + text + Style.RESET_ALL
         _count = str(len(count)) if isinstance(count, list) else str(count)
@@ -161,18 +146,18 @@ class Output():
 
         return newText + newCount + newSep
 
-    def headerPrint(local, virustotal, passive, domain):
+    # print wordlist and target information
+    def headerPrint(local, remote, domain):
         """
-        local: 0 | virustotal: 100 | passive: 270
+        local: 0 | remote: 270
         
-        Wordlist: 370 | Target: domain.com | Ip: 123.123.123.123
+        Wordlist: 270 | Target: domain.com | Ip: 123.123.123.123
         """
 
         line = Output.colorizeHeader("local: ", local, "| ")
-        line += Output.colorizeHeader("virustotal: ", virustotal, "| ")
-        line += Output.colorizeHeader("passive: ", passive, "\n")
+        line += Output.colorizeHeader("remote: ", remote, "\n")
         line += "\n"
-        line += Output.colorizeHeader("Wordlist: ", local + virustotal + passive, "| ")
+        line += Output.colorizeHeader("Wordlist: ", local + remote, "| ")
 
         req = Request.dns(domain)
         if req != []:
@@ -186,6 +171,7 @@ class Output():
         
         return line
 
+    # print header before of match-line (linePrint)
     def headerBarPrint(time_start, max_len):
         """
         21:57:55
@@ -203,7 +189,7 @@ class Output():
         spaceSub = " " * ((max_len + 1) - len("Subdomain"))
 
         # dns only
-        if not "http" in config["attack"]:
+        if no_http:
             line += "Ip address" +spaceIp+ "Subdomain" +spaceSub+ "Real hostname" + "\n"
             line += Style.RESET_ALL
             line += "-" * 15 + " " + "-" * max_len + " " + "-" * max_len
@@ -218,6 +204,7 @@ class Output():
         
         return line
 
+    # change json for different scan: dns or dns + http
     def jsonizeRequestData(req, target):
         if len(req) == 3:
             subdomain, aliasList, ipList = req
@@ -246,6 +233,7 @@ class Output():
 
         return data
 
+    # print match-line while it's working
     def linePrint(data, max_len):
         """
         123.123.123.123   click.domain.com     click.virt.s6.exactdomain.com
@@ -254,11 +242,14 @@ class Output():
         # just a fix, print space if not domain
         _domain = " "*max_len if not data["domain"] else data["domain"]
 
+        # case dns only
         if len(data.keys()) == 4:
             spaceIp = " " * (16 - len(data["ipaddr"][0]))
             spaceSub = " " * ((max_len + 1) - len(data["target"]))
             _target = Style.BRIGHT + Fore.CYAN + data["target"] + Style.RESET_ALL if data["alias"] else data["target"]
             line = data["ipaddr"][0] +spaceIp+ _target +spaceSub+ _domain
+        
+        # case dns +http
         elif len(data.keys()) == 6:
             data["server"] = data["server"][:max_len]
 
@@ -284,6 +275,7 @@ class Output():
 
         return line
 
+    # print footer at the end after match-line (linePrint)
     def footerPrint(time_end, time_start, results):
         """
         21:58:06
@@ -310,17 +302,20 @@ class Output():
 
         return line
 
+    # create json file
     def write_json(path, json_data):
         f = open(path, "w")
         f.write(json.dumps(json_data, indent=4))
         f.close()
 
+    # create csv file
     def write_csv(path, csv_data):
         f = open(path, "w")
         f.write(csv_data)
         f.close()
 
 class Report():
+    # import json file
     def load_json(report):
         try:
             report_json = json.load(open(report))
@@ -329,6 +324,7 @@ class Report():
         except:
             sys.exit("report not found or invalid json")
 
+    # save output and add _meta to json file
     def save(results, domain, time_start, time_end, len_wordlist):
         _meta = {
             "name": "knockpy",
@@ -340,13 +336,12 @@ class Report():
             }
         
         results.update({"_meta": _meta})
-        folder = config["report"]["folder"]
-        strftime = config["report"]["strftime"]
-        if not os.path.exists(folder): os.makedirs(folder)
+        strftime = "%Y_%m_%d_%H_%M_%S"
         date = time.strftime(strftime, time.gmtime(time_end)) 
-        path = folder + os.sep + domain + "_" + date + ".json"
+        path = output_folder + os.sep + domain + "_" + date + ".json"
         Output.write_json(path, results)
 
+    # convert json to csv
     def csv(report):
         csv_data = ""
         for item in report.keys():
@@ -372,6 +367,7 @@ class Report():
             csv_data += "\n"
         return csv_data
 
+    # convert json to human text to show in terminal
     def terminal(domain):
         report_json = Report.load_json(domain)
 
@@ -382,6 +378,7 @@ class Report():
             results += Output.linePrint(report_json[item], max_len) + "\n"
         return results
 
+    # plotting relationships
     def plot(report):
         # todo:
         # get modules list from sys.modules.keys()
@@ -404,19 +401,28 @@ class Report():
         plt.show()
 
 class Start():
-    __version__ = "5.4.0"
+    __version__ = "6.0.0"
 
+    # print random message
     def msg_rnd():
         return ["happy hacking ;)", "good luck!", "never give up!",
                 "hacking is not a crime", "https://en.wikipedia.org/wiki/Bug_bounty_program"]
 
+    # check for valid domain
+    # it's used in Start.arguments() and Scanning.start()
+    def is_valid_domain(domain):
+        if not isinstance(domain, str) or not re.match("[a-z0-9\.-]", domain) or domain.startswith(("http", "www.")):
+            return False
+        return True
+
+    # when domain not is a domain name but it's a command
     def parse_and_exit(args):
         if len(args) == 3 and args[1] in ["--report", "--plot", "--csv", "--set"]:
 
             # report
             if args[1] == "--report":
                 if args[2].endswith(".json"):
-                    if path.isfile(args[2]):
+                    if os.path.isfile(args[2]):
                         report = Report.terminal(args[2])
                         if report: sys.exit(report)
                     sys.exit("report not found: %s" % args[2])
@@ -425,7 +431,7 @@ class Start():
             # plot
             if args[1] == "--plot":
                 if args[2].endswith(".json"):
-                    if path.isfile(args[2]):
+                    if os.path.isfile(args[2]):
                         report = Report.load_json(args[2])
                         if report: Report.plot(report)
                         sys.exit()
@@ -435,7 +441,7 @@ class Start():
             # csv
             if args[1] == "--csv":
                 if args[2].endswith(".json"):
-                    if path.isfile(args[2]):
+                    if os.path.isfile(args[2]):
                         report = Report.load_json(args[2])
                         if report: 
                             csv_file = args[2].replace(".json", ".csv")
@@ -444,110 +450,145 @@ class Start():
                     sys.exit("report not found: %s" % args[2])
                 sys.exit("try using: knockpy --csv path/to/domain.com_yyyy_mm_dd_hh_mm_ss.json")
 
-            # set
-            if args[1] == "--set":
-                # virustotal
-                if args[2].startswith("apikey-virustotal="):
-                    apikey = args[2].split("=")[1]
-                    orig_config = json.load(open(config_file))
-                    orig_config["api"]["virustotal"] = apikey
-                    Output.write_json(config_file, orig_config)
-                    sys.exit("%s added!" % apikey)
-                
-                # timeout
-                elif args[2].startswith("timeout="):
-                    seconds = args[2].split("=")[1]
-                    orig_config = json.load(open(config_file))
-                    orig_config["timeout"] = int(seconds)
-                    Output.write_json(config_file, orig_config)
-                    sys.exit("timeout is %s" % seconds)
-
-                #threads
-                elif args[2].startswith("threads="):
-                    number = args[2].split("=")[1]
-                    orig_config = json.load(open(config_file))
-                    orig_config["threads"] = int(number)
-                    Output.write_json(config_file, orig_config)
-                    sys.exit("threads is %s" % number)
-
-                else:
-                    sys.exit("try using:\nknockpy --set apikey-virustotal=APIKEY\nknockpy --set timeout=SEC\nknockpy --set threads=NUM")
-
-
     def arguments():
+        # check if domain string is a command
         Start.parse_and_exit(sys.argv)
 
         description = "-"*80+"\n"
         description += "* SCAN\n"
         description += "full scan:\tknockpy domain.com\n"
+        description += "quick scan:\tknockpy domain.com --no-local\n"
+        description += "faster scan:\tknockpy domain.com --no-local --no-http\n"
         description += "ignore code:\tknockpy domain.com --no-http-code 404 500 530\n"
-        description += "threads:\tknockpy domain.com -th 50\n"
-        description += "timeout:\tknockpy domain.com -t 2\n\n"
+        description += "silent mode:\tknockpy domain.com --silent\n\n"
+        description += "* SUBDOMAINS\n"
+        description += "show recon:\tknockpy domain.com --no-local --no-scan\n\n"
         description += "* REPORT\n"
         description += "show report:\tknockpy --report knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json\n"
         description += "plot report:\tknockpy --plot knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json\n"
-        description += "csv report:\tknockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json\n\n"
-        description += "* SETTINGS\n"
-        description += "set apikey:\tknockpy --set apikey-virustotal=APIKEY\n"
-        description += "set timeout:\tknockpy --set timeout=sec\n"
-        description += "set threads:\tknockpy --set threads=num\n"
+        description += "csv report:\tknockpy --csv knockpy_report/domain.com_yyyy_mm_dd_hh_mm_ss.json\n"
         description += "-"*80
-        epilog = "warning:\tapikey virustotal is missing (https://www.virustotal.com/)\n\n" if not config["api"]["virustotal"] else "\n\n"
-        epilog += "once you get knockpy results, don't forget to use 'nmap' and 'dirsearch'\n\n"
+        
+        epilog = "once you get knockpy results, don't forget to use 'nmap' and 'dirsearch'\n\n"
         epilog += random.choice(Start.msg_rnd())
 
-        parser = argparse.ArgumentParser(prog="knockpy", description=description, epilog=epilog, formatter_class=RawTextHelpFormatter)
-        parser.add_argument("domain", help="target to scan")
+        parser = argparse.ArgumentParser(prog="knockpy", description=description, epilog=epilog, 
+            formatter_class=RawTextHelpFormatter)
+
+        parser.add_argument("domain", nargs='?', help="target to scan", default=sys.stdin, type=str)
         parser.add_argument("-v", "--version", action="version", version="%(prog)s " + Start.__version__)
         parser.add_argument("--no-local", help="local wordlist ignore", action="store_true", required=False)
         parser.add_argument("--no-remote", help="remote wordlist ignore", action="store_true", required=False)
+        parser.add_argument("--no-scan", help="scanning ignore, show wordlist and exit", action="store_true", required=False)
         parser.add_argument("--no-http", help="http requests ignore\n\n", action="store_true", required=False)
         parser.add_argument("--no-http-code", help="http code list to ignore\n\n", nargs="+", dest="code", type=int, required=False)
+        parser.add_argument("--no-ip", help="ip address to ignore\n\n", nargs="+", type=str, required=False)
         parser.add_argument("--dns", help="use custom DNS ex. 8.8.8.8\n\n", dest="dns", required=False)
+        parser.add_argument("--user-agent", help="use a custom user agent\n\n", dest="useragent", required=False)
+
         parser.add_argument("-w", help="wordlist file to import", dest="wordlist", required=False)
         parser.add_argument("-o", help="report folder to store json results", dest="folder", required=False)
-        parser.add_argument("-t", help="timeout in seconds", nargs=1, dest="sec", type=int, required=False)
-        parser.add_argument("-th", help="threads num", nargs=1, dest="num", type=int, required=False)
+        parser.add_argument("-t", help="timeout in seconds", dest="sec", type=int, required=False)
+        parser.add_argument("-th", help="threads num\n\n", dest="num", type=int, required=False)
+
+        parser.add_argument("--silent", 
+            default=False,
+            nargs="?",
+            choices=[False, "json", "json-pretty", "csv"],
+            help="silent or quiet mode, default output: False\n\n", 
+            )
 
         args = parser.parse_args()
 
-        domain = args.domain
+        # --no-ip ignore ip addresses
+        global no_ip
+        no_ip = args.no_ip if args.no_ip else ["127.0.0.1"]
 
-        if domain.startswith("http"): sys.exit("remove http(s)://")
-        if domain.startswith("www."): sys.exit("remove www.")
-        if domain.find(".") == -1: sys.exit("invalid domain")
+        # --no-scan ignore scanning
+        global no_scan
+        no_scan = args.no_scan
 
+        # --silent set silent mode
+        """
+        silent_mode is False by default.
+        --silent without args -> the value is None, then I change it in "no-output"
+        --silent with args -> it keep argument passed, ex: --silent csv
+        """
+        global silent_mode
+        silent_mode = args.silent 
+        if silent_mode == None:
+            silent_mode = "no-output"
+
+        # get domain name via positional argument or stdin
+        if sys.stdin.isatty():
+            # positional
+            # knockpy domain.com
+            domain = args.domain
+        else:
+            # stdin
+            # echo "domain.com" | knockpy
+            domain = args.domain.read()
+
+        # check if the domain name is correct
+        if not Start.is_valid_domain(domain):
+            parser.print_help(sys.stderr)
+            sys.exit()
+
+        # choice wordlist
         if args.no_local and args.no_remote: sys.exit("no wordlist")
-        if args.no_local:
-            if "local" in config["wordlist"]["default"]:
-                config["wordlist"]["default"].remove("local") 
-        if args.no_remote:
-            if "local" in config["wordlist"]["default"]:
-                config["wordlist"]["default"].remove("remote")
 
-        if args.no_http:
-            if "http" in config["attack"]:
-                config["attack"].remove("http")
+        # --no-local exclude local dictionary
+        global no_local
+        no_local = True if args.no_local else False
         
-        if args.code:
-            config["no_http_code"] = args.code
+        # --no-remote exclude remote dictionary
+        global no_remote
+        no_remote = True if args.no_remote else False
 
-        if args.folder:
-            if not os.access(args.folder, os.W_OK): sys.exit("folder not writable: " + args.folder)
-            config["report"]["folder"] = args.folder
-            config["report"]["save"] = True
+        # --no-http ignore requests
+        global no_http
+        no_http = True if args.no_http else False
 
-        if args.sec:
-            config["timeout"] = args.sec[0]
+        
+        # --no-http-code ignore http code
+        global no_http_code
+        no_http_code = args.code if args.code else []
 
-        if args.num:
-            config["threads"] = args.num[0]
+        # -o set report folder
+        global output_folder
+        output_folder = args.folder if args.folder else "knockpy_report"
 
-        if args.wordlist:
-            config["wordlist"]["local"] = args.wordlist
+        # check that the "-o false" parameter was not supplied
+        if output_folder != "false":
+            # create folder if not exists
+            if not os.path.exists(output_folder): os.makedirs(output_folder)
+            # check if the folder is accessible
+            if not os.access(output_folder, os.W_OK): sys.exit("folder not exists or not writable: " + output_folder)
+        
+        # save output depends on the -o option
+        # it's True by default except when "-o false"
+        global save_output
+        save_output = False if output_folder.lower() == "false" else True
 
-        if args.dns:
-            config["dns"] = args.dns
+        # -t set timeout default is 3
+        global timeout
+        timeout = args.sec if args.sec else 3
+
+        # -th set threads default is 30
+        global threads
+        threads = args.num if args.num else 30
+
+        # -w set path to local wordlist default is "wordlist.txt"
+        global local_wordlist
+        local_wordlist = args.wordlist if args.wordlist else _ROOT + "{sep}local{sep}wordlist.txt".format(sep=os.sep)
+
+        # --dns set dns default is False
+        global dns
+        dns = args.dns if args.dns else False
+
+        # --user-agent
+        global useragent
+        useragent = args.useragent if args.useragent else random.choice(user_agent)
 
         return domain
 
@@ -557,7 +598,7 @@ class Start():
 
         #Output.progressPrint(ctrl_c + subdomain)
         target = subdomain+"."+domain
-        Output.progressPrint(ctrl_c + str(percentage*100)[:4] + "% | " + target + " "*max_len)
+        if not silent_mode: Output.progressPrint(ctrl_c + str(percentage*100)[:4] + "% | " + target + " "*max_len)
         req = Request.dns(target)
 
         if not req: return None
@@ -565,16 +606,15 @@ class Start():
         req = list(req)
         ip_req = req[2][0]
 
-        if ip_req in config["ignore"]: return None
+        if ip_req in no_ip: return None
 
         # dns only
-        if not "http" in config["attack"]:
+        if no_http:
             # print line and update report
             data = Output.jsonizeRequestData(req, target)
-            print (Output.linePrint(data, max_len))
+            if not silent_mode: print (Output.linePrint(data, max_len))
             del data["target"]
             return results.update({target: data})
-            
 
         # dns and http(s)
         https = Request.https(target)
@@ -594,8 +634,8 @@ class Start():
 
         # print line and update report
         data = Output.jsonizeRequestData(req, target)
-        if data["code"] in config["no_http_code"]: return None
-        print (Output.linePrint(data, max_len))
+        if data["code"] in no_http_code: return None
+        if not silent_mode: print (Output.linePrint(data, max_len))
         del data["target"]
         return results.update({target: data})
 
@@ -612,45 +652,175 @@ class Start():
                             |_|    |___/ 
 """ % Start.__version__
 
+class Scanning:
+    """
+    # module to import in python script:
+
+    from knockpy import knockpy
+
+    # return json results
+    results = knockpy.Scanning.start("domain.com", params)
+    """
+    
+    def start(domain, params=False):
+        # default params
+        params_default = {
+            "no_local": False,  # [bool] local wordlist ignore
+            "no_remote": False, # [bool] remote wordlist ignore
+            "no_scan": False,   # [bool] scanning ignore, show wordlist
+            "no_http": False,   # [bool] http requests ignore
+            "no_http_code": [], # [list] http code list to ignore
+            "no_ip": [],        # [list] ip address to ignore
+            "dns": "",          # [str] use custom DNS ex. 8.8.8.8
+            "timeout": 3,       # [int] timeout in seconds
+            "threads": 30,      # [int] threads num
+            "useragent": "",    # [str] use a custom user agent
+            "wordlist": ""      # [str] path to custom wordlist
+        }
+
+        # params validation
+        if not params:
+            params = params_default
+        else:
+            for param in params_default.keys():
+                value = params_default[param]
+                if param not in params:
+                    params.update({param: value})
+
+        # domain validation
+        if not Start.is_valid_domain(domain):
+            return False
+
+        # global flags by params
+        global no_local
+        no_local = params["no_local"]
+        global no_remote
+        no_remote = params["no_remote"]
+
+        if no_local and no_remote: # case no wordlist
+            return None
+
+        global no_scan
+        no_scan = params["no_scan"]
+        global no_http
+        no_http = params["no_http"]
+        global no_http_code
+        no_http_code = params["no_http_code"]
+        global no_ip
+        no_ip = params["no_ip"]
+        global dns
+        dns = params["dns"] if params["dns"] else False
+        global timeout
+        timeout = params["timeout"]
+        global threads
+        threads = params["threads"]
+        global useragent
+        useragent = params["useragent"] if params["useragent"] else random.choice(user_agent)
+        global local_wordlist
+        local_wordlist = params["wordlist"] if params["wordlist"] else _ROOT + "{sep}local{sep}wordlist.txt".format(sep=os.sep)
+        
+        # global flags by default
+        global silent_mode
+        silent_mode = "json"
+        global output_folder
+        output_folder = False
+
+        # get wordlist
+        local, remote = Wordlist.get(domain)
+        local = Wordlist.purge(local)
+        remote = Wordlist.purge(remote)
+        wordlist = list(dict.fromkeys((local + remote)))
+        wordlist = sorted(wordlist, key=str.lower)
+        wordlist = Wordlist.purge(wordlist)
+
+        # return a list ['sub1', 'sub2', 'sub3', ...]
+        if no_scan:
+            return wordlist
+
+        # constants
+        len_wordlist = len(wordlist)
+        max_len = 1
+    
+        # start with threads
+        results = {}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+            results_executor = {executor.submit(Start.scan, max_len, domain, subdomain, wordlist.index(subdomain)/len_wordlist, results) for subdomain in wordlist}
+        
+        # return a dict
+        return results
+
 def main():
     domain = Start.arguments()
     
     # action: scan
-    print (Start.logo())
+    if not silent_mode: print (Start.logo())
 
     # wordlist
-    Output.progressPrint("getting wordlist ...")
-    local, virustotal, passive = Wordlist.get(domain)
-    wordlist = list(dict.fromkeys((local + virustotal + passive)))
+    if not silent_mode: Output.progressPrint("getting wordlist ...")
+    local, remote = Wordlist.get(domain)
+
+    # purge wordlist
+    local = Wordlist.purge(local)
+    remote = Wordlist.purge(remote)
+    
+    # mix wordlist local + remote
+    wordlist = list(dict.fromkeys((local + remote)))
     wordlist = sorted(wordlist, key=str.lower)
+    
+    # purge wordlist
+    wordlist = Wordlist.purge(wordlist)
+
+    # takes the longest word in wordlist
     max_len = len(max(wordlist, key=len) + "." + domain) if wordlist else sys.exit("\nno wordlist")
 
+    # no wordlist found
     if not wordlist: sys.exit("no wordlist")
 
-    # header
-    print (Output.headerPrint(local, virustotal, passive, domain))
+    # if no-scan args show wordlist and exit
+    if no_scan: 
+        print (wordlist)
+        sys.exit()
+
+    # print header
+    if not silent_mode: print (Output.headerPrint(local, remote, domain))
+    
+    # time start and print
     time_start = time.time()
-    print (Output.headerBarPrint(time_start, max_len))
+    if not silent_mode: print (Output.headerBarPrint(time_start, max_len))
     
     # init
     len_wordlist = len(wordlist)
     results = {}
     
-    # start
-    with concurrent.futures.ThreadPoolExecutor(max_workers=config["threads"]) as executor:
+    # start with threads
+    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
         results_executor = {executor.submit(Start.scan, max_len, domain, subdomain, wordlist.index(subdomain)/len_wordlist, results) for subdomain in wordlist}
 
         for item in concurrent.futures.as_completed(results_executor):
             if item.result() != None:
-                print (item.result())
+                # show line
+                if not silent_mode: print (item.result())
 
-    # footer
+    # elapsed time
     time_end = time.time()
 
-    print (Output.footerPrint(time_end, time_start, results))
+    # show output
+    if not silent_mode:
+        # when silent_mode is False
+        print (Output.footerPrint(time_end, time_start, results))
+    elif silent_mode == "json":
+        # json without indent
+        print (json.dumps(results))
+    elif silent_mode == "json-pretty":
+        # json with indent
+        print (json.dumps(results, indent=4))
+    elif silent_mode == "csv":
+        print (Report.csv(results))
+    
+    # when silent_mode is None (--silent without args) -> "no-output" -> quiet
 
     # save report
-    if config["report"]["save"]: Report.save(results, domain, time_start, time_end, len_wordlist)
+    if save_output: Report.save(results, domain, time_start, time_end, len_wordlist)
 
 if __name__ == "__main__":
     try:
