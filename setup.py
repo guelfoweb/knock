@@ -13,7 +13,7 @@ lib = "lib{sep}*.py".format(sep=os.sep)
 
 setup(
 	name="knockpy",
-	version="6.0.0",
+	version="6.1.0",
 	description="Knock is a Knockpy is a portable and modular python3 tool designed to quickly enumerate subdomains on a target domain through passive reconnaissance and dictionary attack.",
 	url="https://github.com/guelfoweb/knock",
 	author="Gianni 'guelfoweb' Amato",

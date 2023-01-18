@@ -1,4 +1,12 @@
 # Changelog
+
+6.1.0 - 2023-01-18
+---------
+- added plugin test --plugin-test
+- added new plugin: api_censys, certsh
+- fixed plugin scan loop
+- optimized code structure
+
 6.0.0 - 2023-01-15
 ---------
 - added silent mode --silent

@@ -1,4 +1,4 @@
-# Knock Subdomain Scan v6.0.0
+# Knock Subdomain Scan v6.1.0
 
 Knockpy is a portable and modular python3 tool designed to quickly enumerate subdomains on a target domain through **passive reconnaissance** and **dictionary scan**.
 
@@ -27,6 +27,8 @@ python3 knockpy.py domain.com
     * [Plot report](#plot-report---plot)
 * [Module](#module)
 * [Plugin](#plugin)
+    * [Write your own plugin](#write-your-own-plugin)
+    * [Plugin test](#plugin-test---plugin-test)
 * [License](#license)
 
 ---
@@ -331,7 +333,7 @@ results = knockpy.Scanning.start("domain.com", params)
 
 # Plugin
 
-#### Write your own plugin
+### Write your own plugin
 
 The plugins are situated in ```remote``` folder. If you want to write your own plugin it's important to pay attention to some precautions:
 
@@ -375,6 +377,76 @@ def get(domain):
     return result
 ```
 
+### Plugin test ```--plugin-test```
+
+```bash
+$ knockpy domain.com --plugin-test
+```
+
+In this example, the output shows errors ```'error': True``` in three plugins because they need the API key.
+
+```bash
+{
+    'api_shodan.py': {
+        'time': '00:00:03',
+        'match': 0,
+        'error': True
+    },
+    'certspotter.py': {
+        'time': '00:00:00',
+        'match': 9,
+        'error': False
+    },
+    'rapiddns.py': {
+        'time': '00:00:00',
+        'match': 44,
+        'error': False
+    },
+    'hackertarget.py': {
+        'time': '00:00:00',
+        'match': 9,
+        'error': False
+    },
+    'crtsh.py': {
+        'time': '00:00:19',
+        'match': 10,
+        'error': False
+    },
+    'api_censys.py': {
+        'time': '00:00:03',
+        'match': 0,
+        'error': True
+    },
+    'webarchive.py': {
+        'time': '00:00:04',
+        'match': 4,
+        'error': False
+    },
+    'api_virustotal.py': {
+        'time': '00:00:03',
+        'match': 0,
+        'error': True
+    },
+    'alienvault.py': {
+        'time': '00:00:01',
+        'match': 11,
+        'error': False
+    },
+    '_results': {
+        'time': '00:00:37',
+        'plugins': {
+            'count': 9,
+            'list': ['api_shodan.py', 'certspotter.py', 'rapiddns.py', 'hackertarget.py', ...],
+            'error': ['api_shodan.py', 'api_censys.py', 'api_virustotal.py']
+        },
+        'subdomains': {
+            'count': 52,
+            'list': ['admin', 'cloud', 'www', 'mail', 'calendar', 'contact', 'ftp', .....]
+        }
+    }
+}
+
+```
 ---
 
 # License
