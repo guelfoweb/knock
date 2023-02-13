@@ -46,7 +46,7 @@ def headerPrint(local, remote, domain):
     else:
         ip = "None"
 
-    line += colorizeHeader("Target: ", domain, "| ")
+    line += colorizeHeader("Target: ", bytes(domain, "idna").decode("idna"), "| ")
     line += colorizeHeader("Ip: ", ip, "\n")
     
     return line
@@ -91,8 +91,8 @@ def jsonizeRequestData(req, target):
         domain = subdomain if subdomain != target else ""
 
         data = {
-            "target": target,
-            "domain": domain,
+            "target": bytes(target, "idna").decode("idna"),
+            "domain": bytes(domain, "idna").decode("idna"),
             "alias": aliasList,
             "ipaddr": ipList
             }
@@ -101,8 +101,8 @@ def jsonizeRequestData(req, target):
         domain = subdomain if subdomain != target else ""
 
         data = {
-            "target": target,
-            "domain": domain,
+            "target": bytes(target, "idna").decode("idna"),
+            "domain": bytes(domain, "idna").decode("idna"),
             "alias": aliasList,
             "ipaddr": ipList,
             "code": code,
