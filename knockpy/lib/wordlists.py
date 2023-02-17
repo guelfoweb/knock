@@ -112,13 +112,16 @@ def get(domain, params):
     global plugin_folder
     plugin_folder = params["plugin_folder"]
 
+    if params["cyrillic"]:
+        local = list(localscan(f"{local_wordlist[:-4]}_converted.txt"))
+
     if not os.path.isfile(local_wordlist):
         return None, None
 
     if plugin_test:
         return remotescan(domain)
 
-    if not params["no_local"]:
+    if not params["no_local"] and not params["cyrillic"]:
         local = list(localscan(local_wordlist))
 
     if not params["no_remote"]:

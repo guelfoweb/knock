@@ -5,7 +5,7 @@ def start(max_len, domain, subdomain, percentage, results, params):
     ctrl_c = "(ctrl+c) | "
 
     #output.progressPrint(ctrl_c + subdomain)
-    target_p = subdomain+"."+bytes(domain, "idna").decode("idna")
+    target_p = bytes(subdomain, "idna").decode("idna")+"."+bytes(domain, "idna").decode("idna")
     target = subdomain+"."+domain
     if not params["silent_mode"]: output.progressPrint(ctrl_c + str(percentage*100)[:4] + "% | " + target_p + " "*max_len)
     req = request.dns(target, params["dns"])

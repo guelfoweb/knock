@@ -4,7 +4,7 @@
 from argparse import RawTextHelpFormatter
 import concurrent.futures
 import argparse
-from knockpy.lib import output, request, wordlists, report, scan, extraargs, logo
+from knockpy.lib import output, request, wordlists, report, scan, extraargs, logo, converter
 import random
 import time
 import json
@@ -145,6 +145,7 @@ class Start():
         parser.add_argument("--dns", help="use custom DNS ex. 8.8.8.8\n\n", dest="dns", required=False)
         parser.add_argument("--user-agent", help="use a custom user agent\n\n", dest="useragent", required=False)
         parser.add_argument("--plugin-test", help="test plugins and exit\n\n", action="store_true", required=False)
+        parser.add_argument("--cyrillic", "-c", dest="cyrillic", help="Set to true if wordlist is cyrillic", type=bool, default=False)
 
         parser.add_argument("-w", help="wordlist file to import", dest="wordlist", required=False)
         parser.add_argument("-o", help="report folder to store json results", dest="folder", required=False)
@@ -163,6 +164,10 @@ class Start():
         # --no-ip ignore ip addresses
         if args.no_ip:
             _params["no_ip"] = args.no_ip
+
+        if args.cyrillic:
+            converter.converter(args.wordlist, f"{args.wordlist[:-4]}_converted.txt")
+            _params["cyrillic"] = True
 
         # --no-scan ignore scanning
         if args.no_scan:
