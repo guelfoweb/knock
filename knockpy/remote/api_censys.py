@@ -29,9 +29,8 @@ def get(domain):
 	# censys -> object -> CensysSearchAPIv1.search: key -> parsed.names
 
 	# https://search.censys.io/account/api
-	api_id = "" # <- here your API ID
-	api_secret = "" # <- here your Secret
-
+	api_id = "" # <- 0d2bc370-8922-4e42-aeee-c33b41d30a74
+	api_secret = "" # <- FMKul1AbqteiVzzjGXFN55vFfNG6ZMB5
 	limit = 1000
 
 	certificates = CensysCertificates(api_id=api_id, api_secret=api_secret)
