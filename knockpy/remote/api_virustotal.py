@@ -28,7 +28,7 @@ Let's start with simple function specifications:
 
 def get(domain):
 	# virustotal -> JSON: key -> subdomains
-	apikey = "" # <- here your API KEY
+	apikey = "" # <- 6c2a9535087d157e7d8a15f2023e41d5704e26896609e6b013cdbaf8af3d428b
 
 	url = "https://www.virustotal.com/vtapi/v2/domain/report"
 	params = {"apikey": apikey,"domain": domain}
