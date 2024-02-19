@@ -8427,6 +8427,7 @@ sitebuilder
 sitedefender
 sitelife
 sitemap
+sitemaps
 sites
 sitetest
 sitios
