@@ -25,8 +25,9 @@ pip install .
 ## Usage
 
 ```
-usage: KNOCKPY [-h] [-d DOMAIN] [-f FILE] [-v] [--dns DNS] [--useragent USERAGENT] [--timeout TIMEOUT] [--threads THREADS]
-               [--recon] [--bruteforce] [--wordlist WORDLIST] [--json-output] [--list] [--report REPORT]
+usage: KNOCKPY [-h] [-d DOMAIN] [-f FILE] [-v] [--dns DNS] [--useragent USERAGENT]
+               [--timeout TIMEOUT] [--threads THREADS] [--recon] [--bruteforce] 
+               [--wordlist WORDLIST] [--json-output] [--list] [--report REPORT]
 
 knockpy v.7.0.0 - Subdomain Scan
 https://github.com/guelfoweb/knock
