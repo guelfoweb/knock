@@ -8,7 +8,7 @@
 pip install git+https://github.com/guelfoweb/knock.git
 ```
 
-## Install via pip requirements
+## Install via pip requirements.txt file
 
 ```
 knockpy @ git+https://github.com/guelfoweb/knock.git
@@ -45,7 +45,7 @@ options:
   --recon               subdomain reconnaissance
   --bruteforce          subdomain bruteforce
   --wordlist WORDLIST   wordlist file to import
-                        --brutefotce option required
+                        --bruteforce option required
   --json-output         shows output in json format
   --list                lists saved reports
   --report REPORT       shows saved report
@@ -54,9 +54,24 @@ options:
 
 ### Example
 
+- Start scanning domain with `--recon` and `--bruteforce` options
+
 ```bash
 knockpy -d domain.com --recon --bruteforce
 ```
+
+- Lists saved reports
+
+```bash
+knockpy --list
+```
+
+- Shows saved report
+
+```bash
+knockpy --report domain.com_yyyy_aa_dd_hh_mm_ss.json
+```
+
 
 ### Import as module
 

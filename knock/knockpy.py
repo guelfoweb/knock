@@ -361,7 +361,7 @@ def main():
     parser.add_argument("--threads", help="custom threads", dest="threads", type=int, required=False)
     parser.add_argument("--recon", help="subdomain reconnaissance", action="store_true", required=False)
     parser.add_argument("--bruteforce", help="subdomain bruteforce", action="store_true", required=False)
-    parser.add_argument("--wordlist", help="wordlist file to import\n--brutefotce option required", dest="wordlist", required=False)
+    parser.add_argument("--wordlist", help="wordlist file to import\n--bruteforce option required", dest="wordlist", required=False)
     parser.add_argument('--json-output', help="shows output in json format", action="store_true", required=False)
     parser.add_argument("--list", help="lists saved reports", action="store_true", required=False)
     parser.add_argument("--report", help="shows saved report", dest="report", required=False)
