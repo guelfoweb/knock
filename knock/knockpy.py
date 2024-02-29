@@ -23,9 +23,6 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 __version__ = '7.0.0'
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-REPORT = ROOT + os.sep + 'report'
-if not os.path.exists(REPORT):
-    os.makedirs(REPORT)
 
 # bruteforce via wordlist
 class Bruteforce:
@@ -326,20 +323,21 @@ def output(results, json_output=None):
 
     print (len(results), 'domains')
 
-def save(domain, results):
+def save(domain, results, folder):
+    if not folder:
+        folder = ''
+    else:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+            
     dt = str(datetime.now()).replace("-", "_").replace(" ", "_").replace(":", "_").split('.')[0]
-    path = REPORT + os.sep + domain + '_' + dt + '.json'
+    path = folder + os.sep + domain + '_' + dt + '.json'
     
     f = open(path, "w")
     f.write(json.dumps(results, indent=4))
     f.close()
 
-def list_report():
-    print (REPORT)
-    print (sorted(os.listdir(REPORT)))
-
 def show_report(json_output, report_name):
-    report_name = REPORT + os.sep + report_name
     with open(report_name) as f:
         report = json.loads(f.read())
     output(report, json_output)
@@ -362,8 +360,8 @@ def main():
     parser.add_argument("--recon", help="subdomain reconnaissance", action="store_true", required=False)
     parser.add_argument("--bruteforce", help="subdomain bruteforce", action="store_true", required=False)
     parser.add_argument("--wordlist", help="wordlist file to import\n--bruteforce option required", dest="wordlist", required=False)
-    parser.add_argument('--json-output', help="shows output in json format", action="store_true", required=False)
-    parser.add_argument("--list", help="lists saved reports", action="store_true", required=False)
+    parser.add_argument('--json', help="shows output in json format", action="store_true", required=False)
+    parser.add_argument("--save", help="folder to save report", dest="folder", required=False)
     parser.add_argument("--report", help="shows saved report", dest="report", required=False)
     args = parser.parse_args()
 
@@ -387,11 +385,8 @@ def main():
             # cat domains.txt | knockpy
             elif len(stdin) > 1:
                 args.domain = stdin
-        elif args.list:
-            list_report()
-            sys.exit(0)
         elif args.report:
-            show_report(args.json_output, args.report)
+            show_report(args.json, args.report)
             sys.exit(0)
         # no args and not stdin
         # shows help and exit
@@ -413,15 +408,15 @@ def main():
         results = KNOCKPY(domain, args.dns, args.useragent, args.timeout)
         
         if args.recon or args.bruteforce:
-            save(args.domain, results)
+            save(args.domain, results, args.folder)
         
-        output(results, args.json_output)
+        output(results, args.json)
     
     if args.file:
         with open(args.file,'r') as f:
             domains = f.read().splitlines()
         results = KNOCKPY(domains, args.dns, args.useragent, args.timeout)
-        output(results, args.json_output)
+        output(results, args.json)
 
 
 if __name__ == "__main__":

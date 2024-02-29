@@ -47,10 +47,9 @@ options:
   --bruteforce          subdomain bruteforce
   --wordlist WORDLIST   wordlist file to import
                         --bruteforce option required
-  --json-output         shows output in json format
-  --list                lists saved reports
+  --json                shows output in json format
+  --save FOLDER         folder to save report
   --report REPORT       shows saved report
-
 ```
 
 ### Example
@@ -61,10 +60,10 @@ options:
 knockpy -d domain.com --recon --bruteforce
 ```
 
-- Lists saved reports
+- Save the report in a folder
 
 ```bash
-knockpy --list
+knockpy -d domain.com --recon --bruteforce --save report
 ```
 
 - Shows saved report
@@ -72,7 +71,6 @@ knockpy --list
 ```bash
 knockpy --report domain.com_yyyy_aa_dd_hh_mm_ss.json
 ```
-
 
 ### Import as module
 
