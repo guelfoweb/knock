@@ -23,7 +23,7 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 __version__ = '7.0.0'
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-REPORT = ROOT + os.sep + 'report'
+REPORT = './report'
 if not os.path.exists(REPORT):
     os.makedirs(REPORT)
 
