@@ -14,7 +14,7 @@ setup(
     packages=['knock'],
     package_data={"knock": [wordlist, 'report'],},
     include_package_data=True,
-    install_requires=['requests==2.31.0', 'dnspython==2.4.2', 'pyOpenSSL==23.3.0', 'beautifulsoup4==4.12.3', 'tqdm==4.66.2'],
+    install_requires=['requests>=2.31.0', 'dnspython>=2.4.2', 'pyOpenSSL>=23.3.0', 'beautifulsoup4>=4.12.3', 'tqdm>=4.66.2'],
     entry_points={
         'console_scripts': [
             'knockpy=knock.knockpy:main',
