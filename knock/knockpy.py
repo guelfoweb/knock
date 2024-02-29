@@ -324,14 +324,13 @@ def output(results, json_output=None):
     print (len(results), 'domains')
 
 def save(domain, results, folder):
+    dt = str(datetime.now()).replace("-", "_").replace(" ", "_").replace(":", "_").split('.')[0]
     if not folder:
-        folder = ''
+        path = domain + '_' + dt + '.json'
     else:
         if not os.path.exists(folder):
             os.makedirs(folder)
-            
-    dt = str(datetime.now()).replace("-", "_").replace(" ", "_").replace(":", "_").split('.')[0]
-    path = folder + os.sep + domain + '_' + dt + '.json'
+        path = folder + os.sep + domain + '_' + dt + '.json'
     
     f = open(path, "w")
     f.write(json.dumps(results, indent=4))
