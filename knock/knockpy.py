@@ -112,10 +112,10 @@ class Recon:
                         pass            
                 elif name == "webarchive":
                     try:
-                        pattern = "http(s)?:\/\/(.*\.%s)" % self.domain
+                        pattern = r"http(s)?:\/\/(.*\.%s)" % self.domain
                         for item in resp.split('\n'):
                             match = re.match(pattern, item)
-                            if match and re.match("^[a-zA-Z0-9-\.]*$", match.groups()[1]):
+                            if match and re.match(r"^[a-zA-Z0-9-\.]*$", match.groups()[1]):
                                 subdomains += [item for item in match.groups()[1] if item.endswith(self.domain)]
                     except:
                         pass
