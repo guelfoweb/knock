@@ -41,7 +41,8 @@ class Bruteforce:
         return subrnd+'.'+self.domain
 
     def start(self):
-        wordlist = list(set([word+'.'+self.domain for word in Bruteforce.load_wordlist(self)]))
+        wordlist = [str(word)+'.'+str(self.domain) for word in Bruteforce.load_wordlist(self) if word]
+        wordlist = list(set(wordlist))
         return wordlist
 
 # reconnaissance via web services
@@ -439,6 +440,7 @@ def main():
             sys.exit(0)
 
         if args.recon and args.bruteforce:
+            print ("bruteforce", args.wordlist)
             domain = Recon(args.domain, args.timeout).start()
             domain += Bruteforce(args.domain, args.wordlist).start()
             domain = list(set(domain))
