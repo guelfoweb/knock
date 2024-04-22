@@ -273,7 +273,7 @@ class HttpStatus:
             domain = http_redirect_location.split('://')[1]
             domain = domain.split('/')[0]
             https_status_code, https_redirect_location, server_name = self.http_response(f"https://{domain}")
-            results.update({"https": [https_status_code, https_redirect_location]})
+            results.update({"https": [https_status_code, https_redirect_location, server_name]})
 
         is_good, dateobj = None, None
         if https_status_code:
