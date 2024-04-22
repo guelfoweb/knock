@@ -1,4 +1,4 @@
-# Knock Subdomain Scan v7.0.0
+# Knock Subdomain Scan v7.0.1
 
 :heavy_check_mark: Fast :heavy_check_mark: Easy :heavy_check_mark: Modular
 
@@ -33,7 +33,7 @@ usage: KNOCKPY [-h] [-d DOMAIN] [-f FILE] [-v] [--dns DNS] [--useragent USERAGEN
                [--timeout TIMEOUT] [--threads THREADS] [--recon] [--bruteforce] 
                [--wordlist WORDLIST] [--json-output] [--list] [--report REPORT]
 
-knockpy v.7.0.0 - Subdomain Scan
+knockpy v.7.0.1 - Subdomain Scan
 https://github.com/guelfoweb/knock
 
 options:
@@ -51,6 +51,7 @@ options:
   --bruteforce          subdomain bruteforce
   --wordlist WORDLIST   wordlist file to import
                         --bruteforce option required
+  --wildcard            test wildcard and exit
   --json                shows output in json format
   --save FOLDER         folder to save report
   --report REPORT       shows saved report
@@ -62,6 +63,13 @@ options:
 
 ```bash
 knockpy -d domain.com --recon --bruteforce
+```
+
+- Set API KEY: VirusTotal and Shodan
+
+```bash
+export API_KEY_VIRUSTOTAL=your-virustotal-api-key
+export API_KEY_SHODAN=your-shodan-api-key
 ```
 
 - Save the report in a folder

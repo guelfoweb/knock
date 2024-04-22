@@ -8,6 +8,7 @@ import ssl
 import requests
 import argparse
 import random
+import string
 import json
 import bs4
 import sys
@@ -20,7 +21,7 @@ from urllib3.exceptions import InsecureRequestWarning
 # Suppress the warnings from urllib3
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
-__version__ = '7.0.0'
+__version__ = '7.0.1'
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -32,6 +33,12 @@ class Bruteforce:
 
     def load_wordlist(self):
         return open(self.wordlist, 'r').read().split('\n')
+
+    def wildcard(self):
+        letters = string.ascii_lowercase
+        length  = random.randrange(10, 15)
+        subrnd  = ''.join(random.choice(letters) for i in range(length))
+        return subrnd+'.'+self.domain
 
     def start(self):
         wordlist = list(set([word+'.'+self.domain for word in Bruteforce.load_wordlist(self)]))
@@ -64,6 +71,15 @@ class Recon:
             ("rapiddns", f"https://rapiddns.io/subdomain/{self.domain}"),
             ("webarchive", f"https://web.archive.org/cdx/search/cdx?url=*.{self.domain}/*&output=txt&fl=original&collapse=urlkey")
             ]
+
+        API_KEY_VIRUSTOTAL = os.getenv("API_KEY_VIRUSTOTAL")
+        if API_KEY_VIRUSTOTAL:
+            services_list.append(("virustotal", f"https://www.virustotal.com/vtapi/v2/domain/report?apikey={API_KEY_VIRUSTOTAL}&domain={self.domain}"))
+
+        API_KEY_SHODAN = os.getenv("API_KEY_SHODAN")
+        if API_KEY_SHODAN:
+            services_list.append(("shodan", f"https://api.shodan.io/dns/domain/{self.domain}?key={API_KEY_SHODAN}"))
+
         return services_list
 
     def start(self):
@@ -82,6 +98,24 @@ class Recon:
                     try:
                         resp = json.loads(resp)
                         subdomains += [item['hostname'] for item in resp['passive_dns'] if item['hostname'].endswith(self.domain)]
+                    except:
+                        pass
+                elif name == "virustotal":
+                    try:
+                        resp = json.loads(resp)
+                        if "subdomains" in resp.keys():
+                            for subdomain in resp["subdomains"]:
+                                if subdomain.endswith(self.domain):
+                                    subdomains.append(subdomain)
+                    except:
+                        pass
+                elif name == "shodan":
+                    try:
+                        resp = json.loads(resp)
+                        if "subdomains" in resp.keys():
+                            for subdomain in resp["subdomains"]:
+                                subdomain = subdomain+"."+self.domain
+                                subdomains.append(subdomain)
                     except:
                         pass
                 elif name == "certspotter":
@@ -237,7 +271,6 @@ class HttpStatus:
         if http_status_code and http_redirect_location and not https_status_code:
             domain = http_redirect_location.split('://')[1]
             domain = domain.split('/')[0]
-            results["domain"] = domain
             https_status_code, https_redirect_location, server_name = self.http_response(f"https://{domain}")
             results.update({"https": [https_status_code, https_redirect_location]})
 
@@ -281,6 +314,9 @@ def KNOCKPY(domain, dns=None, useragent=None, timeout=None, threads=None, recon=
     return knockpy(domain, dns=None, useragent=None, timeout=None)
 
 def output(results, json_output=None):
+    if not results:
+        return None
+
     if json_output:
         print (results)
         sys.exit()
@@ -359,6 +395,7 @@ def main():
     parser.add_argument("--recon", help="subdomain reconnaissance", action="store_true", required=False)
     parser.add_argument("--bruteforce", help="subdomain bruteforce", action="store_true", required=False)
     parser.add_argument("--wordlist", help="wordlist file to import\n--bruteforce option required", dest="wordlist", required=False)
+    parser.add_argument('--wildcard', help="test wildcard and exit", action="store_true", required=False)
     parser.add_argument('--json', help="shows output in json format", action="store_true", required=False)
     parser.add_argument("--save", help="folder to save report", dest="folder", required=False)
     parser.add_argument("--report", help="shows saved report", dest="report", required=False)
@@ -395,6 +432,12 @@ def main():
 
     if args.domain:
         domain = args.domain
+        if args.wildcard:
+            domain = Bruteforce(domain).wildcard()
+            results = KNOCKPY(domain, args.dns, args.useragent, args.timeout)
+            output(results, args.json)
+            sys.exit(0)
+
         if args.recon and args.bruteforce:
             domain = Recon(args.domain, args.timeout).start()
             domain += Bruteforce(args.domain, args.wordlist).start()
