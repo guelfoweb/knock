@@ -4,7 +4,7 @@ import os
 wordlist = 'wordlist' + os.sep + 'wordlist.txt'
 
 setup(
-    name='knockpy',
+    name='knock-py',
     version='7.0.1',
     description='Domain Inspector Global Audit',
     url='https://github.com/guelfoweb/knock',
