@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 from datetime import datetime, date
+from collections import OrderedDict
 import concurrent.futures
 import dns.resolver
 import OpenSSL
 import ssl
 import requests
+from typing import Optional, Union
 import argparse
 import random
 import string
@@ -21,7 +23,7 @@ from urllib3.exceptions import InsecureRequestWarning
 # Suppress the warnings from urllib3
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
-__version__ = '7.0.1'
+__version__ = '7.0.2'
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -29,33 +31,56 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 class Bruteforce:
     def __init__(self, domain, wordlist=None):
             self.domain = domain
-            self.wordlist = wordlist if wordlist else ROOT + os.sep + 'wordlist' + os.sep + 'wordlist.txt'
+            self.wordlist = wordlist or os.path.join(ROOT, 'wordlist', 'wordlist.txt')
 
     def load_wordlist(self):
-        return open(self.wordlist, 'r').read().split('\n')
+        try:
+            with open(self.wordlist, 'r') as f:
+                return [line.strip() for line in f if line.strip()]
+        except FileNotFoundError:
+            print(f"Error: wordlist '{self.wordlist}' not found.")
+            return []
 
     def wildcard(self):
-        letters = string.ascii_lowercase
-        length  = random.randrange(10, 15)
-        subrnd  = ''.join(random.choice(letters) for i in range(length))
-        return subrnd+'.'+self.domain
+        return ''.join(random.choice(string.ascii_lowercase) for _ in range(random.randint(10, 15))) + '.' + self.domain
 
     def start(self):
         wordlist = [str(word)+'.'+str(self.domain) for word in Bruteforce.load_wordlist(self) if word]
-        wordlist = list(set(wordlist))
+        wordlist = list(OrderedDict.fromkeys(wordlist))
         return wordlist
 
 # reconnaissance via web services
 class Recon:
-    def __init__(self, domain, timeout=None):
-            self.domain = domain
-            self.timeout = timeout if timeout else 5
-    
-    def req(self, url):
+    def __init__(self, domain: str, timeout: Optional[int] = 3, silent: Optional[bool] = None):
+        """
+        Initializes the Recon class.
+
+        :param domain: The domain to analyze.
+        :param timeout: Timeout for requests in seconds (default: 3).
+        :param silent: If True, suppresses error messages (default: None).
+        """
+        self.domain = domain
+        self.timeout = timeout
+        self.silent = silent
+
+    def req(self, url: str) -> Union[str, None]:
+        """
+        Makes a GET request to the specified URL.
+
+        :param url: The URL to request.
+        :return: The content of the response if the request is successful, otherwise [].
+        """
         try:
-            resp = requests.get(url, self.timeout).text
-            return resp
-        except:
+            resp = requests.get(url, timeout=(self.timeout, self.timeout))
+            resp.raise_for_status()  # Raise an exception for HTTP status codes 4xx/5xx
+            return resp.text
+        except requests.exceptions.Timeout:
+            if not self.silent:
+                print(f"Request to {url} timed out.")
+            return []
+        except requests.exceptions.RequestException as e:
+            if not self.silent:
+                print(f"An error occurred: {e}")
             return []
 
     def reconnaissance(self, service):
@@ -70,7 +95,7 @@ class Recon:
             ("crtsh", f"https://crt.sh/?q={self.domain}&output=json"),
             ("hackertarget", f"https://api.hackertarget.com/hostsearch/?q={self.domain}"),
             ("rapiddns", f"https://rapiddns.io/subdomain/{self.domain}"),
-            ("webarchive", f"https://web.archive.org/cdx/search/cdx?url=*.{self.domain}/*&output=txt&fl=original&collapse=urlkey")
+            ("webarchive", f"https://web.archive.org/cdx/search/cdx?url=*.{self.domain}/*&output=txt")
             ]
 
         API_KEY_VIRUSTOTAL = os.getenv("API_KEY_VIRUSTOTAL")
@@ -88,13 +113,22 @@ class Recon:
 
         subdomains = []
 
-        pbar = tqdm(range(len(services_list)), desc="Recon.....", leave=True, ncols=80)
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            results = {executor.submit(Recon.reconnaissance, self, service) for service in services_list}
+        if not self.silent:
+            pbar = tqdm(range(len(services_list)), desc="Recon.....", leave=True, ncols=80)
 
-            for item in concurrent.futures.as_completed(results):
-                pbar.update(1)
-                name, resp = item.result()
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            results = {executor.submit(Recon.reconnaissance, self, service): service for service in services_list}
+
+            for future in concurrent.futures.as_completed(results):
+                if not self.silent:
+                    pbar.update(1)
+                try:
+                    name, resp = future.result()
+                    # Process the response as before...
+                except Exception as e:
+                    if not self.silent:
+                        print(f"Error processing service {results[future]}: {e}")
+
                 if name == "alienvault":
                     try:
                         resp = json.loads(resp)
@@ -147,15 +181,15 @@ class Recon:
                         pass            
                 elif name == "webarchive":
                     try:
-                        pattern = "http(s)?:\/\/(.*\.%s)" % self.domain
+                        pattern = r"http(s)?:\/\/(.*\.%s)" % self.domain
                         for item in resp.split('\n'):
                             match = re.match(pattern, item)
-                            if match and re.match("^[a-zA-Z0-9-\.]*$", match.groups()[1]):
+                            if match and re.match(r"^[a-zA-Z0-9-\.]*$", match.groups()[1]):
                                 subdomains += [item for item in match.groups()[1] if item.endswith(self.domain)]
                     except:
                         pass
                         
-            subdomains = [s for s in list(set(subdomains)) if '*' not in s]
+            subdomains = [s for s in list(OrderedDict.fromkeys(subdomains)) if '*' not in s]
 
         return sorted(subdomains)
 
@@ -205,7 +239,7 @@ class HttpStatus:
             x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert)
         except Exception as e:
             #print(f"Error connecting to {self.domain}: {e}")
-            return None, None
+            return None, None, None
         
         # 0=v1, 1=v2, 2=v3
         #version = x509.get_version()
@@ -217,10 +251,12 @@ class HttpStatus:
         dateobj = datetime.strptime(timestamp, '%Y%m%d%H%M%S%z').date().isoformat()
         datenow = datetime.now().date().isoformat()
         is_good = False if dateobj < datenow else True
+        common_name = None
 
         if is_good:
             # looking for valid (CN) Common Name
             common_name = x509.get_subject().commonName
+            #print (common_name)
             for i in range(x509.get_extension_count()):
                 ext = x509.get_extension(i)
                 if "subjectAltName" in str(ext.get_short_name()):
@@ -236,7 +272,7 @@ class HttpStatus:
                                     break
                                 is_good = False
 
-        return is_good, dateobj
+        return is_good, dateobj, common_name
 
     def domain_resolver(self):
         res = dns.resolver.Resolver()
@@ -270,43 +306,48 @@ class HttpStatus:
 
         # https exception error
         if http_status_code and http_redirect_location and not https_status_code:
+            if not http_redirect_location.startswith(('http://', 'https://')):
+                http_redirect_location = 'http://' + http_redirect_location
+            
             domain = http_redirect_location.split('://')[1]
             domain = domain.split('/')[0]
             https_status_code, https_redirect_location, server_name = self.http_response(f"https://{domain}")
             results.update({"https": [https_status_code, https_redirect_location, server_name]})
 
-        is_good, dateobj = None, None
+        is_good, dateobj, common_name = None, None, None
         if https_status_code:
-            is_good, dateobj = self.cert_status(results["domain"])
+            is_good, dateobj, common_name = self.cert_status(results["domain"])
         
-        results.update({"cert": [is_good, dateobj]})
+        results.update({"cert": [is_good, dateobj, common_name]})
 
         return results
 
-def KNOCKPY(domain, dns=None, useragent=None, timeout=None, threads=None, recon=None, bruteforce=None, wordlist=None):
+def KNOCKPY(domain, dns=None, useragent=None, timeout=None, threads=None, recon=None, bruteforce=None, wordlist=None, silent=None):
     def knockpy(domain, dns=None, useragent=None, timeout=None):
         return HttpStatus(domain, dns, useragent, timeout).scan()
     
     if recon and bruteforce:
-        domain = Recon(domain, timeout).start()
+        domain = Recon(domain, timeout, silent).start()
         domain += Bruteforce(domain, wordlist).start()
-        domain = list(set(domain))
+        domain = list(OrderedDict.fromkeys(domain))
     elif recon:
-        domain = Recon(domain, timeout).start()
+        domain = Recon(domain, timeout, silent).start()
     elif bruteforce:
         domain = Bruteforce(domain, wordlist).start()
 
     if isinstance(domain, list):
         if not threads:
-            threads = 10
+            threads = min(30, len(domain))
         
-        pbar = tqdm(range(len(domain)), desc="Processing", leave=True, ncols=80)
+        if not silent:
+            pbar = tqdm(range(len(domain)), desc="Processing", leave=True, ncols=80)
         with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
             futures = [executor.submit(knockpy, d, dns, useragent, timeout) for d in domain]
 
             results = []
             for future in concurrent.futures.as_completed(futures):
-                pbar.update(1)
+                if not silent:
+                    pbar.update(1)
                 if future.result():
                     results.append(future.result())
 
@@ -386,20 +427,21 @@ def main():
         )
 
     # args
-    parser.add_argument("-d", "--domain", help="domain to analyze")
-    parser.add_argument("-f", "--file", help="domain list from file path")
+    parser.add_argument("-d", "--domain", help="Domain to analyze.")
+    parser.add_argument("-f", "--file", help="Path to a file containing a list of domains.")
     parser.add_argument("-v", "--version", action="version", version="%(prog)s " + __version__)
-    parser.add_argument("--dns", help="custom dns", dest="dns", required=False)
-    parser.add_argument("--useragent", help="custom useragent", dest="useragent", required=False)
-    parser.add_argument("--timeout", help="custom timeout", dest="timeout", type=float, required=False)
-    parser.add_argument("--threads", help="custom threads", dest="threads", type=int, required=False)
-    parser.add_argument("--recon", help="subdomain reconnaissance", action="store_true", required=False)
-    parser.add_argument("--bruteforce", help="subdomain bruteforce", action="store_true", required=False)
-    parser.add_argument("--wordlist", help="wordlist file to import\n--bruteforce option required", dest="wordlist", required=False)
-    parser.add_argument('--wildcard', help="test wildcard and exit", action="store_true", required=False)
-    parser.add_argument('--json', help="shows output in json format", action="store_true", required=False)
-    parser.add_argument("--save", help="folder to save report", dest="folder", required=False)
-    parser.add_argument("--report", help="shows saved report", dest="report", required=False)
+    parser.add_argument("--dns", help="Custom DNS server.", dest="dns", required=False)
+    parser.add_argument("--useragent", help="Custom User-Agent string.", dest="useragent", required=False)
+    parser.add_argument("--timeout", help="Custom timeout in seconds.", dest="timeout", type=float, required=False)
+    parser.add_argument("--threads", help="Number of threads to use.", dest="threads", type=int, required=False)
+    parser.add_argument("--recon", help="Enable subdomain reconnaissance.", action="store_true", required=False)
+    parser.add_argument("--bruteforce", help="Enable subdomain brute-forcing.", action="store_true", required=False)
+    parser.add_argument("--wordlist", help="Path to a wordlist file (required for --bruteforce).", dest="wordlist", required=False)
+    parser.add_argument('--wildcard', help="Test for wildcard DNS and exit.", action="store_true", required=False)
+    parser.add_argument('--json', help="Output results in JSON format.", action="store_true", required=False)
+    parser.add_argument("--save", help="Directory to save the report.", dest="folder", required=False)
+    parser.add_argument("--report", help="Display a saved report.", dest="report", required=False)
+    parser.add_argument("--silent", help="Suppress progress bar output.", action="store_true", required=False)
     args = parser.parse_args()
 
     #print (args)
@@ -435,21 +477,21 @@ def main():
         domain = args.domain
         if args.wildcard:
             domain = Bruteforce(domain).wildcard()
-            results = KNOCKPY(domain, args.dns, args.useragent, args.timeout)
+            results = KNOCKPY(domain, args.dns, args.useragent, args.timeout, args.silent)
             output(results, args.json)
             sys.exit(0)
 
         if args.recon and args.bruteforce:
-            print ("bruteforce", args.wordlist)
-            domain = Recon(args.domain, args.timeout).start()
+            #print ("bruteforce", args.wordlist)
+            domain = Recon(args.domain, args.timeout, args.silent).start()
             domain += Bruteforce(args.domain, args.wordlist).start()
-            domain = list(set(domain))
+            domain = list(OrderedDict.fromkeys(domain))
         elif args.recon:
-            domain = Recon(args.domain, args.timeout).start()
+            domain = Recon(args.domain, args.timeout, args.silent).start()
         elif args.bruteforce:
             domain = Bruteforce(args.domain, args.wordlist).start()
 
-        results = KNOCKPY(domain, args.dns, args.useragent, args.timeout)
+        results = KNOCKPY(domain, args.dns, args.useragent, args.timeout, args.silent)
         
         if args.recon or args.bruteforce:
             save(args.domain, results, args.folder)
@@ -459,7 +501,7 @@ def main():
     if args.file:
         with open(args.file,'r') as f:
             domains = f.read().splitlines()
-        results = KNOCKPY(domains, args.dns, args.useragent, args.timeout)
+        results = KNOCKPY(domains, args.dns, args.useragent, args.timeout, args.silent)
         output(results, args.json)
 
 
