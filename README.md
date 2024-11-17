@@ -12,12 +12,6 @@
 pip install knock-subdomains
 ```
 
-## Install via pip requirements.txt file
-
-```
-knockpy @ git+https://github.com/guelfoweb/knock.git
-```
-
 ## Install via git
 
 ```bash
