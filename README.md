@@ -1,4 +1,4 @@
-# Knock Subdomain Scan v7.0.1
+# Knock Subdomain Scan v7
 
 :heavy_check_mark: Fast :heavy_check_mark: Easy :heavy_check_mark: Modular
 
