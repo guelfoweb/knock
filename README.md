@@ -9,7 +9,7 @@
 ## Install via pip
 
 ```
-pip install git+https://github.com/guelfoweb/knock.git
+pip install knock-subdomains
 ```
 
 ## Install via pip requirements.txt file
