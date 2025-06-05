@@ -30,24 +30,25 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 # bruteforce via wordlist
 class Bruteforce:
     def __init__(self, domain, wordlist=None):
-            self.domain = domain
-            self.wordlist = wordlist or os.path.join(ROOT, 'wordlist', 'wordlist.txt')
+        self.domain = domain
+        self.wordlist = wordlist or os.path.join(ROOT, 'wordlist', 'wordlist.txt')
 
     def load_wordlist(self):
         try:
             with open(self.wordlist, 'r') as f:
-                return [line.strip() for line in f if line.strip()]
+                for line in f:
+                    word = line.strip()
+                    if word:
+                        yield word
         except FileNotFoundError:
             print(f"Error: wordlist '{self.wordlist}' not found.")
-            return []
+            return iter([])
 
     def wildcard(self):
         return ''.join(random.choice(string.ascii_lowercase) for _ in range(random.randint(10, 15))) + '.' + self.domain
 
     def start(self):
-        wordlist = [str(word)+'.'+str(self.domain) for word in Bruteforce.load_wordlist(self) if word]
-        wordlist = list(OrderedDict.fromkeys(wordlist))
-        return wordlist
+        return sorted({f"{word}.{self.domain}" for word in self.load_wordlist()})
 
 # reconnaissance via web services
 class Recon:
