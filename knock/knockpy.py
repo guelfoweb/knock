@@ -447,8 +447,11 @@ def main():
     #print (args)
     
     if not args.domain and not args.file:
+        if args.report:
+            show_report(args.json, args.report)
+            sys.exit(0)
         # looking for stdin
-        if not sys.stdin.isatty():
+        elif not sys.stdin.isatty():
             stdin = [domain.strip() for domain in sys.stdin.readlines()]
             # can be file or domain
             if len(stdin) == 1:
@@ -464,9 +467,6 @@ def main():
             # cat domains.txt | knockpy
             elif len(stdin) > 1:
                 args.domain = stdin
-        elif args.report:
-            show_report(args.json, args.report)
-            sys.exit(0)
         # no args and not stdin
         # shows help and exit
         else:
