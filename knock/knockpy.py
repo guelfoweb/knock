@@ -360,7 +360,7 @@ def output(results, json_output=None):
         return None
 
     if json_output:
-        print (results)
+        json.dump(results, sys.stdout)
         sys.exit()
 
     if isinstance(results, dict):
