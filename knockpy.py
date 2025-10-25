@@ -4,11 +4,7 @@
 import os
 import sys
 
-from knock import knockpy
-
-def main():
-    knockpy.main()
-
+from knock.knockpy import main
 
 if __name__ == "__main__":
     try:

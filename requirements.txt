@@ -1,5 +1,7 @@
-requests
-dnspython
-pyOpenSSL
-beautifulsoup4
-tqdm
+requests>=2.32.5
+dnspython>=2.8.0
+pyOpenSSL>=25.3.0
+beautifulsoup4>=4.14.2
+tqdm>=4.67.1
+httpx[http2]>=0.28.1
+dotenv>=0.9.9

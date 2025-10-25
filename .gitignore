@@ -5,3 +5,4 @@ knockpy.egg-info/
 *.pyc
 knockpy_report/
 knock_subdomains.egg-info/
+.env

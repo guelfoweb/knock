@@ -1,11 +1,15 @@
 from setuptools import setup
 import os
 
+def load_requirements(path):
+    with open(path, "r") as f:
+        return [line.strip() for line in f if line.strip() and not line.startswith("#")]
+
 wordlist = 'wordlist' + os.sep + 'wordlist.txt'
 
 setup(
     name='knock-subdomains',
-    version='7.0.2',
+    version='8.0.0',
     description='Knockpy Subdomains Scan',
     url='https://github.com/guelfoweb/knock',
     author='Gianni Amato',
@@ -14,12 +18,7 @@ setup(
     packages=['knock'],
     package_data={"knock": [wordlist, 'report'],},
     include_package_data=True,
-    install_requires=[
-        'requests>=2.31.0', 
-        'dnspython>=2.4.2', 
-        'pyOpenSSL>=23.3.0', 
-        'beautifulsoup4>=4.12.3', 
-        'tqdm>=4.66.2'],
+    install_requires=load_requirements("requirements.txt"),
     entry_points={
         'console_scripts': [
             'knockpy=knock.knockpy:main',
