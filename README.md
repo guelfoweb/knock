@@ -4,10 +4,7 @@
 
 **KnockPy** is a modular Python 3 tool to enumerate subdomains via passive reconnaissance and bruteforce, now with **async/await support**, enhanced performance, and modern HTTP/TLS handling.
 
-> Version: **8**  
-> GitHub: [https://github.com/guelfoweb/knock](https://github.com/guelfoweb/knock)
-
-![knockpy8](https://github.com/guelfoweb/knock/assets/41558/b168f105-720f-4f21-aba1-5be5c0326957)
+![knockpy8](https://github.com/guelfoweb/knock/blob/master/assets/knockpy8.png)
 
 ---
 
@@ -148,4 +145,5 @@ python tests/poc.py
 ## 📖 License
 
 Licensed under the GPLv3 license.
+
 Gianni Amato (@guelfoweb)
